@@ -1,7 +1,33 @@
-import React from 'react';
+import { React, useState } from 'react';
 import { Table, Button, Space } from 'antd';
 
 function SemesterTable() {
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const dataSource = [
+        { stt: 1, name: 'Học kì 1 2022 - 2023', start: '1/1/2022', end: '30/06/2022' },
+        { stt: 2, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 3, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 4, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 5, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 6, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 7, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 8, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 9, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 10, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 11, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 12, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 13, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 14, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+        { stt: 15, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+    ];
+
+    const pageSize = 10;
+    const currentData = dataSource.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
     const semesterColumns = [
         {
             title: 'Stt',
@@ -36,13 +62,17 @@ function SemesterTable() {
             ),
         },
     ];
+
     return (
         <Table
-            dataSource={[
-                { stt: 1, name: 'Học kì 1 2022 - 2023', start: '1/1/2022', end: '30/06/2022' },
-                { stt: 2, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            ]}
+            dataSource={currentData}
             columns={semesterColumns}
+            pagination={{
+                current: currentPage,
+                total: dataSource.length,
+                pageSize,
+                onChange: handlePageChange,
+            }}
         />
     );
 }

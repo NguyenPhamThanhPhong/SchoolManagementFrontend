@@ -1,18 +1,55 @@
-import { Drawer, List } from 'antd';
+import { Drawer, List, Space, Typography, Divider } from 'antd';
 
-const ShowSubjectDrawer = ({ open, onClose, classesData, selectedSubject }) => {
+const Title = Typography.Title;
+
+const ShowSubjectDrawer = ({ open, onClose, selectedSubject }) => {
+    const classesData = [
+        {
+            key: '1',
+            class_id: '1',
+            name: 'SE001.O11.PMCL',
+            room: '101',
+            program: 'John Doe',
+            class_type: '30',
+            subject_id: '90',
+        },
+        {
+            key: '2',
+            class_id: '2',
+            name: 'SE001.O12.PMCL',
+            room: '102',
+            program: 'Jane Smith',
+            class_type: '25',
+            subject_id: '120',
+        },
+        {
+            key: '3',
+            class_id: '3',
+            name: 'SE001.O13.PMCL',
+            room: '102',
+            program: 'Jane Smith',
+            class_type: '25',
+            subject_id: '120',
+        },
+    ];
     return (
-        <Drawer
-            title={`Danh sách lớp học của môn ${selectedSubject?.name}`}
-            placement="right"
-            onClose={onClose}
-            open={open}
-        >
+        <Drawer title={`Chi tiết môn ${selectedSubject?.name}`} placement="right" onClose={onClose} open={open}>
+            <Space direction="vertical">
+                <Title level={3}>SubjectID: {selectedSubject?.subject_id}</Title>
+                <Title level={5}>Name: {selectedSubject?.name}</Title>
+                <Title level={5}>Prerequisite Subject: {selectedSubject?.prerequisite_subject}</Title>
+                <Title level={5}>Previos Subject: {selectedSubject?.previos_subject}</Title>
+            </Space>
+            <Divider>Danh sách lớp</Divider>
             <List
                 dataSource={classesData}
-                renderItem={(item) => (
+                renderItem={(item, index) => (
                     <List.Item>
-                        <List.Item.Meta title={<a href="#">{item.class_name}</a>} description={`Some thing`} />
+                        <List.Item.Meta
+                            key={index}
+                            title={<a href="/admin/class/detail">{item.name}</a>}
+                            description={`Room: ${item.room}`}
+                        />
                     </List.Item>
                 )}
             />

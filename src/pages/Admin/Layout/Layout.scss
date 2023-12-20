@@ -17,3 +17,35 @@
 //         color: white !important; /* Giữ màu chữ trắng */
 //     }
 // }
+
+// Style Layout component
+// .sidebar {
+//     position: sticky;
+//     top: 0;
+//     .sidebar-header {
+//         .btn-humburger-icon {
+//             height: 3rem;
+//             width: 3rem;
+//             border: none;
+//             font-size: 1.75rem;
+//         }
+//         .btn-humburger-icon:hover {
+//             background-color: #d8e2ef;
+//             border-radius: 50%;
+//         }
+//         .brand {
+//             span {
+//                 font-weight: 600;
+//                 font-size: 2rem;
+//                 color: #2badf9;
+//             }
+//             img {
+//                 height: 3.125rem;
+//             }
+//         }
+//     }
+// }
+
+.ant-layout {
+    min-height: 100vh;
+}

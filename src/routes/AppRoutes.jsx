@@ -9,22 +9,32 @@ import Class from '../pages/Admin/Class/Class';
 import Post from '../pages/Admin/Post/Post';
 import SemesterFaculty from '../pages/Admin/SemesterFaculty/SemesterFaculty';
 import User from '../pages/Admin/User/User';
+import DetailClass from '../pages/Admin/Class/DetailClass';
+import DetailStudent from '../pages/Admin/Student/DetailStudent';
+import ScheduleStudent from '../pages/Admin/Student/ScheduleStudent';
 
 const publicRoutes = [
-    { path: '/', component: Home },
-    { path: '/student', component: Student },
-    { path: '/lecturer', component: Lecturer },
-    { path: '/subject', component: Subject },
-    { path: '/class', component: Class },
-    { path: '/orther', component: Orther },
-    { path: '/setting', component: Setting },
-    { path: '/post', component: Post },
-    { path: '/semester_faculty', component: SemesterFaculty },
-    { path: '/user', component: User },
+    { path: '/admin/', component: Home },
+
+    { path: '/admin/student', component: Student },
+    { path: '/admin/student/detail-student/:id', component: DetailStudent },
+    { path: '/admin/student/schedule', component: ScheduleStudent },
+
+    { path: '/admin/lecturer', component: Lecturer },
+    { path: '/admin/subject', component: Subject },
+
+    { path: '/admin/class', component: Class },
+    { path: '/admin/class/detail-class/:id', component: DetailClass },
+
+    { path: '/admin/orther', component: Orther },
+    { path: '/admin/setting', component: Setting },
+    { path: '/admin/post', component: Post },
+    { path: '/admin/semester_faculty', component: SemesterFaculty },
+    { path: '/admin/user', component: User },
 ];
 
 const privateRoutes = [
-    { path: '/login', component: Login, layout: null },
+    { path: '/admin/login', component: Login, layout: null },
     // { path: '/register', component: Register, layout: null }
 ];
 

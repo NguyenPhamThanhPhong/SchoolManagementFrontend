@@ -1,19 +1,49 @@
 import React from 'react';
-import './Header.scss';
-import SearchBox from '../../Common/SearchBox/SearchBox';
-import UserProfileMenu from '../UserProfileMenu/UserProfileMenu';
+import { Layout, Button, theme } from 'antd';
+import { MenuUnfoldOutlined, MenuFoldOutlined, BellOutlined, UserOutlined } from '@ant-design/icons';
 
-const Header = () => {
+const { Header } = Layout;
+
+const AppHeader = ({ collapsed, onToggleCollapse }) => {
+    const {
+        token: { colorBgContainer },
+    } = theme.useToken();
     return (
-        <nav className="navbar navbar-light navbar-glass navbar-top navbar-expand">
-            <ul className="navbar-nav align-items-center d-none d-lg-block">
-                <SearchBox />
-            </ul>
-            <ul className="navbar-nav navbar-nav-icons ms-auto flex-row align-items-center">
-                <UserProfileMenu />
-            </ul>
-        </nav>
+        <Header
+            style={{
+                padding: 0,
+                background: colorBgContainer,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                position: 'fixed',
+                width: '100%',
+                zIndex: 1,
+            }}
+        >
+            <Button
+                type="text"
+                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                onClick={onToggleCollapse}
+                style={{
+                    fontSize: '16px',
+                    width: 64,
+                    height: 64,
+                }}
+            />
+            <div
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    position: 'fixed',
+                    right: 10,
+                }}
+            >
+                <Button type="text" icon={<BellOutlined />} />
+                <Button type="text" icon={<UserOutlined />} />
+            </div>
+        </Header>
     );
 };
 
-export default Header;
+export default AppHeader;

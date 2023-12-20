@@ -38,13 +38,6 @@ const Subject = () => {
         setIsDrawerOpen(false);
     };
 
-    const classesData = [
-        {
-            key: '1',
-            class_name: 'Class A',
-        },
-    ];
-
     return (
         <div>
             <Card>
@@ -74,12 +67,7 @@ const Subject = () => {
                 onCancel={handleCreateModalCancel}
                 onOk={handleCreateModalOk}
             />
-            <ShowSubjectDrawer
-                open={isDrawerOpen}
-                onClose={onCloseDrawer}
-                classesData={classesData}
-                selectedSubject={selectedSubject}
-            />
+            <ShowSubjectDrawer open={isDrawerOpen} onClose={onCloseDrawer} selectedSubject={selectedSubject} />
         </div>
     );
 };

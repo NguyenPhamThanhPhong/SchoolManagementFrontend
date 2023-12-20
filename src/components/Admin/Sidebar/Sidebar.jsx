@@ -1,51 +1,82 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import './Sidebar.scss';
-import '@fortawesome/free-solid-svg-icons';
-import SidebarSection from '../../Common/SidebarSection/SidebarSction';
+import { Layout, Menu } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import {
+    HomeOutlined,
+    WindowsOutlined,
+    BookFilled,
+    PartitionOutlined,
+    UserOutlined,
+    SolutionOutlined,
+    ReadOutlined,
+    TeamOutlined,
+    SettingOutlined,
+    LogoutOutlined,
+} from '@ant-design/icons';
 
-const Sidebar = () => {
-    const sections = [
+const { Sider } = Layout;
+
+const Sidebar = ({ collapsed, onCollapse }) => {
+    const navigate = useNavigate();
+
+    const menuItems = [
+        { key: '/admin/', icon: <HomeOutlined style={{ fontSize: '18px' }} />, label: 'Home' },
         {
-            label: 'Quản lý chung',
-            items: [
-                { to: '/', icon: 'fas fa-home', text: 'Home' },
-                { to: '/semester_faculty', icon: 'fas fa-school', text: 'Semester - Faculty' },
-                { to: '/subject', icon: 'fas fa-shapes', text: 'Subject' },
-                { to: '/class', icon: 'fas fa-house-user', text: 'Class' },
-                { to: '/student', icon: 'fas fa-user-graduate', text: 'Student' },
-                { to: '/lecturer', icon: 'fas fa-user-tie', text: 'Lecturer' },
-                { to: '/post', icon: 'fas fa-book-open', text: 'Post' },
-            ],
+            key: '/admin/semester_faculty',
+            icon: <WindowsOutlined style={{ fontSize: '18px' }} />,
+            label: 'Semester_faculty',
         },
-        {
-            label: 'Khác',
-            items: [
-                { to: '/user', icon: 'fas fa-user', text: 'User' },
-                { to: '/setting', icon: 'fas fa-sun', text: 'Setting' },
-                { to: '/login', icon: 'fas fa-arrow-right', text: 'Logout' },
-            ],
-        },
+        { key: '/admin/subject', icon: <BookFilled style={{ fontSize: '18px' }} />, label: 'Subject' },
+        { key: '/admin/class', icon: <PartitionOutlined style={{ fontSize: '18px' }} />, label: 'Class' },
+        { key: '/admin/student', icon: <UserOutlined style={{ fontSize: '18px' }} />, label: 'Student' },
+        { key: '/admin/lecturer', icon: <SolutionOutlined style={{ fontSize: '18px' }} />, label: 'Lecturer' },
+        { key: '/admin/post', icon: <ReadOutlined style={{ fontSize: '18px' }} />, label: 'Post' },
+        { key: '/admin/user', icon: <TeamOutlined style={{ fontSize: '18px' }} />, label: 'User' },
+        { key: '/admin/setting', icon: <SettingOutlined style={{ fontSize: '18px' }} />, label: 'Setting' },
+        { key: '/admin/login', icon: <LogoutOutlined style={{ fontSize: '18px' }} />, label: 'Logout' },
     ];
 
     return (
-        <nav className="navbar navbar-light navbar-vertical navbar-expand-xl">
-            <div className="d-flex align-items-center">
-                <NavLink to="/" className="navbar-brand">
-                    <div className="d-flex align-items-center py-3">
-                        <span className="font-sans-serif">ADMIN</span>
-                    </div>
-                </NavLink>
+        <Sider
+            trigger={null}
+            collapsible
+            collapsed={collapsed}
+            onCollapse={onCollapse}
+            style={{
+                position: 'fixed',
+                height: '100vh',
+                left: 0,
+                zIndex: 1,
+            }}
+        >
+            <div
+                className="demo-logo-vertical"
+                style={{
+                    textAlign: 'center',
+                    fontSize: '22px',
+                    color: 'white',
+                    lineHeight: '64px',
+                    fontWeight: 'bold',
+                }}
+            >
+                ADMIN
             </div>
-
-            <div className="navbar-vertical-content scrollbar">
-                <ul className="navbar-nav flex-column mb-3">
-                    {sections.map((section, index) => (
-                        <SidebarSection key={index} section={section} />
-                    ))}
-                </ul>
-            </div>
-        </nav>
+            <Menu
+                theme="dark"
+                // mode="inline"
+                defaultSelectedKeys={['1']}
+                onClick={(item) => {
+                    navigate(item.key);
+                }}
+                style={{ fontSize: '17px' }}
+            >
+                {menuItems.map((item) => (
+                    <Menu.Item key={item.key} icon={item.icon}>
+                        {item.label}
+                    </Menu.Item>
+                ))}
+            </Menu>
+        </Sider>
     );
 };
 

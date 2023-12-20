@@ -34,7 +34,7 @@ const Login = () => {
 
                     <Form.Item>
                         <Button type="primary" htmlType="submit">
-                            <NavLink to="/">Log in</NavLink>
+                            <NavLink to="/admin/">Log in</NavLink>
                         </Button>
                     </Form.Item>
                 </Form>
