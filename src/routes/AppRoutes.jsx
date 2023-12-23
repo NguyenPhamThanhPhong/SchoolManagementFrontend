@@ -13,8 +13,16 @@ import DetailClass from '../pages/Admin/Class/DetailClass';
 import DetailStudent from '../pages/Admin/Student/DetailStudent';
 import ScheduleStudent from '../pages/Admin/Student/ScheduleStudent';
 
+import UserHome from '../pages/user/Home/Home'
+import CheckAttendance from '../pages/user/CheckAttendance/CheckAttendance'
+import Classes from '../pages/user/Classes/Classes'
+import ExamSchedulePage from '../pages/user/ExamSchedulePage/ExamSchedulePage'
+import RegisterSubject from '../pages/user/RegisterSubject/RegisterSubject'
+import Schedule from '../pages/user/Schedule/Schedule'
+import UserInfo from '../pages/user/User infor/UserInforPage'
+
 const publicRoutes = [
-    { path: '/admin/', component: Home },
+    { path: '/admin', component: Home },
 
     { path: '/admin/student', component: Student },
     { path: '/admin/student/detail-student/:id', component: DetailStudent },
@@ -33,9 +41,19 @@ const publicRoutes = [
     { path: '/admin/user', component: User },
 ];
 
-const privateRoutes = [
-    { path: '/admin/login', component: Login, layout: null },
-    // { path: '/register', component: Register, layout: null }
+const userRoutes = [
+    { path: '/student/check-attendance', component: CheckAttendance },
+    { path: '/student-classes', component: Classes },
+    { path: '/student-exam-schedule', component: ExamSchedulePage },
+    { path: '/student-register-subject', component: RegisterSubject },
+    { path: '/student-schedule', component: Schedule },
+    { path: '/student-user-info', component: UserInfo },
 ];
 
-export { publicRoutes, privateRoutes };
+const privateRoutes = [
+    { path: '/admin/login', component: Login, layout: null },
+];
+
+
+
+export { publicRoutes, privateRoutes, userRoutes };
