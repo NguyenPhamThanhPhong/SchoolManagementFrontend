@@ -1,0 +1,17 @@
+.MainContainErSchedule
+{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: fixed;
+    margin-left: 22%;
+    margin-top: 10%;
+    overflow-y: auto;
+    width: 77%;
+    height: 70vh;
+}
+.ScheduleBoardM{
+    margin-top: 1%;
+    margin-bottom: 2%;
+    width: 95%;
+}
