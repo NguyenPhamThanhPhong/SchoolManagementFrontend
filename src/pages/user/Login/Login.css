@@ -1,0 +1,99 @@
+.container{
+    position: absolute;
+    height: 100%;
+    background-color: #2F88FF;
+}
+.mainLoginForm{
+    position: absolute;
+    right: 0%;
+    background-color: white;
+    height: 100%;
+    width: 50%;
+}
+
+.LoginPage
+{
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    
+    color: #2F88FF;
+    text-size-adjust: 15px;
+    padding-left: 1%;
+    font-size: 65px;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+.StudentId{
+    position: absolute;
+    height: 7vh;
+    width: 55%;
+    background-color: #fff;
+    top: 35%;
+    left: 40%;
+    border-radius: 10px;
+    border: 2px solid #2F88FF;
+    border-color: #2F88FF;
+    color: #000000;
+    text-size-adjust: 15px;
+    padding-left: 1%;
+    font-size: large;
+}
+.StudentId:focus{
+    outline: 2px solid #2F88FF;
+}
+.Password{
+    position: absolute;
+    height: 7vh;
+    width: 55%;
+    background-color: #fff;
+    top: 45%;
+    left: 40%;
+    border-radius: 10px;
+    border: 2px solid #2F88FF;
+    border-color: #2F88FF;
+    color: #000000;
+    text-size-adjust: 15px;
+    padding-left: 1%;
+    font-size: large;
+}
+.Password:focus{
+    outline: 2px solid #2F88FF;
+}
+
+input::placeholder{
+    color: #757575;
+}
+
+.LoginButton{
+    position: absolute;
+    height: 7vh;
+    width: 55%;
+    background-color: #2F88FF;
+    top: 60%;
+    left: 40%;
+    border-radius: 10px;
+    border: 2px solid #2F88FF;
+    border-color: #2F88FF;
+    color: #ffffff;
+    text-size-adjust: 15px;
+    padding-left: 1%;
+    font-size: large;
+}
+.Checkbox
+{
+    position: absolute;
+    top: 55%;
+    left: 41%;
+    border-radius: 10px;
+    border: 2px solid #2F88FF;
+    border-color: #2F88FF;
+    color: #757575;
+}
+.showpassword
+{
+    position: absolute;
+    top: 54%;
+    left: 45%;
+    color: #757575;
+}

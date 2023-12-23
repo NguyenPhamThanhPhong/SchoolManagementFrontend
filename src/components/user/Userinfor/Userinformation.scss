@@ -1,0 +1,45 @@
+.MainContainEr
+{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    position: fixed;
+    margin-left: 22%;
+    margin-top: 10%;
+    overflow-y: scroll;
+    width: 77%;
+    height: 87vh;
+}
+.Score{
+    margin-top: 1%;
+    margin-bottom: 2%;
+    width: 100%;
+}
+
+.UserBasicInfor{
+    border-radius: 15px;
+    height: 60%;
+    width: 68%;
+}
+.list-group-item{
+    height: 65px;
+    font-family: sans-serif;
+    font-weight: bold;
+    
+}
+
+.UserPic{
+    background-color: rgb(255, 255, 255);
+    height: 51%;
+    width: 30%;
+    border-radius: 15px;
+    border: 1px solid #2F88FF;
+}
+.userPicture{
+    background-color: #2F88FF;
+    border-radius: 50%;
+    width: 245px;
+    height: 245px;
+    margin-left: 15%;
+    margin-top: 2%;
+}
