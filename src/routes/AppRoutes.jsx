@@ -21,6 +21,8 @@ import RegisterSubject from '../pages/user/RegisterSubject/RegisterSubject'
 import Schedule from '../pages/user/Schedule/Schedule'
 import UserInfo from '../pages/user/User infor/UserInforPage'
 
+import MyPage from '../pages/y-temp-page/my-page';
+
 const publicRoutes = [
     { path: '/admin', component: Home },
 
@@ -54,6 +56,8 @@ const privateRoutes = [
     { path: '/admin/login', component: Login, layout: null },
 ];
 
+const myTestPages = [
+    { path: '/my-page', component: MyPage },
+]
 
-
-export { publicRoutes, privateRoutes, userRoutes };
+export { publicRoutes, privateRoutes, userRoutes, myTestPages };

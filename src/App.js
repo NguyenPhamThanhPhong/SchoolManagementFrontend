@@ -1,6 +1,6 @@
 import Layout from './pages/Admin/Layout/Layout';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { privateRoutes, publicRoutes, userRoutes } from './routes/AppRoutes';
+import { privateRoutes, publicRoutes, userRoutes, myTestPages } from './routes/AppRoutes';
 import { Fragment } from 'react';
 function App() {
     return (
@@ -33,6 +33,12 @@ function App() {
                     })}
                     {
                         userRoutes.map((route, index) => {
+                            const Page = route.component;
+                            return <Route key={index} path={route.path} element={<Page />} />;
+                        })
+                    }
+                    {
+                        myTestPages.map((route, index) => {
                             const Page = route.component;
                             return <Route key={index} path={route.path} element={<Page />} />;
                         })
