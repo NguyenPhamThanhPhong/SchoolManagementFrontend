@@ -20,7 +20,7 @@ function MyPage() {
     }
     const handleCreateUser = async () => {
         try {
-            const response = await StudentApi.registerUser(user);
+            const response = await StudentApi.getStudentFromId({ filter: '{"Username": "phong16"}' });
             if (!response.isError) {
                 console.log(response.data);
             }

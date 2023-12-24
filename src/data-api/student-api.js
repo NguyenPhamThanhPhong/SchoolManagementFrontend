@@ -10,8 +10,14 @@ const registerUser = async (userData) => {
         return { isError: true, data: error.response.data };
     }
 };
-const getStudentFromId = async () => {
-    //code here
+const getStudentFromId = async (filterStringObject) => {
+    try {
+        let myformdata = APIUtil.GenerateFormData(filterStringObject);
+        const response = await axios.post(APIUtil.baseURL + '/student-get-by-text-filter', myformdata, APIUtil.formdataHeader);
+        return { isError: false, data: response.data };
+    } catch (error) {
+        return { isError: true, data: error.response.data };
+    }
 }
 
 const StudentApi = {
