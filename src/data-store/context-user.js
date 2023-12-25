@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext } from "react";
-import { SET_USER, SET_LOGIN } from "./constants";
+import { SET_USER, SET_LOGIN, SET_LOGOUT } from "./constants";
 
 const Context = createContext();
 
@@ -10,12 +10,21 @@ const initialState = {
     adminAccounts: [],
 }
 
+class userTemplate {
+    constructor(user, isloggedIn, role, adminAccounts) {
+        this.user = user;
+        this.isloggedIn = isloggedIn;
+        this.role = role;
+        this.adminAccounts = adminAccounts;
+    }
+}
+
 function userReducer(state, action) {
     switch (action.type) {
         case SET_USER:
             return {
                 ...state,
-                isloggedIn: action.payload.isloggedIn,
+                user: action.payload.user,
             }
         case SET_LOGIN:
             return {
@@ -43,7 +52,7 @@ const useUserContext = () => {
     return [userState, dispatchUser];
 };
 
-export { useUserContext, UserContextProvider };
+export { useUserContext, UserContextProvider, userTemplate, initialState as UserState };
 export default UserContextProvider;
 
 

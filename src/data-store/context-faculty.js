@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext } from "react";
-import { SET_FACULTIES, SET_CURRENT_FACULTY } from "./constants";
+import { SET_FACULTIES, SET_CURRENT_FACULTY, SET_LOGOUT } from "./constants";
 
 const Context = createContext();
 
@@ -39,5 +39,5 @@ const useFacultyContext = () => {
     return [FacultyState, dispatchFaculty];
 };
 
-export { useFacultyContext, FacultyContextProvider };
+export { useFacultyContext, FacultyContextProvider, initialState as FacultyState };
 export default FacultyContextProvider;

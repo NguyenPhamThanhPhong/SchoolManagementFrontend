@@ -1,18 +1,43 @@
-import { SET_POST, SET_USER } from "./constants";
+import * as types from './constants'
 
-const setUser = payload => ({
-    type: SET_USER,
+export const setUser = payload => ({
+    type: types.SET_USER,
+    payload
+})
+export const setLogin = payload => ({
+    type: types.SET_LOGIN,
     payload
 })
 
-const setPosts = (payload) => ({
-    type: SET_POST,
+export const setFaculties = (payload) => ({
+    type: types.SET_FACULTIES,
     payload
 })
-const setConversations = payload => ({
-    type: SET_USER,
+
+export const setCurrentFaculty = (payload) => ({
+    type: types.SET_CURRENT_FACULTY,
+    payload
+})
+
+export const setSemesters = (payload) => ({
+    type: types.SET_SEMESTERS,
+    payload
+})
+
+export const setCurrentSemester = (payload) => ({
+    type: types.SET_CURRENT_SEMESTER,
     payload
 })
 
 
-export { setUser, setPosts, setConversations };
+export const setLecturers = (payload) => ({
+    type: types.SET_LECTURERS,
+    payload
+})
+
+export const setPosts = (payload) => ({
+    type: types.SET_POST,
+    payload
+})
+
+

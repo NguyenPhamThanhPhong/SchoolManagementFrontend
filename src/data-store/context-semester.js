@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext } from "react";
-import { SET_SEMESTERS, SET_CURRENT_SEMESTER } from "./constants";
+import { SET_SEMESTERS, SET_CURRENT_SEMESTER, SET_LOGOUT } from "./constants";
 
 const Context = createContext();
 
@@ -39,5 +39,5 @@ const useSemesterContext = () => {
     return [semesterState, dispatchSemester];
 };
 
-export { useSemesterContext, SemesterContextProvider };
+export { useSemesterContext, SemesterContextProvider, initialState as SemesterState };
 export default SemesterContextProvider;

@@ -4,12 +4,21 @@ import { Card, Space, Statistic, Table, Typography, Row, Col } from 'antd';
 import Chart from 'chart.js/auto';
 import './Home.scss';
 
+import { useUserContext } from '../../../data-store';
+
 function Home() {
     const barChartRef = useRef(null);
     const pieChartRef = useRef(null);
 
+    const [userState, userDispatch] = useUserContext();
+
+    function HandleAPICall() {
+
+    }
+
     useEffect(() => {
         // Biểu đồ Bar Chart
+
         const barCtx = barChartRef.current.getContext('2d');
         const barChart = new Chart(barCtx, {
             type: 'bar',
