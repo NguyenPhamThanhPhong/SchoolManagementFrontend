@@ -1,0 +1,15 @@
+export const SET_USER = "SET_USER";
+export const SET_LOGIN = "SET_LOGIN";
+export const SET_LOGOUT = "SET_LOGOUT";
+
+export const SET_FACULTIES = "SET_FACULTIES";
+export const SET_CURRENT_FACULTY = "SET_CURRENT_FACULTY";
+
+export const SET_SEMESTERS = "SET_SEMESTERS";
+export const SET_CURRENT_SEMESTER = "SET_CURRENT_SEMESTER";
+
+export const SET_SUBJECTS = "SET_SUBJECTS";
+export const SET_LECTURERS = "SET_LECTURERS";
+export const SET_SCHOOLCLASSES = "SET_SCHOOLCLASSES";
+export const SET_FACULTY = "SET_FACULTY";
+export const SET_POST = "SET_POST";
