@@ -1,4 +1,5 @@
 import Layout from './pages/Admin/Layout/Layout';
+import AppLayout from './components/user/Layout/AppLayout'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { privateRoutes, publicRoutes } from './routes/AppRoutes';
 import { Fragment } from 'react';
@@ -15,6 +16,7 @@ function App() {
                         } else if (route.layout === null) {
                             _Layout = Fragment;
                         }
+
                         return (
                             <Route
                                 key={index}
@@ -26,6 +28,7 @@ function App() {
                                 }
                             />
                         );
+
                     })}
                     {privateRoutes.map((route, index) => {
                         const Page = route.component;

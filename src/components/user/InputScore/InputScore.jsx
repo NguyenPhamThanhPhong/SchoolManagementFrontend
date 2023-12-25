@@ -1,4 +1,4 @@
-import './CheckAttendanceBoard.scss'
+import './InputScore.scss'
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Button, Form, Input, Table } from 'antd';
 
@@ -80,54 +80,66 @@ const EditableCell = ({
     }
     return <td {...restProps}>{childNode}</td>;
 };
-const CheckAttendanceBoard = () => {
+const InputScore = () => {
     const [dataSource, setDataSource] = useState([
         {
             key: '0',
             name: 'Tran Van A',
-            MSSV: '32',
+            student_id: '32',
             week: '',
         },
         {
             key: '1',
             name: 'Ten gi do',
-            MSSV: '21155',
+            student_id: '21155',
             week: '',
         },
     ]);
 
     const defaultColumns = [
         {
-            title: 'MSSV',
-            dataIndex: 'MSSV',
+            title: 'No.',
+            dataIndex: 'No_',
+            key: 'No_'
         },
         {
-            title: 'Name',
+            title: 'Student name',
             dataIndex: 'name',
+            key: 'name',
         },
         {
-            title: 'Week 1',
-            dataIndex: 'week_1',
-            editable: true,
-            width: '20%',
+            title: 'Student ID',
+            dataIndex: 'student_id',
+            key: 'student_id',
         },
         {
-            title: 'Week 2',
-            dataIndex: 'week_2',
+            title: 'Progress score',
+            dataIndex: 'progress_score',
             editable: true,
-            width: '20%',
+            key: 'progress_score',
         },
         {
-            title: 'Week 3',
-            dataIndex: 'week_3',
+            title: 'Midterm score',
+            dataIndex: 'midterm_score',
             editable: true,
-            width: '20%',
+            key: 'midterm_score',
         },
         {
-            title: 'Week 4',
-            dataIndex: 'week_4',
+            title: 'Practice score',
+            dataIndex: 'practice_score',
             editable: true,
-            width: '20%',
+            key: 'practice_score',
+        },
+        {
+            title: 'Finalterm score',
+            dataIndex: 'finalterm_score',
+            editable: true,
+            key: 'finalterm_score',
+        },
+        {
+            title: 'average score',
+            dataIndex: 'average_score',
+            key: 'average_score',
         },
     ];
     const handleSave = (row) => {
@@ -175,4 +187,4 @@ const CheckAttendanceBoard = () => {
         </div>
     );
 };
-export default CheckAttendanceBoard;
+export default InputScore;

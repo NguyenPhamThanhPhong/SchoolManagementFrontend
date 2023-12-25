@@ -1,31 +1,30 @@
-.header
-{
+.header {
     position: fixed;
     top: 2%;
     left: 1%;
-    height: 20vh;
+    height: 10vh;
     width: 98%;
     background-color: #fff;
-    border-radius: 15px; 
+    border-radius: 15px;
 }
-.header_searchBar{
+.header_searchBar {
     position: absolute;
-    height: 7vh;
+    height: 6vh;
     width: 55%;
     background-color: #fff;
     top: 35%;
     left: 22%;
     border-radius: 10px;
-    border: 2px solid #2F88FF;
-    border-color: #2F88FF;
-    color: #2F88FF;
+    border: 2px solid #2f88ff;
+    border-color: #2f88ff;
+    color: #2f88ff;
     text-size-adjust: 15px;
     padding-left: 1%;
     font-size: large;
 }
-* :focus{
-    outline: 2px solid #2F88FF;
+* :focus {
+    outline: 2px solid #2f88ff;
 }
-input::placeholder{
-    color: #2F88FF;
+input::placeholder {
+    color: #2f88ff;
 }

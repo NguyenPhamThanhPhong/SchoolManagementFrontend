@@ -9,9 +9,9 @@ function AppLayout({ children }) {
                 <Header />
                 <div >
                     <div >
-                        
-                            {children}
-                        
+
+                        {children}
+
                     </div>
                 </div>
             </div>

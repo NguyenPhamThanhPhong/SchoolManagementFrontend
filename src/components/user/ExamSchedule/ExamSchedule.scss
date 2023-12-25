@@ -1,16 +1,15 @@
-.MainContainErExamSchedule
-{
+.MainContainErExamSchedule {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
     position: fixed;
-    margin-left: 30%;
-    margin-top: 10%;
+    margin-left: 10%;
+    margin-top: 5%;
     overflow-y: auto;
     width: 100vh;
     height: 70vh;
 }
-.ExamScheduleBoardM{
+.ExamScheduleBoardM {
     margin-top: 1%;
     margin-bottom: 2%;
     width: 100%;
