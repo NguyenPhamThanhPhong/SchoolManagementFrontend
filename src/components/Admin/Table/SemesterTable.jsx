@@ -1,28 +1,26 @@
-import { React, useState } from 'react';
+import React, { useState } from 'react';
 import { Table, Button, Space } from 'antd';
 
 function SemesterTable(props) {
     const [currentPage, setCurrentPage] = useState(1);
 
     let dataSource = props.dataSource;
-    if (props.dataSource === null || props.dataSource === undefined)
-        dataSource = [
-            { stt: 1, name: 'Học kì 1 2022 - 2023', start: '1/1/2022', end: '30/06/2022' },
-            { stt: 2, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 3, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 4, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 5, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 6, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 7, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 8, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 9, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 10, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 11, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 12, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 13, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 14, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-            { stt: 15, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        ];
+
+    // If dataSource is not provided or is empty, create a default array
+    if (!dataSource || dataSource.length === 0) {
+        dataSource = Array.from({ length: 15 }, (_, index) => ({
+            stt: index + 1,
+            id: `Học kì ${index + 1} 2022 - 2023`,
+            startTime: '1/1/2022',
+            endTime: '30/06/2022',
+        }));
+    } else {
+        // If dataSource is provided, map stt to the index + 1
+        dataSource = dataSource.map((item, index) => ({
+            ...item,
+            stt: index + 1,
+        }));
+    }
 
     const pageSize = 10;
     const currentData = dataSource.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -30,26 +28,27 @@ function SemesterTable(props) {
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
     const semesterColumns = [
         {
-            title: 'Stt',
+            title: 'STT',
             dataIndex: 'stt',
             key: 'stt',
         },
         {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            title: 'id',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
-            title: 'Start',
-            dataIndex: 'start',
-            key: 'start',
+            title: 'startTime',
+            dataIndex: 'startTime',
+            key: 'startTime',
         },
         {
-            title: 'End',
-            dataIndex: 'end',
-            key: 'end',
+            title: 'endTime',
+            dataIndex: 'endTime',
+            key: 'endTime',
         },
         {
             title: 'Action',

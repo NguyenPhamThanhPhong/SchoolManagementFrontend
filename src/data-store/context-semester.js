@@ -39,5 +39,5 @@ const useSemesterContext = () => {
     return [semesterState, dispatchSemester];
 };
 
-export { useSemesterContext, SemesterContextProvider, initialState as SemesterState };
+export { useSemesterContext, SemesterContextProvider, initialState as SemesterInitialState };
 export default SemesterContextProvider;

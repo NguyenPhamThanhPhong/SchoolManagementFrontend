@@ -19,10 +19,11 @@ export const setCurrentFaculty = (payload) => ({
     payload
 })
 
-export const setSemesters = (payload) => ({
-    type: types.SET_SEMESTERS,
-    payload
-})
+export const setSemesters = (payload) => (
+    {
+        type: types.SET_SEMESTERS,
+        payload
+    })
 
 export const setCurrentSemester = (payload) => ({
     type: types.SET_CURRENT_SEMESTER,

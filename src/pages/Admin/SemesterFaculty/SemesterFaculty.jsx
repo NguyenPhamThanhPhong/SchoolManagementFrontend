@@ -1,27 +1,67 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Card, Button, Input, DatePicker } from 'antd';
 import SemesterTable from '../../../components/Admin/Table/SemesterTable';
 import FacultyTable from '../../../components/Admin/Table/FacultyTable';
 
 
 import {
-    useFacultyContext, FacultyState,
-    useSemesterContext, SemesterState,
+    useFacultyContext, FacultyInitialState,
+    useSemesterContext, SemesterInitialState,
     setSemesters, setCurrentSemester,
     setFaculties, setCurrentFaculty
 } from '../../../data-store';
-import { SemesterApi, FacultyApi } from '../../../data-api/admin-api';
+import { SemesterApi, FacultyApi } from '../../../data-api/index';
 
 function SemesterFaculty() {
 
     const [semesterState, semesterDispatch] = useSemesterContext();
     const [facultyState, facultyDispatch] = useFacultyContext();
 
+    console.log(facultyState);
 
 
-    useRef(async () => {
+    useEffect(() => {
+        const fetchSemesters = async () => {
+            try {
+                const response = await SemesterApi.getAll();
+                if (!response.isError) {
+                    if (response.data.status === 200) {
+                        semesterDispatch(setSemesters({ semesters: response.data.data }));
+                    }
+                    else {
+                        console.log("not success");
+                    }
+                }
+                else {
+                    console.log("error");
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        const fetchFaculties = async () => {
+            try {
+                const response = await FacultyApi.getAll();
+                if (!response.isError) {
+                    if (response.data.status === 200) {
+                        facultyDispatch(setFaculties({ faculties: response.data.data }));
+                    }
+                    else {
+                        console.log("not success");
+                    }
+                }
+                else {
+                    console.log("error");
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchSemesters();
+        fetchFaculties();
+    }, []);
 
-    }, [])
+
 
 
     return (
@@ -42,7 +82,7 @@ function SemesterFaculty() {
                         <Button type="primary">Create</Button>
                     </div>
                 </div>
-                <SemesterTable />
+                <SemesterTable dataSource={semesterState.semesters} />
             </Card>
 
             <Card title="Faculty" style={{ flex: 1, width: '50%' }}>
@@ -53,7 +93,7 @@ function SemesterFaculty() {
                     <Input style={{ width: '240px', marginRight: '8px' }} />
                     <Button type="primary">Create</Button>
                 </div>
-                <FacultyTable />
+                <FacultyTable dataSource={facultyState.faculties} />
             </Card>
         </div>
     );

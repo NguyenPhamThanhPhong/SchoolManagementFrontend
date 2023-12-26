@@ -22,6 +22,7 @@ import Schedule from '../pages/user/Schedule/Schedule'
 import UserInfo from '../pages/user/User infor/UserInforPage'
 
 import MyPage from '../pages/y-temp-page/my-page';
+import MyTempComponent from '../pages/y-temp-page/my-temp-page';
 
 const publicRoutes = [
     { path: '/admin', component: Home },
@@ -58,6 +59,7 @@ const privateRoutes = [
 
 const myTestPages = [
     { path: '/my-page', component: MyPage },
+    { path: '/my-temp-page', component: MyTempComponent },
 ]
 
 export { publicRoutes, privateRoutes, userRoutes, myTestPages };

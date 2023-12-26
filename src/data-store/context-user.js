@@ -10,14 +10,7 @@ const initialState = {
     adminAccounts: [],
 }
 
-class userTemplate {
-    constructor(user, isloggedIn, role, adminAccounts) {
-        this.user = user;
-        this.isloggedIn = isloggedIn;
-        this.role = role;
-        this.adminAccounts = adminAccounts;
-    }
-}
+
 
 function userReducer(state, action) {
     switch (action.type) {
@@ -52,7 +45,7 @@ const useUserContext = () => {
     return [userState, dispatchUser];
 };
 
-export { useUserContext, UserContextProvider, userTemplate, initialState as UserState };
+export { useUserContext, UserContextProvider, initialState as UserInitialState };
 export default UserContextProvider;
 
 

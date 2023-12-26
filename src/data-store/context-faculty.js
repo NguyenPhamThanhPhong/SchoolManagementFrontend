@@ -39,5 +39,5 @@ const useFacultyContext = () => {
     return [FacultyState, dispatchFaculty];
 };
 
-export { useFacultyContext, FacultyContextProvider, initialState as FacultyState };
+export { useFacultyContext, FacultyContextProvider, initialState as FacultyInitialState };
 export default FacultyContextProvider;
