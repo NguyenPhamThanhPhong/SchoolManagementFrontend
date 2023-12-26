@@ -5,7 +5,7 @@ function NotificationList() {
 
     let NotificationItems = [
         {
-            NotificationId: "Class1",
+            NotificationId: "Noti1",
             Time: "Time1"
         },
         {

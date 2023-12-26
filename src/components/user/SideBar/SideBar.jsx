@@ -34,6 +34,12 @@ const sidebarNavItems = [
         to: '/student-user-info',
         section: 'student-user-info'
     },
+    {
+        display: 'Register',
+        icon: <i className='bx bx-user'></i>,
+        to: '/student-register-subject',
+        section: 'student-register-subject'
+    },
 
 ]
 

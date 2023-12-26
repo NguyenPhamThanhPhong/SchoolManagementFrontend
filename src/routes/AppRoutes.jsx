@@ -59,14 +59,15 @@ const userRoutes = [
 
 
     { path: '/student-exam-schedule', component: ExamSchedulePage },
-    { path: '/student-register-subject', component: RegisterSubject },
-    { path: '/student-schedule', component: ExamSchedulePage },
+
+    { path: '/student-schedule', component: Schedule },
     { path: '/student-user-info', component: UserInfo },
 
 ];
 
 const privateRoutes = [
     { path: '/admin/login', component: Login, layout: null },
+    { path: '/student-register-subject', component: RegisterSubject },
 ];
 
 
