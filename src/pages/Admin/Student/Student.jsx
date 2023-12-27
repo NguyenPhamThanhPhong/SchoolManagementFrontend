@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Space, Button, Input, Select, Card } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import CreateStudentModal from '../../../components/Admin/Modal/CreateStudentModal';
 import SendNotiStudentModal from '../../../components/Admin/Modal/SendNotiStudentModal';
 import ShowStudentDrawer from '../../../components/Admin/Drawer/ShowStudentDrawer';
 import StudentTable from '../../../components/Admin/Table/StudentTable';
+import { StudentApi } from '../../../data-api/index';
+import {
+    useStudentContext,
+    setStudents, setCurrentStudent,
+    appendStudent, removeStudent
+} from '../../../data-store/index';
+
 
 const { Search } = Input;
 const { Option } = Select;
@@ -15,10 +22,36 @@ const Student = () => {
     const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
 
+    //reducer
+    const [studentState, studentDispatch] = useStudentContext();
+
+
+    const fetchStudent = async () => {
+        try {
+            let response = await StudentApi.studentGetManyRange(1, 50)
+            if (!response.isError) {
+                studentDispatch(setStudents(response.data.data));
+            }
+            else {
+
+            }
+        }
+        catch (error) {
+            console.log('Failed to fetch: ', error);
+        }
+    }
+
+    useEffect(() => {
+        fetchStudent();
+    }, []);
+
+
     const handleDetail = (record) => {
         setSelectedStudent(record);
         setIsDetailDrawerOpen(true);
     };
+
+
 
     const showNotificationModal = () => {
         setIsOpen(true);
@@ -79,7 +112,7 @@ const Student = () => {
                         Thêm mới
                     </Button>
                 </Space>
-                <StudentTable handleDetail={handleDetail} />
+                <StudentTable students={studentState.students} handleDetail={handleDetail} />
             </Card>
             <SendNotiStudentModal
                 open={isOpen}

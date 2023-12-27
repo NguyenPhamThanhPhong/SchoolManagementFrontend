@@ -11,7 +11,6 @@ const lecturerInitialState = {
 const lecturerReducer = (state, action) => {
     switch (action.type) {
         case SET_LECTURERS:
-            console.log('executing lecturer')
             return { ...state, lecturers: action.payload };
         case SET_CURRENT_LECTURER:
             return {

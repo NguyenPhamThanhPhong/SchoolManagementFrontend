@@ -2,8 +2,15 @@ import { React, useState } from 'react';
 import { Table, Space, Button } from 'antd';
 import { Link, NavLink } from 'react-router-dom';
 
-function StudentTable({ handleDetail }) {
+function StudentTable({ handleDetail, students }) {
     const [currentPage, setCurrentPage] = useState(1);
+
+    let temp = [{ ha: 'ha' }, { ha: 'ha' }, { ha: 'ha' }];
+    if (!(students === undefined || students === null))
+        temp = students;
+    temp = temp.map((item, index) => ({ ...item, stt: index + 1 }));
+
+
     const dataSource = [
         {
             key: '1',
