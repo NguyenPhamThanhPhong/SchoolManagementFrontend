@@ -37,7 +37,7 @@ export const setLecturers = (payload) => ({
 })
 
 export const setPosts = (payload) => ({
-    type: types.SET_POST,
+    type: types.SET_POSTS,
     payload
 })
 

@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Space, Button, Input, Select, Card } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import CreateLecturerModal from '../../../components/Admin/Modal/CreateLecturerModal';
 import SendNotiLecturerModal from '../../../components/Admin/Modal/SendNotiLecturerModal';
 import ShowLecturerDrawer from '../../../components/Admin/Drawer/ShowLecturerDrawer';
 import LecturerTable from '../../../components/Admin/Table/LecturerTable';
+
+
+import { useLecturerContext, setLecturers } from '../../../data-store';
+import { lecturerApi } from '../../../data-api/lecturer-api';
+
 
 const { Search } = Input;
 const { Option } = Select;
@@ -14,6 +19,32 @@ const Lecturer = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
+
+    const [lecturerState, lecturerDispatch] = useLecturerContext();
+
+    console.log(lecturerState);
+
+    const fetchLecutrers = async (start, end) => {
+        try {
+            let response = await lecturerApi.getManyRange(start, end)
+            if (!response.isError) {
+                lecturerDispatch(setLecturers(response.data.data));
+            }
+            else
+                console.log(response.data)
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+
+
+    useEffect(() => {
+        document.title = 'Quản lý giảng viên';
+        fetchLecutrers(0, 10);
+
+    }, []);
 
     const handleDetail = (record) => {
         setSelectedStudent(record);
@@ -79,7 +110,7 @@ const Lecturer = () => {
                         Thêm mới
                     </Button>
                 </Space>
-                <LecturerTable handleDetail={handleDetail} />
+                <LecturerTable lecturers={lecturerState.lecturers} handleDetail={handleDetail} />
             </Card>
             <SendNotiLecturerModal
                 open={isOpen}

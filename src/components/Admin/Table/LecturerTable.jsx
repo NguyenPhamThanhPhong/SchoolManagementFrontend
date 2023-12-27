@@ -2,61 +2,58 @@ import React from 'react';
 import { Table, Space, Button } from 'antd';
 
 function LecturerTable({ handleDetail, lecturers }) {
-    const dataSource = lecturers || []
+    let dataSource = lecturers || []
 
-    dataSource.map((item, index) => ({ ...item, stt: index + 1 }));
-    //data ở đây console.log để thấy datasource
+    console.log(dataSource)
 
     const temp = [
         {
-            key: '1',
-            stt: 1,
+            stt: '1',
             id: 'SV001',
-            name: 'John Brown',
-            dateOfBirth: '01/01/1990',
             email: 'john@example.com',
             sdt: '123456789',
-            faculty: 'CNPM',
             personalInfo: {
                 dateOfBirth: '01/01/1990',
+                name: 'John Brown',
+                phone: '456789123',
+                faculty: 'CNPM',
+
             }
         },
         {
-            key: '2',
-            stt: 2,
+            stt: '2',
             id: 'SV002',
-            name: 'Jim Green',
-            dateOfBirth: '02/02/1991',
             email: 'jim@example.com',
             sdt: '987654321',
-            faculty: 'CNPM',
             personalInfo: {
                 dateOfBirth: '01/01/1990',
+                name: 'Jim Green',
+                phone: '45645234afd23',
+                faculty: 'CNPM',
+
             }
         },
         {
-            key: '3',
-            stt: 3,
+            stt: '3',
             id: 'SV003',
-            name: 'Joe Black',
-            dateOfBirth: '03/03/1992',
             email: 'joe@example.com',
-            sdt: '456789123',
-            faculty: 'CNPM',
             personalInfo: {
                 dateOfBirth: '01/01/1990',
+                name: 'Joe Black',
+                phone: '456789123',
+                faculty: 'CNPM',
             }
         },
     ];
     return (
         <Table
+
             columns={[
                 {
-                    title: 'key',
-                    dataIndex: 'key',
-                    key: 'key',
+                    title: 'stt',
+                    dataIndex: 'stt',
+                    key: 'stt',
                 },
-
                 {
                     title: 'id',
                     dataIndex: 'id',
@@ -64,13 +61,13 @@ function LecturerTable({ handleDetail, lecturers }) {
                 },
                 {
                     title: 'Name',
-                    dataIndex: 'name',
-                    key: 'name',
+                    dataIndex: ['personalInfo', 'name'],
+                    key: ['personalInfo', 'name'],
                 },
                 {
                     title: 'Ngày Sinh',
-                    dataIndex: (personalInfo) => personalInfo.dateOfBirth,
-                    key: (personalInfo) => personalInfo.dateOfBirth,
+                    dataIndex: ['personalInfo', 'dateOfBirth'],
+                    key: ['personalInfo', 'dateOfBirth'],
                 },
                 {
                     title: 'Email',
@@ -79,14 +76,13 @@ function LecturerTable({ handleDetail, lecturers }) {
                 },
                 {
                     title: 'SDT',
-                    dataIndex: 'sdt',
-                    key: 'sdt',
+                    dataIndex: ['personalInfo', 'phone'],
+                    key: ['personalInfo', 'phone'],
                 },
-
                 {
                     title: 'Faculty',
-                    dataIndex: 'faculty',
-                    key: 'faculty',
+                    dataIndex: ['personalInfo', 'faculty'],
+                    key: ['personalInfo', 'faculty'],
                 },
                 {
                     title: 'Action',
@@ -109,7 +105,7 @@ function LecturerTable({ handleDetail, lecturers }) {
                     ),
                 },
             ]}
-            dataSource={temp}
+            dataSource={dataSource}
             rowSelection={{
                 type: 'checkbox',
             }}
