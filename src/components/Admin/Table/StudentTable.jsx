@@ -2,19 +2,15 @@ import { React, useState } from 'react';
 import { Table, Space, Button } from 'antd';
 import { Link, NavLink } from 'react-router-dom';
 
-function StudentTable({ handleDetail, students }) {
+function StudentTable({ handleDetail, students, deleteStudent }) {
+
+
+
     const [currentPage, setCurrentPage] = useState(1);
 
-    let temp = [{ ha: 'ha' }, { ha: 'ha' }, { ha: 'ha' }];
-    if (!(students === undefined || students === null))
-        temp = students;
-    temp = temp.map((item, index) => ({ ...item, stt: index + 1 }));
-
-    console.log(temp)
-
-    const dataSource = temp || [];
+    let dataSource = students || []
+    dataSource = dataSource.map((item, index) => ({ ...item, stt: index + 1 }));
     const pageSize = 5;
-
     const currentData = dataSource.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     const handlePageChange = (page) => {
@@ -66,7 +62,7 @@ function StudentTable({ handleDetail, students }) {
                             <Button variant="contained" type="primary">
                                 Edit
                             </Button>
-                            <Button danger variant="contained" type="primary">
+                            <Button onClick={() => { deleteStudent(record.id) }} danger variant="contained" type="primary">
                                 Delete
                             </Button>
                             <NavLink to={`/admin/student/detail-student/${record.id}`}>

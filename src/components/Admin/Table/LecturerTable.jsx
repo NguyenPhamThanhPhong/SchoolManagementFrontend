@@ -4,7 +4,6 @@ import { Table, Space, Button } from 'antd';
 function LecturerTable({ handleDetail, lecturers }) {
     let dataSource = lecturers || []
 
-    console.log(dataSource)
 
     const temp = [
         {

@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Space, Button, Input, Select, Card } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import CreateSubjectModal from '../../../components/Admin/Modal/CreateSubjectModal';
 import ShowSubjectDrawer from '../../../components/Admin/Drawer/ShowSubjectDrawer';
 import SubjectTable from '../../../components/Admin/Table/SubjectTable';
+
+import {
+    useSubjectContext,
+    setSubjects, appendSubject, removeSubject
+} from '../../../data-store/index';
+import { subjectApi } from '../../../data-api/index';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -13,21 +19,55 @@ const Subject = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [selectedSubject, setSelectedSubject] = useState(null);
 
-    const showCreateModal = () => {
-        setIsCreateModalOpen(true);
-    };
 
-    const handleCreateModalOk = () => {
-        setIsCreateModalOpen(false);
-    };
+    const [subjectState, subjectDispatch] = useSubjectContext();
+    const fetchSubjects = async () => {
+        try {
+            const response = await subjectApi.subjectManyRange(0, 50);
+            if (!response.isError) {
+                subjectDispatch(setSubjects(response.data.data));
+            }
+            else {
+                console.log(response);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    const deleteSubject = async (id) => {
+        try {
+            const response = await subjectApi.subjectDelete(id);
+            if (!response.isError) {
+                subjectDispatch(removeSubject(id));
+            }
+            else {
+                console.log(response);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    const createSubject = async (subject) => {
+        try {
+            const response = await subjectApi.subjectCreate(subject);
+            if (!response.isError) {
+                subjectDispatch(appendSubject(response.data.data));
+                setIsCreateModalOpen(false);
+            }
+            else {
+                console.log(response);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
 
-    const handleCreateModalCancel = () => {
-        setIsCreateModalOpen(false);
-    };
-
-    const handleCreate = () => {
-        showCreateModal();
-    };
+    useEffect(() => {
+        fetchSubjects();
+    }, []);
 
     const showDrawer = (subject) => {
         setSelectedSubject(subject);
@@ -55,17 +95,18 @@ const Subject = () => {
                         style={{ width: 200 }}
                         prefix={<SearchOutlined />}
                     />
-
-                    <Button type="primary" onClick={handleCreate}>
+                    <Button type="primary" onClick={() => { setIsCreateModalOpen(true) }}>
                         Thêm mới
                     </Button>
                 </Space>
-                <SubjectTable showDrawer={showDrawer} />
+                <SubjectTable deleteSubject={deleteSubject} subjects={subjectState.subjects} showDrawer={showDrawer} />
             </Card>
             <CreateSubjectModal
+                deleteSubject={deleteSubject}
+                createSubject={createSubject}
                 open={isCreateModalOpen}
-                onCancel={handleCreateModalCancel}
-                onOk={handleCreateModalOk}
+                onCancel={() => { setIsCreateModalOpen(false) }}
+                onOk={() => { setIsCreateModalOpen(false) }}
             />
             <ShowSubjectDrawer open={isDrawerOpen} onClose={onCloseDrawer} selectedSubject={selectedSubject} />
         </div>

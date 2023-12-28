@@ -40,6 +40,25 @@ const Student = () => {
         }
     }
 
+    const deleteStudent = async (id) => {
+        try {
+            let response = await StudentApi.studentDelete(id)
+            if (!response.isError) {
+                studentDispatch(removeStudent(id.toString()));
+            }
+            else {
+            }
+        }
+        catch (error) {
+            console.log('Failed to fetch: ', error);
+        }
+    }
+
+    const handleDeleteClick = (id) => {
+        deleteStudent(id);
+
+    }
+
     useEffect(() => {
         fetchStudent();
     }, []);
@@ -111,7 +130,7 @@ const Student = () => {
                         Thêm mới
                     </Button>
                 </Space>
-                <StudentTable students={studentState.students} handleDetail={handleDetail} />
+                <StudentTable deleteStudent={deleteStudent} students={studentState.students} handleDetail={handleDetail} />
             </Card>
             <SendNotiStudentModal
                 open={isOpen}

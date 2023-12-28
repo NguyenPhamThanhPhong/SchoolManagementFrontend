@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react';
-import { SET_STUDENTS, SET_CURRENT_STUDENT, APPEND_STUDENT } from './constants';
+import { SET_STUDENTS, SET_CURRENT_STUDENT, APPEND_STUDENT, REMOVE_STUDENT } from './constants';
 
 const StudentContext = createContext();
 
@@ -21,6 +21,12 @@ const studentReducer = (state, action) => {
             return {
                 ...state,
                 students: [...state.students, action.payload],
+                currentstudent: null
+            }
+        case REMOVE_STUDENT:
+            return {
+                ...state,
+                students: state.students.filter(student => student.id !== action.payload),
                 currentstudent: null
             }
         default:

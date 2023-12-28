@@ -22,7 +22,6 @@ const Lecturer = () => {
 
     const [lecturerState, lecturerDispatch] = useLecturerContext();
 
-    console.log(lecturerState);
 
     const fetchLecutrers = async (start, end) => {
         try {

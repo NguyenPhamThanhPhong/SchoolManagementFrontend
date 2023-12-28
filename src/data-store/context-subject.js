@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext } from "react";
-import { SET_SUBJECTS, SET_CURRENT_SUBJECT, APPEND_SUBJECT } from "./constants";
+import { SET_SUBJECTS, SET_CURRENT_SUBJECT, APPEND_SUBJECT, REMOVE_SUBJECT } from "./constants";
 
 const Context = createContext();
 
@@ -13,17 +13,22 @@ function subjectReducer(state, action) {
         case SET_SUBJECTS:
             return {
                 ...state,
-                subjects: action.payload.subjects,
+                subjects: action.payload,
             }
         case SET_CURRENT_SUBJECT:
             return {
                 ...state,
-                currentSubject: action.payload.currentSubject,
+                currentSubject: action.payload,
             }
         case APPEND_SUBJECT:
             return {
                 ...state,
-                subjects: [...state.subjects, action.payload.subject],
+                subjects: [...state.subjects, action.payload],
+            }
+        case REMOVE_SUBJECT:
+            return {
+                ...state,
+                subjects: state.subjects.filter(subject => subject.id !== action.payload),
             }
     }
 }

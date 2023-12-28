@@ -3,6 +3,9 @@ import { Drawer, List, Space, Typography, Divider } from 'antd';
 const Title = Typography.Title;
 
 const ShowSubjectDrawer = ({ open, onClose, selectedSubject }) => {
+
+
+
     const classesData = [
         {
             key: '1',
@@ -35,10 +38,10 @@ const ShowSubjectDrawer = ({ open, onClose, selectedSubject }) => {
     return (
         <Drawer title={`Chi tiết môn ${selectedSubject?.name}`} placement="right" onClose={onClose} open={open}>
             <Space direction="vertical">
-                <Title level={3}>SubjectID: {selectedSubject?.subject_id}</Title>
+                <Title level={3}>SubjectID: {selectedSubject?.id}</Title>
                 <Title level={5}>Name: {selectedSubject?.name}</Title>
-                <Title level={5}>Prerequisite Subject: {selectedSubject?.prerequisite_subject}</Title>
-                <Title level={5}>Previos Subject: {selectedSubject?.previos_subject}</Title>
+                <Title level={5}>Prerequisite Subject: {selectedSubject?.prequisiteId}</Title>
+                <Title level={5}>Previos Subject: {selectedSubject?.previousSubjectId}</Title>
             </Space>
             <Divider>Danh sách lớp</Divider>
             <List

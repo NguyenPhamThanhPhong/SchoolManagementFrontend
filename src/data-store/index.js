@@ -22,15 +22,19 @@ export * from "./actions";
 export const DataStoreProvider = ({ children }) => {
     return (
         <UserContextProvider>
-            <StudentContextProvider>
-                <LecturerContextProvider>
-                    <FacultyContextProvider>
-                        <SemesterContextProvider>
-                            {children}
-                        </SemesterContextProvider>
-                    </FacultyContextProvider>
-                </LecturerContextProvider>
-            </StudentContextProvider>
+            <SubjectContextProvider>
+                <SchoolClassContextProvider>
+                    <StudentContextProvider>
+                        <LecturerContextProvider>
+                            <FacultyContextProvider>
+                                <SemesterContextProvider>
+                                    {children}
+                                </SemesterContextProvider>
+                            </FacultyContextProvider>
+                        </LecturerContextProvider>
+                    </StudentContextProvider>
+                </SchoolClassContextProvider>
+            </SubjectContextProvider>
         </UserContextProvider>
     )
 }

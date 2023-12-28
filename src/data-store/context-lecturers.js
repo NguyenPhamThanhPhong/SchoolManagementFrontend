@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react';
-import { SET_LECTURERS, SET_CURRENT_LECTURER, APPEND_LECTURER } from './constants';
+import { SET_LECTURERS, SET_CURRENT_LECTURER, APPEND_LECTURER, REMOVE_LECTURER } from './constants';
 
 const LecturerContext = createContext();
 
@@ -9,9 +9,6 @@ const lecturerInitialState = {
 };
 
 const lecturerReducer = (state, action) => {
-    console.log('in reducer');
-    console.log(action.type);
-    console.log(action.payload)
     switch (action.type) {
         case SET_LECTURERS:
             return { ...state, lecturers: action.payload };
@@ -26,6 +23,12 @@ const lecturerReducer = (state, action) => {
                 lecturers: [...state.lecturers, action.payload],
                 currentLecturer: null
             }
+        case REMOVE_LECTURER:
+            return {
+                ...state,
+                lecturers: state.lecturers.filter(lecturer => lecturer.id !== action.payload),
+                currentLecturer: null
+            };
         default:
             return state;
     }

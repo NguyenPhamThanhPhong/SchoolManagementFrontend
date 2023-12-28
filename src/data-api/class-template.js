@@ -8,6 +8,16 @@ class CreateUserRequest {
     }
 }
 
+class Subject {
+    constructor(id, name, prequisiteId, previousSubjectId, classIds) {
+        this.id = id;
+        this.name = name;
+        this.prequisiteId = prequisiteId;
+        this.previousSubjectId = previousSubjectId;
+        this.classIds = classIds;
+    }
+}
+
 class SchoolMemberCreateRequest {
     constructor(id, username, password, email, role, personalInfo, classes) {
         this.id = id;
@@ -58,6 +68,7 @@ export {
     SchoolMemberCreateRequest,
     PersonalInfo,
     UpdateParameter,
+    Subject,
     DateOfWeek,
     UpdateAction
 }
