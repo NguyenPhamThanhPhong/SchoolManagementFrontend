@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext } from 'react';
-import { SET_SCHOOLCLASSES, SET_CURRENT_SCHOOLCLASS } from './constants';
+import { SET_SCHOOLCLASSES, SET_CURRENT_SCHOOLCLASS, APPEND_SCHOOLCLASS, REMOVE_SCHOOLCLASS } from './constants';
 
 const Context = createContext();
 
@@ -14,6 +14,10 @@ const schoolClassReducer = (state, action) => {
         case SET_SCHOOLCLASSES:
             return [...state, action.payload];
         case SET_CURRENT_SCHOOLCLASS:
+            return state.filter(schoolClass => schoolClass.id !== action.payload);
+        case APPEND_SCHOOLCLASS:
+            return [...state, action.payload];
+        case REMOVE_SCHOOLCLASS:
             return state.filter(schoolClass => schoolClass.id !== action.payload);
         default:
             return state;

@@ -47,6 +47,53 @@ class UpdateParameter {
         this.action = action;
     }
 }
+
+class SchoolClassCreateRequest {
+    constructor(id, name, subjectId, roomName, program, classType, semesterId, schedule, studentLog) {
+        this.ID = id;
+        this.Name = name;
+        this.RoomName = roomName;
+        this.Program = program;
+        this.ClassType = classType;
+        this.SubjectId = subjectId;
+        this.SemesterId = semesterId;
+        this.Schedule = schedule;
+        this.StudentLog = studentLog;
+    }
+}
+class TimeStamp {
+    constructor(hour, minute) {
+        this.ticks = 0;
+        this.days = 0;
+        this.hours = hour;
+        this.milliseconds = 0;
+        this.minutes = minute;
+        this.seconds = 0;
+    }
+}
+class SchedulePiece {
+    constructor(dateOfWeek, startTime, endTime) {
+        this.dateOfWeek = dateOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+}
+class StudentLog {
+    constructor(id, name) {
+        this.id = id;
+        this.name = name;
+        this.scores = [];
+        for (var i = 0; i < 5; i++) {
+            this.scores.push(-1);
+        }
+    }
+    constructor(id, name, scores) {
+        this.id = id;
+        this.name = name;
+        this.scores = scores;
+    }
+}
+
 const UpdateAction = {
     set: 0,
     push: 1,
@@ -69,6 +116,10 @@ export {
     PersonalInfo,
     UpdateParameter,
     Subject,
+    SchoolClassCreateRequest,
+    TimeStamp,
+    SchedulePiece,
+    StudentLog,
     DateOfWeek,
     UpdateAction
 }
