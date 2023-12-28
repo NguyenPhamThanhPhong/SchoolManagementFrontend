@@ -9,6 +9,9 @@ const lecturerInitialState = {
 };
 
 const lecturerReducer = (state, action) => {
+    console.log('in reducer');
+    console.log(action.type);
+    console.log(action.payload)
     switch (action.type) {
         case SET_LECTURERS:
             return { ...state, lecturers: action.payload };
@@ -20,7 +23,7 @@ const lecturerReducer = (state, action) => {
         case APPEND_LECTURER:
             return {
                 ...state,
-                lecturers: [...state.lecturers, ...action.payload],
+                lecturers: [...state.lecturers, action.payload],
                 currentLecturer: null
             }
         default:

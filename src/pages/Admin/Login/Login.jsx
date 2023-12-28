@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Input, Button, Checkbox, Card } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
-import { useUserContext, setLogin, userTemplate } from '../../../data-store';
+import { useUserContext, setLogin } from '../../../data-store';
 import AdminApi from '../../../data-api/admin-api';
 
 import './Login.scss';
@@ -35,7 +35,14 @@ const Login = () => {
                     if (response.data.status === 200) {
                         navigate('/admin')
                         console.log(response.data.data)
-                        userDispatch(setLogin(new userTemplate(response.data.data, true, "admin", [])));
+                        let loginData =
+                        {
+                            user: response.data.data,
+                            isLogin: true,
+                            role: 'admin',
+                            adminAccounts: []
+                        }
+                        userDispatch(setLogin(loginData));
                     }
                 }
                 else {

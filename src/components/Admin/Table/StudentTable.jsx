@@ -10,81 +10,9 @@ function StudentTable({ handleDetail, students }) {
         temp = students;
     temp = temp.map((item, index) => ({ ...item, stt: index + 1 }));
 
+    console.log(temp)
 
-    const dataSource = [
-        {
-            key: '1',
-            stt: 1,
-            mssv: 'SV001',
-            name: 'John Brown',
-            ngaySinh: '01/01/1990',
-            email: 'john@example.com',
-            sdt: '123456789',
-            khoa: 'K42',
-            lop: 'A1',
-            faculty: 'CNPM',
-        },
-        {
-            key: '2',
-            stt: 2,
-            mssv: 'SV002',
-            name: 'Jim Green',
-            ngaySinh: '02/02/1991',
-            email: 'jim@example.com',
-            sdt: '987654321',
-            khoa: 'K42',
-            lop: 'A2',
-            faculty: 'CNPM',
-        },
-        {
-            key: '3',
-            stt: 3,
-            mssv: 'SV003',
-            name: 'Joe Black',
-            ngaySinh: '03/03/1992',
-            email: 'joe@example.com',
-            sdt: '456789123',
-            khoa: 'K42',
-            lop: 'A3',
-            faculty: 'CNPM',
-        },
-        {
-            key: '4',
-            stt: 3,
-            mssv: 'SV003',
-            name: 'Joe Black',
-            ngaySinh: '03/03/1992',
-            email: 'joe@example.com',
-            sdt: '456789123',
-            khoa: 'K42',
-            lop: 'A3',
-            faculty: 'CNPM',
-        },
-        {
-            key: '5',
-            stt: 3,
-            mssv: 'SV003',
-            name: 'Joe Black',
-            ngaySinh: '03/03/1992',
-            email: 'joe@example.com',
-            sdt: '456789123',
-            khoa: 'K42',
-            lop: 'A3',
-            faculty: 'CNPM',
-        },
-        {
-            key: '6',
-            stt: 3,
-            mssv: 'SV003',
-            name: 'Joe Black',
-            ngaySinh: '03/03/1992',
-            email: 'joe@example.com',
-            sdt: '456789123',
-            khoa: 'K42',
-            lop: 'A3',
-            faculty: 'CNPM',
-        },
-    ];
+    const dataSource = temp || [];
     const pageSize = 5;
 
     const currentData = dataSource.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -100,21 +28,20 @@ function StudentTable({ handleDetail, students }) {
                     dataIndex: 'stt',
                     key: 'stt',
                 },
-
                 {
-                    title: 'Mssv',
-                    dataIndex: 'mssv',
-                    key: 'mssv',
+                    title: 'id',
+                    dataIndex: 'id',
+                    key: 'id',
                 },
                 {
                     title: 'Name',
-                    dataIndex: 'name',
-                    key: 'name',
+                    dataIndex: ['personalInfo', 'name'],
+                    key: ['personalInfo', 'name'],
                 },
                 {
                     title: 'Ngày Sinh',
-                    dataIndex: 'ngaySinh',
-                    key: 'ngaySinh',
+                    dataIndex: ['personalInfo', 'dateOfBirth'],
+                    key: ['personalInfo', 'dateOfBirth'],
                 },
                 {
                     title: 'Email',
@@ -127,19 +54,9 @@ function StudentTable({ handleDetail, students }) {
                     key: 'sdt',
                 },
                 {
-                    title: 'Khóa',
-                    dataIndex: 'khoa',
-                    key: 'khoa',
-                },
-                {
-                    title: 'Lớp',
-                    dataIndex: 'lop',
-                    key: 'lop',
-                },
-                {
                     title: 'Faculty',
-                    dataIndex: 'faculty',
-                    key: 'faculty',
+                    dataIndex: ['personalInfo', 'faculty'],
+                    key: ['personalInfo', 'faculty'],
                 },
                 {
                     title: 'Action',
@@ -152,7 +69,7 @@ function StudentTable({ handleDetail, students }) {
                             <Button danger variant="contained" type="primary">
                                 Delete
                             </Button>
-                            <NavLink to={`/admin/student/detail-student/${record.mssv}`}>
+                            <NavLink to={`/admin/student/detail-student/${record.id}`}>
                                 <Button variant="contained">Details</Button>
                             </NavLink>
                             <Button variant="contained" type="link">

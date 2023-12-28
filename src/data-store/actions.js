@@ -6,12 +6,14 @@ export const setUser = (payload) => ({
     payload
 });
 
-export const setLogin = () => ({
-    type: types.SET_LOGIN
+export const setLogin = (payload) => ({
+    type: types.SET_LOGIN,
+    payload
 });
 
-export const setLogout = () => ({
-    type: types.SET_LOGOUT
+export const setLogout = (payload) => ({
+    type: types.SET_LOGOUT,
+    payload
 });
 
 // Action creators for faculties

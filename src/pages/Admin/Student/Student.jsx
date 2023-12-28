@@ -25,10 +25,9 @@ const Student = () => {
     //reducer
     const [studentState, studentDispatch] = useStudentContext();
 
-
     const fetchStudent = async () => {
         try {
-            let response = await StudentApi.studentGetManyRange(1, 50)
+            let response = await StudentApi.studentGetManyRange(0, 50)
             if (!response.isError) {
                 studentDispatch(setStudents(response.data.data));
             }

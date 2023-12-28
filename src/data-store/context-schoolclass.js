@@ -1,5 +1,8 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, useContext } from 'react';
 import { SET_SCHOOLCLASSES, SET_CURRENT_SCHOOLCLASS } from './constants';
+
+const Context = createContext();
+
 
 const initialState = {
     schoolClasses: [],
@@ -16,3 +19,22 @@ const schoolClassReducer = (state, action) => {
             return state;
     }
 };
+
+
+const SchoolClassContextProvider = ({ children }) => {
+    const [schoolClassState, dispatchSchoolClass] = useReducer(schoolClassReducer, initialState);
+    return (
+        <Context.Provider value={[schoolClassState, dispatchSchoolClass]}>
+            {children}
+        </Context.Provider>
+    );
+}
+
+const useSchoolClassContext = () => {
+    const [schoolClassState, dispatchSchoolClass] = useContext(Context);
+    return [schoolClassState, dispatchSchoolClass];
+}
+
+export { useSchoolClassContext, SchoolClassContextProvider, initialState as schoolClassInitialState };
+
+export default SchoolClassContextProvider;

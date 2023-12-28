@@ -3,7 +3,7 @@ import { Modal, Form, Input } from 'antd';
 import { useState } from 'react';
 
 import { lecturerApi, SchoolMemberCreateRequest, PersonalInfo } from '../../../data-api/index';
-
+import { useLecturerContext, appendLecturer } from '../../../data-store';
 
 function CreateLecturerModal({ open, onOk, onCancel }) {
 
@@ -14,11 +14,15 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
     const [phone, setPhone] = useState('');
     const [faculty, setFaculty] = useState('');
 
+    const [lecturerState, lecturerDispatch] = useLecturerContext();
+
+    //current not used
     const createData = async (data) => {
         try {
             var response = await lecturerApi.lecturerCreate(data);
             if (!response.isError) {
                 console.log(response.data)
+
             }
             else {
                 console.log(response.data)
@@ -29,15 +33,25 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
         }
     }
 
+    //current used
     const handleOk = async () => {
-        console.log('making api creation')
         console.log(id, name, birthday, email, phone, faculty)
         const personalInfo = new PersonalInfo(birthday, name, 'male', phone, 'CLC')
         const data = new SchoolMemberCreateRequest(id, id, '123', email, 'lecturer', personalInfo, []);
 
-        console.log(JSON.stringify(data))
-
-        createData(data);
+        try {
+            let response = await lecturerApi.lecturerCreate(data);
+            if (!response.isError) {
+                lecturerDispatch(appendLecturer(response.data.data))
+                onOk();
+            }
+            else {
+                console.log(response.data)
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
 
     }
 

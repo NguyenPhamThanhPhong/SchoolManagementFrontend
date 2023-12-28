@@ -42,6 +42,5 @@ const useStudentContext = () => {
     return [studentState, dispatchStudent];
 }
 
-const abc = 1;
 
-export { abc, useStudentContext, StudentContextProvider, studentInitialState as studentIntialState };
+export { useStudentContext, StudentContextProvider, studentInitialState as studentIntialState };
