@@ -11,23 +11,40 @@ const { Column } = Table;
 const scoreListData = [
     {
         term: '--HK I 2023-2024',
-        ID: 'Se001',
-        name: 'Lap trinh',
-        progress: '9',
-        midtearn: '9',
-        practice: '9',
-        final: '9',
-        GPA: '9',
+        scores: [
+            {
+                ID: 'Se001.O11.PMCL',
+                name: 'Lap trinh',
+                progress: '9',
+                midtearn: '9',
+                practice: '9',
+                final: '9',
+                GPA: '9',
+            },
+            {
+                ID: 'Se001.O11.PMCL',
+                name: 'Lap trinh',
+                progress: '9',
+                midtearn: '9',
+                practice: '9',
+                final: '9',
+                GPA: '9',
+            }
+        ]
     },
     {
         term: '--HK II 2023-2024',
-        ID: 'Se002',
-        name: 'Lap trinh',
-        progress: '9',
-        midtearn: '9',
-        practice: '9',
-        final: '9',
-        GPA: '9',
+        scores: [
+            {
+                ID: 'Se001',
+                name: 'Lap trinh',
+                progress: '9',
+                midtearn: '9',
+                practice: '9',
+                final: '9',
+                GPA: '9',
+            }
+        ]
     },
 ];
 const PasswordItem = () => {
@@ -48,56 +65,10 @@ const PasswordItem = () => {
         </Space>
     );
 };
-const items = [
-    {
-        key: '1',
-        label: 'Họ và tên',
-        children: 'Nguyen Hoang Long',
-    },
-    {
-        key: '2',
-        label: 'MSSV',
-        children: '2122034556',
-    },
-    {
-        key: '3',
-        label: 'Password',
-        children: <PasswordItem />,
-    },
-    {
-        key: '4',
-        label: 'Bậc đào tạo',
-        children: 'Đại học',
-    },
-    {
-        key: '5',
-        label: 'Ngày sinh:',
-        children: '2019-04-24 18:00:00',
-    },
-    {
-        key: '6',
-        label: 'Lớp sinh hoạt',
-        children: <Badge status="processing" text="Running" />,
-    },
-    {
-        key: '7',
-        label: 'Program',
-        children: 'CLC',
-    },
-    {
-        key: '8',
-        label: 'Giới tính',
-        children: 'Nam',
-    },
-    {
-        key: '9',
-        label: 'Khoa',
-        children: '............................',
-    },
-];
+
 
 const columns = [
-    { title: 'ID', dataIndex: 'ID', key: 'ID' },
+    { title: 'ID', dataIndex: 'id', key: 'ID' },
     { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'Progress', dataIndex: 'progress', key: 'progress' },
     { title: 'Midterm', dataIndex: 'midtearn', key: 'midtearn' },
@@ -116,16 +87,17 @@ function DetailStudent() {
     let studentId = useParams().id;
     const fetchSingleStudent = async () => {
         try {
-            let response = StudentApi.studentGetbyId(studentId);
+            let response = await StudentApi.studentGetbyId(studentId);
             if (!response.isError) {
-                if (response.data.data !== null)
+                if (response.data.data !== null) {
                     setSelectedStudent(response.data.data);
+
+                }
                 else
                     navigate('/admin/student')
             }
             else
                 navigate('/admin/student')
-            console.log(response)
         }
         catch (error) {
             navigate('/admin/student')
@@ -133,37 +105,67 @@ function DetailStudent() {
     }
 
     useEffect(() => {
-        if (studentGLobalState.currentStudent !== null) {
-            console.log(studentGLobalState.currentStudent);
+        if (studentGLobalState.currentStudent !== null && studentGLobalState.currentStudent.id === studentId) {
             setSelectedStudent(studentGLobalState.currentStudent);
         }
         else {
-            console.log('fetching');
             fetchSingleStudent();
         }
     }, [])
 
 
-
-
-    // const fetchSingleStudent = async () => {
-    //     try {
-    //         let response = await StudentApi.getStudentById(studentId);
-    //         if (!response.isError) {
-    //             setSelectedStudent(response.data.data);
-    //             window.alert(JSON.stringify(response.data.data))
-    //         }
-    //         else {
-    //             navigate('/admin/student')
-    //         }
-    //     }
-    //     catch (error) {
-    //         console.log(error)
-    //     }
-    // }
-    // useEffect(() => {
-    //     fetchSingleStudent();
-    // }, [])
+    const items = [
+        {
+            key: '1',
+            label: 'ID',
+            children: selectedStudent.id || '',
+        },
+        {
+            key: '2',
+            label: 'Username',
+            children: selectedStudent.username || '',
+        },
+        {
+            key: '3',
+            label: 'joining college year',
+            children: '2020-2021',
+        },
+        {
+            key: '4',
+            label: 'Full Name',
+            children: selectedStudent.personalInfo?.name || '',
+        },
+        {
+            key: '5',
+            label: 'Password',
+            children: selectedStudent.password || '',
+        },
+        {
+            key: '6',
+            label: 'Faculty',
+            children: selectedStudent.personalInfo?.facultyId || '',
+        },
+        {
+            key: '7',
+            label: 'Gender',
+            children: selectedStudent.personalInfo?.gender || '',
+        },
+        {
+            key: '8',
+            label: 'email',
+            children: selectedStudent.email || '',
+        },
+        {
+            key: '9',
+            label: 'Program',
+            children: selectedStudent.personalInfo.program || '',
+        },
+        {
+            key: '3',
+            label: 'Date of Birth',
+            children: selectedStudent.personalInfo?.dateOfBirth || '',
+        }
+    ];
 
     const handleTermClick = (term) => {
         setOpenTerms((prevOpenTerms) =>
@@ -176,7 +178,7 @@ function DetailStudent() {
     return (
         <div>
             <Card>
-                <Breadcrumb
+                {/* <Breadcrumb
                     items={[
                         {
                             title: (
@@ -189,7 +191,7 @@ function DetailStudent() {
                             title: <span className="breadcrumb-link">Detail Student</span>,
                         },
                     ]}
-                />
+                /> */}
                 <Divider style={{ color: 'blue', fontSize: '16px' }}>Thông tin sinh viên</Divider>
                 <Descriptions bordered items={items} />
 
@@ -200,7 +202,7 @@ function DetailStudent() {
                             {score.term}
                         </Button>
                         {openTerms.includes(score.term) && (
-                            <Table dataSource={[score]} columns={columns} pagination={false} />
+                            <Table dataSource={[score.scores]} columns={columns} pagination={false} />
                         )}
                     </div>
                 ))}

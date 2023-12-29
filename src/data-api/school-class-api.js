@@ -12,7 +12,8 @@ const classCreate = async (schoolClassCreateRequest) => {
 
 const classGetbyId = async (id) => {
     try {
-        const response = await axios.get(APIUtil.baseURL + `//class-get-by-id/${id}`);
+        console.log(APIUtil.baseURL + `/class-get-by-id/${id}`);
+        const response = await axios.get(APIUtil.baseURL + `/class-get-by-id/${id}`);
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };
@@ -86,9 +87,12 @@ const classAppendSection = async (id, position, updateOption, section) => {
 
 const classDelete = async (id, prevUrls) => {
     try {
-        const response = await axios.delete(APIUtil.baseURL + `/class-delete/${id}`,
-            prevUrls,
-            APIUtil.jsonHeader);
+        const response = await axios.delete(APIUtil.baseURL + `/class-delete/${id}`, {
+            data: prevUrls,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };

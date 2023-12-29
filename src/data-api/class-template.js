@@ -49,13 +49,13 @@ class UpdateParameter {
 }
 
 class SchoolClassCreateRequest {
-    constructor(id, name, subjectId, roomName, program, classType, semesterId, schedule, studentLog) {
+    constructor(id, name, subject, roomName, program, classType, semesterId, schedule, studentLog) {
         this.ID = id;
         this.Name = name;
         this.RoomName = roomName;
         this.Program = program;
         this.ClassType = classType;
-        this.SubjectId = subjectId;
+        this.Subject = subject;
         this.SemesterId = semesterId;
         this.Schedule = schedule;
         this.StudentLog = studentLog;
@@ -101,7 +101,19 @@ const DateOfWeek = {
     Thursday: 3,
     Friday: 4,
     Saturday: 5,
-    Sunday: 6
+    Sunday: 6,
+    GetDateOfWeek(date) {
+        switch (date) {
+            case 0: return "Sunday";
+            case 1: return "Monday";
+            case 2: return "Tuesday";
+            case 3: return "Wednesday";
+            case 4: return "Thursday";
+            case 5: return "Friday";
+            case 6: return "Saturday";
+            default: return "Invalid Date";
+        }
+    }
 }
 
 

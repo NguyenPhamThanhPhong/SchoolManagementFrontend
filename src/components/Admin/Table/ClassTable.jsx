@@ -1,73 +1,69 @@
-import { React, useState } from 'react';
+import { React, useEffect, useState } from 'react';
 import { Table, Button, Space } from 'antd';
 import { Link, NavLink } from 'react-router-dom';
-function ClassTable({ showDrawer, schoolClasses }) {
+import {
+    useSchoolClassContext,
+    setSchoolClasses, removeSchoolClass
+} from '../../../data-store';
+import { schoolClassApi } from '../../../data-api';
+
+
+function ClassTable({ showDrawer }) {
     const [currentPage, setCurrentPage] = useState(1);
 
-    let temp = schoolClasses || [];
+    const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
 
-    const dataSource = [
-        {
-            key: '1',
-            class_id: '1',
-            name: 'Hoa hoc',
-            room: '101',
-            program: 'John Doe',
-            class_type: '30',
-            subject_id: '90',
-        },
-        {
-            key: '2',
-            class_id: '2',
-            name: 'Vat Ly',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
-        },
-        {
-            key: '3',
-            class_id: '2',
-            name: 'Vat Ly',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
-        },
-        {
-            key: '4',
-            class_id: '2',
-            name: 'Vat Ly',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
-        },
-        {
-            key: '5',
-            class_id: '2',
-            name: 'Vat Ly',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
-        },
-        {
-            key: '6',
-            class_id: '2',
-            name: 'Vat Ly',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
-        },
-    ];
+
+    const fetchSchoolClasses = async (start, end) => {
+        try {
+            let response = await schoolClassApi.classGetManyRange(start, end)
+            if (!response.isError) {
+                schoolClassDispatch(setSchoolClasses(response.data.data));
+            }
+            else
+                console.log(response.data)
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+    const deleteSchoolClass = async (id, prevUrls) => {
+        try {
+            let response = await schoolClassApi.classDelete(id, prevUrls)
+            if (!response.isError) {
+                if (response.data.data?.toString().contains('deleted'))
+                    schoolClassDispatch(removeSchoolClass(id));
+            }
+            else
+                console.log(response.data)
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
+
+    useEffect(() => {
+        fetchSchoolClasses(0, 50);
+    }, []);
+
+    const handleDeleteClick = (record) => {
+        if (record !== null && record !== undefined) {
+            let prevUrls = []
+            for (let item of record.sections)
+                for (const [key, value] of Object.entries(item))
+                    prevUrls.push(value)
+            deleteSchoolClass(record.id, prevUrls)
+        }
+    }
+
+    const dataSource = schoolClassState.schoolClasses || [];
 
     const columns = [
         {
             title: 'Class ID',
-            dataIndex: 'class_id',
-            key: 'class_id',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
             title: 'Class Name',
@@ -76,8 +72,8 @@ function ClassTable({ showDrawer, schoolClasses }) {
         },
         {
             title: 'Room',
-            dataIndex: 'room',
-            key: 'room',
+            dataIndex: 'roomName',
+            key: 'roomName',
         },
         {
             title: 'Program',
@@ -86,13 +82,13 @@ function ClassTable({ showDrawer, schoolClasses }) {
         },
         {
             title: 'Class Type',
-            dataIndex: 'class_type',
-            key: 'class_type',
+            dataIndex: 'classType',
+            key: 'classType',
         },
         {
             title: 'Subject ID',
-            dataIndex: 'subject_id',
-            key: 'subject_id',
+            dataIndex: 'subjectId',
+            key: 'subjectId',
         },
         {
             title: 'Action',
@@ -100,10 +96,10 @@ function ClassTable({ showDrawer, schoolClasses }) {
             render: (_, record) => (
                 <Space size="middle">
                     <Button type="primary">Edit</Button>
-                    <Button type="primary" danger>
+                    <Button onClick={() => { handleDeleteClick(record) }} type="primary" danger>
                         Delete
                     </Button>
-                    <NavLink to={`/admin/class/detail-class/${record.class_id}`}>
+                    <NavLink to={`/admin/class/detail-class/${record.id}`}>
                         <Button type="default">Details</Button>
                     </NavLink>
                 </Space>
