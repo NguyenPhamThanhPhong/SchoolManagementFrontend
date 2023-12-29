@@ -1,5 +1,6 @@
 import './NotificationList.scss'
 import { Link } from 'react-router-dom';
+import { Divider } from 'antd';
 function NotificationList() {
 
 
@@ -31,6 +32,7 @@ function NotificationList() {
     return (
         <>
             <div className='bigContainer'>
+                <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }}>Notification</Divider>
                 <ul className="list-group">
                     {NotificationItems.map((item =>
                     (<li className="list-group" key={item.NotificationId}>
