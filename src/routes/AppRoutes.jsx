@@ -25,7 +25,7 @@ import Notification from '../pages/user/Notification/Notification';
 import NotificationContentPage from '../pages/user/NotificationContent/NotificationContentPage';
 import InputScorePage from '../pages/user/InputScorePage/InputScorePage';
 import AddMaterialPage from '../pages/user/AddMaterialPage/AddMaterialPage';
-
+import ClassMaterialPageLecturerView from '../pages/user/ClassMaterial/Lectuer/ClassMaterialPageLecturerView';
 const publicRoutes = [
     { path: '/admin', component: Home },
 
@@ -47,17 +47,18 @@ const publicRoutes = [
 ];
 
 const userRoutes = [
-    { path: '/student-classes/lecturer/check-attendance', component: CheckAttendance },
-    { path: '/student-classes/lecturer/inputscore', component: InputScorePage },
-    { path: '/student-classes/lecturer/addmaterial', component: AddMaterialPage },
+    { path: '/classes/lecturer/classid/check-attendance', component: CheckAttendance },
+    { path: '/classes/lecturer/classid/inputscore', component: InputScorePage },
+    { path: '/classes/lecturer/classid/addmaterial', component: AddMaterialPage },
+    { path: '/classes/lecturer/classid', component: ClassMaterialPageLecturerView },
 
     { path: '/user-home', component: UserHome },
 
     { path: '/user-notification', component: Notification },
     { path: '/user-notification/notifi_ID', component: NotificationContentPage },
 
-    { path: '/student-classes', component: Classes },
-    { path: '/student-classes/id', component: ClassMaterialPage },
+    { path: '/classes', component: Classes },
+    { path: '/classes/student/classid', component: ClassMaterialPage },
 
 
     { path: '/student-exam-schedule', component: ExamSchedulePage },

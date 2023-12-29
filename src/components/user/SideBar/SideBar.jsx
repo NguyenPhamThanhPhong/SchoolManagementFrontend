@@ -25,8 +25,8 @@ const sidebarNavItems = [
     {
         display: 'Classes',
         icon: <i className='bx bx-book'></i>,
-        to: '/student-classes',
-        section: 'student-classes'
+        to: '/classes',
+        section: 'classes'
     },
     {
         display: 'User',

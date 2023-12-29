@@ -52,7 +52,7 @@ function ClassList() {
                 <ul className="list-group">
                     {ClassItems.map((item =>
                     (<li className="list-group" key={item.ClassId}>
-                        <Link to='/student-classes/id' className="classitemContainer" style={{ textDecoration: 'none' }}>
+                        <Link to='/classes/student/classid' className="classitemContainer" style={{ textDecoration: 'none' }}>
                             <div className='firstLine'>{item.SubjectName} - {item.ClassId}</div>
                             <div className='secondLine'>{item.LecturerName}</div>
                         </Link>

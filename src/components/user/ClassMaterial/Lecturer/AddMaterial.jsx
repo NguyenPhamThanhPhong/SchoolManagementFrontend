@@ -1,6 +1,9 @@
 import React from 'react';
 import { InboxOutlined } from '@ant-design/icons';
 import { Button, message, Upload } from 'antd';
+import 'boxicons/css/boxicons.min.css';
+
+
 import './AddMaterial.scss'
 
 const { Dragger } = Upload;
@@ -35,6 +38,9 @@ const props = {
 const AddMaterial = () => {
     return (
         <>
+            <div className='BackButton'>
+
+            </div>
             <div className='AddMarterialCont'>
                 <Dragger {...props}>
                     <p className="ant-upload-drag-icon">

@@ -100,34 +100,103 @@ const CheckAttendanceBoard = () => {
         {
             title: 'MSSV',
             dataIndex: 'MSSV',
+            fixed: 'left',
         },
         {
             title: 'Name',
             dataIndex: 'name',
+            fixed: 'left',
         },
         {
             title: 'Week 1',
             dataIndex: 'week_1',
             editable: true,
-            width: '20%',
+            align: 'center'
+
         },
         {
             title: 'Week 2',
             dataIndex: 'week_2',
             editable: true,
-            width: '20%',
+            align: 'center'
         },
         {
             title: 'Week 3',
             dataIndex: 'week_3',
             editable: true,
-            width: '20%',
+            align: 'center'
         },
         {
             title: 'Week 4',
             dataIndex: 'week_4',
             editable: true,
-            width: '20%',
+            align: 'center'
+        },
+        {
+            title: 'Week 5',
+            dataIndex: 'week_5',
+            editable: true,
+            align: 'center'
+        },
+        {
+            title: 'Week 6',
+            dataIndex: 'week_6',
+            editable: true,
+            align: 'center'
+        },
+        {
+            title: 'Week 7',
+            dataIndex: 'week_7',
+            editable: true,
+            align: 'center'
+        },
+        {
+            title: 'Week 8',
+            dataIndex: 'week_8',
+            editable: true,
+            align: 'center'
+        },
+        {
+            title: 'Week 9',
+            dataIndex: 'week_9',
+            editable: true,
+            align: 'center'
+        },
+        {
+            title: 'Week 10',
+            dataIndex: 'week_10',
+            editable: true,
+            align: 'center'
+        },
+        {
+            title: 'Week 11',
+            dataIndex: 'week_11',
+            editable: true,
+            align: 'center'
+        },
+        {
+            title: 'Week 12',
+            dataIndex: 'week_12',
+            editable: true,
+            align: 'center'
+        },
+        {
+            title: 'Week 13',
+            dataIndex: 'week_13',
+            editable: true,
+            align: 'center'
+        },
+        {
+            title: 'Week 14',
+            dataIndex: 'week_14',
+            editable: true,
+            align: 'center'
+        },
+        {
+            title: 'Week 15',
+            dataIndex: 'week_15',
+            editable: true,
+            align: 'center'
         },
     ];
     const handleSave = (row) => {
@@ -170,7 +239,11 @@ const CheckAttendanceBoard = () => {
                 dataSource={dataSource}
                 columns={columns}
                 pagination={{ position: ['none'], }}
+                scroll={{
+                    x: 1300,
+                }}
             />
+            <br></br>
             <Button className='SaveScore'  >Save</Button>
         </div>
     );

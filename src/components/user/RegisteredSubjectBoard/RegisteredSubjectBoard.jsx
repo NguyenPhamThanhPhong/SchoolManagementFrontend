@@ -1,5 +1,6 @@
 import { Table, } from 'antd';
 import React from 'react';
+import { Button } from 'antd'
 function RegisteredSubjectBoard() {
 
     const columns = [
@@ -77,6 +78,8 @@ function RegisteredSubjectBoard() {
     };
     return (
         <>
+            <div>Choose subject to delete</div>
+            <br></br>
             <Table
                 columns={columns}
                 rowSelection={{
@@ -85,6 +88,8 @@ function RegisteredSubjectBoard() {
                 pagination={{ position: ['none'], }}
                 dataSource={data}
             />
+            <br></br>
+            <Button type='primary' style={{ float: 'right' }} danger>Confirm</Button>
         </>
 
     );
