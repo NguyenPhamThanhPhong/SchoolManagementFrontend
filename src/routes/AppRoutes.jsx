@@ -16,11 +16,16 @@ import ScheduleStudent from '../pages/Admin/Student/ScheduleStudent';
 import UserHome from '../pages/user/Home/Home'
 import CheckAttendance from '../pages/user/CheckAttendance/CheckAttendance'
 import Classes from '../pages/user/Classes/Classes'
+import ClassMaterialPage from '../pages/user/ClassMaterial/ClassMaterialPage';
 import ExamSchedulePage from '../pages/user/ExamSchedulePage/ExamSchedulePage'
 import RegisterSubject from '../pages/user/RegisterSubject/RegisterSubject'
 import Schedule from '../pages/user/Schedule/Schedule'
 import UserInfo from '../pages/user/User infor/UserInforPage'
-
+import Notification from '../pages/user/Notification/Notification';
+import NotificationContentPage from '../pages/user/NotificationContent/NotificationContentPage';
+import InputScorePage from '../pages/user/InputScorePage/InputScorePage';
+import AddMaterialPage from '../pages/user/AddMaterialPage/AddMaterialPage';
+import ClassMaterialPageLecturerView from '../pages/user/ClassMaterial/Lectuer/ClassMaterialPageLecturerView';
 import MyPage from '../pages/y-temp-page/my-page';
 import MyTempComponent from '../pages/y-temp-page/my-temp-page';
 
@@ -45,16 +50,30 @@ const publicRoutes = [
 ];
 
 const userRoutes = [
-    { path: '/student/check-attendance', component: CheckAttendance },
-    { path: '/student-classes', component: Classes },
+    { path: '/classes/lecturer/classid/check-attendance', component: CheckAttendance },
+    { path: '/classes/lecturer/classid/inputscore', component: InputScorePage },
+    { path: '/classes/lecturer/classid/addmaterial', component: AddMaterialPage },
+    { path: '/classes/lecturer/classid', component: ClassMaterialPageLecturerView },
+
+    { path: '/user-home', component: UserHome },
+
+    { path: '/user-notification', component: Notification },
+    { path: '/user-notification/notifi_ID', component: NotificationContentPage },
+
+    { path: '/classes', component: Classes },
+    { path: '/classes/student/classid', component: ClassMaterialPage },
+
+
     { path: '/student-exam-schedule', component: ExamSchedulePage },
-    { path: '/student-register-subject', component: RegisterSubject },
+
     { path: '/student-schedule', component: Schedule },
     { path: '/student-user-info', component: UserInfo },
+
 ];
 
 const privateRoutes = [
     { path: '/admin/login', component: Login, layout: null },
+    { path: '/student-register-subject', component: RegisterSubject },
 ];
 
 const myTestPages = [

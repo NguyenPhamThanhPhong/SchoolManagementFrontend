@@ -1,6 +1,9 @@
-.main{
-    text-align: center;
+.homeMain {
     background-color: rgb(255, 255, 255);
     height: 75vh;
     border-radius: 15px;
+}
+.DividerHome {
+    margin-top: 20%;
+    margin-left: 20%;
 }

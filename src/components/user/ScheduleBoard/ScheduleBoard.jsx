@@ -1,56 +1,68 @@
 import './ScheduleBoard.scss'
-import { Table  } from 'antd';
+import ScheduleHeader from './ScheduleHeader';
+import FullCalendar from '@fullcalendar/react'
+//import dayGridPlugin from '@fullcalendar/daygrid'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import Dropdown from 'react-bootstrap/Dropdown';
+
+function renderEventContent(eventInfo) {
+    return (
+        <>
+            <b>{eventInfo.timeText}</b>
+            <i>{eventInfo.event.title}</i>
+        </>
+    )
+}
 
 
-function ScheduleBoard () {
-    const columns = [
+
+
+
+function ScheduleBoard() {
+    let Semester = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
+    const events = [
         {
-            title: 'No.',
-            dataIndex: 'No_',
-            key: 'No_'
-        },
-        {
-            title: 'Subject Id',
-            dataIndex: 'subject_id',
-            key: 'subject_id',
-        },
-        {
-            title: 'Subject name',
-            dataIndex: 'subject_name',
-            key: 'subject_name',
-        },
-        {
-            title: 'Progress score',
-            dataIndex: 'progress_score',
-            key: 'progress_score',
-        },
-        {
-            title: 'Midterm score',
-            dataIndex: 'midterm_score',
-            key: 'midterm_score',
-        },
-        {
-            title: 'Practice score',
-            dataIndex: 'practice_score',
-            key: 'practice_score',
-        },
-        {
-            title: 'Finalterm score',
-            dataIndex: 'finalterm_score',
-            key: 'finalterm_score',
-        },
-        {
-            title: 'average score',
-            dataIndex: 'average_score',
-            key: 'average_score',
-        },
-    ];
+            title: ' OOP',
+            daysOfWeek: ['4'],
+            startTime: '8:00:00',
+            endTime: '10:00:00',
+        }
+    ]
     return (
         <div className='MainContainErSchedule'>
-            <div className='ScheduleBoardM'>
-                <Table columns={columns} /> 
+            <div className='dropSemester_1'>
+                <Dropdown id='dropSemester_1'>
+                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        {Semester[Semester.length - 1]}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu >
+                        {Semester.map((item =>
+                            (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown>
+
             </div>
-            
+            <div className='ScheduleBoardM'>
+                <div>
+                    <ScheduleHeader></ScheduleHeader>
+                    <FullCalendar
+                        plugins={[timeGridPlugin]}
+                        initialView='timeGridWeek'
+                        weekends={true}
+                        events={events}
+                        eventContent={renderEventContent}
+                        slotMinTime="6:00:00"
+                        slotMaxTime="18:00:00"
+                        hiddenDays={[0]}
+                        headerToolbar={false}
+                        dayHeaders={false}
+                        allDaySlot={false}
+                        height={"auto"}
+                    />
+                </div>
+            </div>
+
         </div>
     )
 }

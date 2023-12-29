@@ -1,8 +1,8 @@
 import './ClassList.scss'
 import { Link } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
-function ClassList(){
-    let Semester = ["Semester 1 (2023-2024)","Semester 2 (2023-2024)","Semester summer (2023-2024)"]
+function ClassList() {
+    let Semester = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
 
     let ClassItems = [
         {
@@ -30,11 +30,11 @@ function ClassList(){
             SubjectName: "Subject5",
             LecturerName: 'Lecturer5'
         },
-        
-        
-        
+
+
+
     ]
-    return(
+    return (
         <>
             <div className='bigContainer'>
                 <div className='dropSemester'>
@@ -43,21 +43,21 @@ function ClassList(){
                             {Semester[Semester.length - 1]}
                         </Dropdown.Toggle>
                         <Dropdown.Menu >
-                            {Semester.map((item => 
+                            {Semester.map((item =>
                                 (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
-                                ))}
+                            ))}
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
                 <ul className="list-group">
-                {ClassItems.map((item=> 
-                (<li className="list-group" key={item.ClassId}>
-                    <Link to='/Classes/ClassId' className="classitemContainer" style={{ textDecoration: 'none' }}>
-                        <div className='firstLine'>{item.SubjectName} - {item.ClassId}</div>
-                        <div className='secondLine'>{item.LecturerName}</div>
-                    </Link>
-                </li>)
-                ))}
+                    {ClassItems.map((item =>
+                    (<li className="list-group" key={item.ClassId}>
+                        <Link to='/classes/student/classid' className="classitemContainer" style={{ textDecoration: 'none' }}>
+                            <div className='firstLine'>{item.SubjectName} - {item.ClassId}</div>
+                            <div className='secondLine'>{item.LecturerName}</div>
+                        </Link>
+                    </li>)
+                    ))}
                 </ul>
             </div>
         </>

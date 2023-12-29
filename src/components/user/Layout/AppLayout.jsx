@@ -8,10 +8,10 @@ function AppLayout({ children }) {
             <div className="content">
                 <Header />
                 <div >
-                    <div >
-                        
-                            {children}
-                        
+                    <div className="background_">
+
+                        {children}
+
                     </div>
                 </div>
             </div>

@@ -1,10 +1,14 @@
 import ExamSchedule from "../../../components/user/ExamSchedule/ExamSchedule";
 
-function ExamSchedulePage()
-{
-    return(
+import './ExamSchedulePage.scss'
+
+function ExamSchedulePage() {
+
+    return (
         <>
             <div className="ExamScheduleCont">
+
+
                 <ExamSchedule></ExamSchedule>
             </div>
         </>

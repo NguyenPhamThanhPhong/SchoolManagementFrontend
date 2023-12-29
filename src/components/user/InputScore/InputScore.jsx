@@ -1,4 +1,4 @@
-import './CheckAttendanceBoard.scss'
+import './InputScore.scss'
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Button, Form, Input, Table } from 'antd';
 
@@ -80,123 +80,66 @@ const EditableCell = ({
     }
     return <td {...restProps}>{childNode}</td>;
 };
-const CheckAttendanceBoard = () => {
+const InputScore = () => {
     const [dataSource, setDataSource] = useState([
         {
             key: '0',
             name: 'Tran Van A',
-            MSSV: '32',
+            student_id: '32',
             week: '',
         },
         {
             key: '1',
             name: 'Ten gi do',
-            MSSV: '21155',
+            student_id: '21155',
             week: '',
         },
     ]);
 
     const defaultColumns = [
         {
-            title: 'MSSV',
-            dataIndex: 'MSSV',
-            fixed: 'left',
+            title: 'No.',
+            dataIndex: 'No_',
+            key: 'No_'
         },
         {
-            title: 'Name',
+            title: 'Student name',
             dataIndex: 'name',
-            fixed: 'left',
+            key: 'name',
         },
         {
-            title: 'Week 1',
-            dataIndex: 'week_1',
-            editable: true,
-            align: 'center'
-
+            title: 'Student ID',
+            dataIndex: 'student_id',
+            key: 'student_id',
         },
         {
-            title: 'Week 2',
-            dataIndex: 'week_2',
+            title: 'Progress score',
+            dataIndex: 'progress_score',
             editable: true,
-            align: 'center'
+            key: 'progress_score',
         },
         {
-            title: 'Week 3',
-            dataIndex: 'week_3',
+            title: 'Midterm score',
+            dataIndex: 'midterm_score',
             editable: true,
-            align: 'center'
+            key: 'midterm_score',
         },
         {
-            title: 'Week 4',
-            dataIndex: 'week_4',
+            title: 'Practice score',
+            dataIndex: 'practice_score',
             editable: true,
-            align: 'center'
+            key: 'practice_score',
         },
         {
-            title: 'Week 5',
-            dataIndex: 'week_5',
+            title: 'Finalterm score',
+            dataIndex: 'finalterm_score',
             editable: true,
-            align: 'center'
+            key: 'finalterm_score',
         },
         {
-            title: 'Week 6',
-            dataIndex: 'week_6',
-            editable: true,
-            align: 'center'
-        },
-        {
-            title: 'Week 7',
-            dataIndex: 'week_7',
-            editable: true,
-            align: 'center'
-        },
-        {
-            title: 'Week 8',
-            dataIndex: 'week_8',
-            editable: true,
-            align: 'center'
-        },
-        {
-            title: 'Week 9',
-            dataIndex: 'week_9',
-            editable: true,
-            align: 'center'
-        },
-        {
-            title: 'Week 10',
-            dataIndex: 'week_10',
-            editable: true,
-            align: 'center'
-        },
-        {
-            title: 'Week 11',
-            dataIndex: 'week_11',
-            editable: true,
-            align: 'center'
-        },
-        {
-            title: 'Week 12',
-            dataIndex: 'week_12',
-            editable: true,
-            align: 'center'
-        },
-        {
-            title: 'Week 13',
-            dataIndex: 'week_13',
-            editable: true,
-            align: 'center'
-        },
-        {
-            title: 'Week 14',
-            dataIndex: 'week_14',
-            editable: true,
-            align: 'center'
-        },
-        {
-            title: 'Week 15',
-            dataIndex: 'week_15',
-            editable: true,
-            align: 'center'
+            title: 'average score',
+            dataIndex: 'average_score',
+            key: 'average_score',
         },
     ];
     const handleSave = (row) => {
@@ -239,13 +182,9 @@ const CheckAttendanceBoard = () => {
                 dataSource={dataSource}
                 columns={columns}
                 pagination={{ position: ['none'], }}
-                scroll={{
-                    x: 1300,
-                }}
             />
-            <br></br>
             <Button className='SaveScore'  >Save</Button>
         </div>
     );
 };
-export default CheckAttendanceBoard;
+export default InputScore;
