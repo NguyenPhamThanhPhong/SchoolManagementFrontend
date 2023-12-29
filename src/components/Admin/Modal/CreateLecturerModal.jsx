@@ -36,7 +36,7 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
     //current used
     const handleOk = async () => {
         console.log(id, name, birthday, email, phone, faculty)
-        const personalInfo = new PersonalInfo(birthday, name, 'male', phone, 'CLC')
+        const personalInfo = new PersonalInfo(birthday, name, 'male', phone, faculty, 'CLC')
         const data = new SchoolMemberCreateRequest(id, id, '123', email, 'lecturer', personalInfo, []);
 
         try {

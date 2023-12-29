@@ -87,11 +87,6 @@ class StudentLog {
             this.scores.push(-1);
         }
     }
-    constructor(id, name, scores) {
-        this.id = id;
-        this.name = name;
-        this.scores = scores;
-    }
 }
 
 const UpdateAction = {

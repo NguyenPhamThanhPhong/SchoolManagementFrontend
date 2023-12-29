@@ -1,8 +1,10 @@
 import { React, useState } from 'react';
 import { Table, Button, Space } from 'antd';
 import { Link, NavLink } from 'react-router-dom';
-function ClassTable({ showDrawer }) {
+function ClassTable({ showDrawer, schoolClasses }) {
     const [currentPage, setCurrentPage] = useState(1);
+
+    let temp = schoolClasses || [];
 
     const dataSource = [
         {

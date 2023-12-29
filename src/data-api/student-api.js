@@ -48,6 +48,15 @@ const studentGetFromIds = async (ids) => {
         return { isError: true, data: error };
     }
 }
+const studentGetbyId = async (id) => {
+    try {
+        const response = await axios.get(APIUtil.baseURL + `/student-get-by-id/${id}`);
+        return { isError: false, data: response };
+    } catch (error) {
+        return { isError: true, data: error };
+    }
+
+}
 
 const studentGetManyRange = async (start, end) => {
     try {
@@ -94,6 +103,7 @@ const StudentApi = {
     studentGetPassword,
     studentGetFromFilter,
     studentGetFromIds,
+    studentGetbyId,
     studentGetManyRange,
     studentDelete,
     studentUpdateStringFields,

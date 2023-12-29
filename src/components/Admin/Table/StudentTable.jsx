@@ -1,17 +1,60 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { Table, Space, Button } from 'antd';
 import { Link, NavLink } from 'react-router-dom';
+import { StudentApi } from '../../../data-api/index';
+import {
+    useStudentContext,
+    setStudents, setCurrentStudent,
+    appendStudent, removeStudent
+} from '../../../data-store/index';
 
-function StudentTable({ handleDetail, students, deleteStudent }) {
 
-
-
+function StudentTable({ handleDetail }) {
     const [currentPage, setCurrentPage] = useState(1);
+    const [studentState, studentDispatch] = useStudentContext();
+    let students = studentState.students
+
+    const fetchStudent = async () => {
+        try {
+            let response = await StudentApi.studentGetManyRange(0, 50)
+            if (!response.isError) {
+                studentDispatch(setStudents(response.data.data));
+            }
+            else {
+
+            }
+        }
+        catch (error) {
+            console.log('Failed to fetch: ', error);
+        }
+    }
+    const deleteStudent = async (id) => {
+        try {
+            let response = await StudentApi.studentDelete(id)
+            if (!response.isError) {
+                studentDispatch(removeStudent(id.toString()));
+            }
+            else {
+            }
+        }
+        catch (error) {
+            console.log('Failed to fetch: ', error);
+        }
+    }
+
+    const handleStudentDetail = (record) => {
+        studentDispatch(setCurrentStudent(record));
+    }
+
+    useEffect(() => {
+        fetchStudent();
+    }, []);
 
     let dataSource = students || []
     dataSource = dataSource.map((item, index) => ({ ...item, stt: index + 1 }));
     const pageSize = 5;
     const currentData = dataSource.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -46,13 +89,13 @@ function StudentTable({ handleDetail, students, deleteStudent }) {
                 },
                 {
                     title: 'SDT',
-                    dataIndex: 'sdt',
-                    key: 'sdt',
+                    dataIndex: ['personalInfo', 'phone'],
+                    key: ['personalInfo', 'phone'],
                 },
                 {
                     title: 'Faculty',
-                    dataIndex: ['personalInfo', 'faculty'],
-                    key: ['personalInfo', 'faculty'],
+                    dataIndex: ['personalInfo', 'facultyId'],
+                    key: ['personalInfo', 'facultyId'],
                 },
                 {
                     title: 'Action',
@@ -66,7 +109,7 @@ function StudentTable({ handleDetail, students, deleteStudent }) {
                                 Delete
                             </Button>
                             <NavLink to={`/admin/student/detail-student/${record.id}`}>
-                                <Button variant="contained">Details</Button>
+                                <Button onClick={() => { handleStudentDetail(record) }} variant="contained">Details</Button>
                             </NavLink>
                             <Button variant="contained" type="link">
                                 Reset

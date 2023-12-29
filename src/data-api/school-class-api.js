@@ -74,7 +74,7 @@ const classUpdateSchedule = async (id, schedulePiece) => {
     }
 }
 
-const classAppendSections = async (id, position, updateOption, section) => {
+const classAppendSection = async (id, position, updateOption, section) => {
     try {
         const response = await axios.put(APIUtil.baseURL + `/class-append-sections/${id}/${position}/${updateOption}`, section, APIUtil.jsonHeader);
         return { isError: false, data: response };
@@ -84,9 +84,11 @@ const classAppendSections = async (id, position, updateOption, section) => {
     }
 }
 
-const classDelete = async (id) => {
+const classDelete = async (id, prevUrls) => {
     try {
-        const response = await axios.delete(APIUtil.baseURL + `/class-delete/${id}`);
+        const response = await axios.delete(APIUtil.baseURL + `/class-delete/${id}`,
+            prevUrls,
+            APIUtil.jsonHeader);
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };
@@ -103,7 +105,7 @@ const schoolClassApi = {
     classUpdateInstance,
     classStudentRegistration,
     classUpdateSchedule,
-    classAppendSections,
+    classAppendSection,
     classDelete
 }
 

@@ -1,6 +1,10 @@
 import { Card, Table, Divider, Descriptions, Badge, Breadcrumb, Button, Space, Calendar } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { StudentApi } from '../../../data-api/index';
+import { useStudentContext } from '../../../data-store';
+
 
 const { Column } = Table;
 
@@ -104,6 +108,62 @@ const columns = [
 
 function DetailStudent() {
     const [openTerms, setOpenTerms] = useState([]);
+
+    const [studentGLobalState, studentGlobalDispatch] = useStudentContext();
+    const [selectedStudent, setSelectedStudent] = useState({});
+
+    const navigate = useNavigate();
+    let studentId = useParams().id;
+    const fetchSingleStudent = async () => {
+        try {
+            let response = StudentApi.studentGetbyId(studentId);
+            if (!response.isError) {
+                if (response.data.data !== null)
+                    setSelectedStudent(response.data.data);
+                else
+                    navigate('/admin/student')
+            }
+            else
+                navigate('/admin/student')
+            console.log(response)
+        }
+        catch (error) {
+            navigate('/admin/student')
+        }
+    }
+
+    useEffect(() => {
+        if (studentGLobalState.currentStudent !== null) {
+            console.log(studentGLobalState.currentStudent);
+            setSelectedStudent(studentGLobalState.currentStudent);
+        }
+        else {
+            console.log('fetching');
+            fetchSingleStudent();
+        }
+    }, [])
+
+
+
+
+    // const fetchSingleStudent = async () => {
+    //     try {
+    //         let response = await StudentApi.getStudentById(studentId);
+    //         if (!response.isError) {
+    //             setSelectedStudent(response.data.data);
+    //             window.alert(JSON.stringify(response.data.data))
+    //         }
+    //         else {
+    //             navigate('/admin/student')
+    //         }
+    //     }
+    //     catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+    // useEffect(() => {
+    //     fetchSingleStudent();
+    // }, [])
 
     const handleTermClick = (term) => {
         setOpenTerms((prevOpenTerms) =>

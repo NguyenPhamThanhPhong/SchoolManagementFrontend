@@ -40,8 +40,8 @@ function CreateStudentModal({ open, onOk, onCancel }) {
     const handleOk = async () => {
         console.log('making api creation')
         console.log(id, name, birthday, email, phone, faculty)
-        const personalInfo = new PersonalInfo(birthday, name, 'male', phone, 'CLC')
-        const data = new SchoolMemberCreateRequest(id, id, '123', email, 'lecturer', personalInfo, []);
+        const personalInfo = new PersonalInfo(birthday, name, 'male', phone, faculty, 'CLC')
+        const data = new SchoolMemberCreateRequest(id, id, '123', email, 'student', personalInfo, []);
 
         console.log(JSON.stringify(data))
 

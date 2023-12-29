@@ -80,8 +80,8 @@ function LecturerTable({ handleDetail, lecturers }) {
                 },
                 {
                     title: 'Faculty',
-                    dataIndex: ['personalInfo', 'faculty'],
-                    key: ['personalInfo', 'faculty'],
+                    dataIndex: ['personalInfo', 'facultyId'],
+                    key: ['personalInfo', 'facultyId'],
                 },
                 {
                     title: 'Action',

@@ -5,12 +5,7 @@ import CreateStudentModal from '../../../components/Admin/Modal/CreateStudentMod
 import SendNotiStudentModal from '../../../components/Admin/Modal/SendNotiStudentModal';
 import ShowStudentDrawer from '../../../components/Admin/Drawer/ShowStudentDrawer';
 import StudentTable from '../../../components/Admin/Table/StudentTable';
-import { StudentApi } from '../../../data-api/index';
-import {
-    useStudentContext,
-    setStudents, setCurrentStudent,
-    appendStudent, removeStudent
-} from '../../../data-store/index';
+
 
 
 const { Search } = Input;
@@ -22,46 +17,6 @@ const Student = () => {
     const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
 
-    //reducer
-    const [studentState, studentDispatch] = useStudentContext();
-
-    const fetchStudent = async () => {
-        try {
-            let response = await StudentApi.studentGetManyRange(0, 50)
-            if (!response.isError) {
-                studentDispatch(setStudents(response.data.data));
-            }
-            else {
-
-            }
-        }
-        catch (error) {
-            console.log('Failed to fetch: ', error);
-        }
-    }
-
-    const deleteStudent = async (id) => {
-        try {
-            let response = await StudentApi.studentDelete(id)
-            if (!response.isError) {
-                studentDispatch(removeStudent(id.toString()));
-            }
-            else {
-            }
-        }
-        catch (error) {
-            console.log('Failed to fetch: ', error);
-        }
-    }
-
-    const handleDeleteClick = (id) => {
-        deleteStudent(id);
-
-    }
-
-    useEffect(() => {
-        fetchStudent();
-    }, []);
 
 
     const handleDetail = (record) => {
@@ -130,7 +85,7 @@ const Student = () => {
                         Thêm mới
                     </Button>
                 </Space>
-                <StudentTable deleteStudent={deleteStudent} students={studentState.students} handleDetail={handleDetail} />
+                <StudentTable handleDetail={handleDetail} />
             </Card>
             <SendNotiStudentModal
                 open={isOpen}
