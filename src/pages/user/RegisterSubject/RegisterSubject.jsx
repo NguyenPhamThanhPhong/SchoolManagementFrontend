@@ -12,12 +12,12 @@ const onChange = (key) => {
 const items = [
   {
     key: '1',
-    label: 'Schedule',
+    label: 'Register new subject',
     children: <RegisterSubjectBoard></RegisterSubjectBoard>,
   },
   {
     key: '2',
-    label: 'Exam schedule',
+    label: 'Registered subject',
     children: <RegisteredSubjectBoard></RegisteredSubjectBoard>,
   },
 ];

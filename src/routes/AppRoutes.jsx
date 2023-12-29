@@ -24,6 +24,7 @@ import UserInfo from '../pages/user/User infor/UserInforPage'
 import Notification from '../pages/user/Notification/Notification';
 import NotificationContentPage from '../pages/user/NotificationContent/NotificationContentPage';
 import InputScorePage from '../pages/user/InputScorePage/InputScorePage';
+import AddMaterialPage from '../pages/user/AddMaterialPage/AddMaterialPage';
 
 const publicRoutes = [
     { path: '/admin', component: Home },
@@ -47,7 +48,8 @@ const publicRoutes = [
 
 const userRoutes = [
     { path: '/student-classes/lecturer/check-attendance', component: CheckAttendance },
-    { path: '/student-classes/inputscore', component: InputScorePage },
+    { path: '/student-classes/lecturer/inputscore', component: InputScorePage },
+    { path: '/student-classes/lecturer/addmaterial', component: AddMaterialPage },
 
     { path: '/user-home', component: UserHome },
 
