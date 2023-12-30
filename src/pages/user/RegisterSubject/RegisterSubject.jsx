@@ -26,7 +26,7 @@ function RegisterSubject() {
     <>
       <div className="MainRegisterContainer">
         <Header></Header>
-        <div className="BoardRegisterContainer">
+        <div className="BoardRegisterContainerRegis">
           <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
         </div>
 

@@ -1,6 +1,7 @@
 import './NotificationList.scss'
 import { Link } from 'react-router-dom';
 import { Divider } from 'antd';
+import { userPaths } from '../../../routes/AppRoutes';
 function NotificationList() {
 
 
@@ -36,7 +37,7 @@ function NotificationList() {
                 <ul className="list-group">
                     {NotificationItems.map((item =>
                     (<li className="list-group" key={item.NotificationId}>
-                        <Link to='/user-notification/notifi_ID' className="classitemContainer" style={{ textDecoration: 'none' }}>
+                        <Link to={userPaths.notification} className="classitemContainer" style={{ textDecoration: 'none' }}>
                             <div className='firstLine'>{item.NotificationId}</div>
                             <div className='secondLine'>{item.Time}</div>
                         </Link>

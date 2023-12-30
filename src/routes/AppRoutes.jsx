@@ -14,16 +14,16 @@ import DetailStudent from '../pages/Admin/Student/DetailStudent';
 import ScheduleStudent from '../pages/Admin/Student/ScheduleStudent';
 
 import UserHome from '../pages/user/Home/Home'
-import CheckAttendance from '../pages/user/CheckAttendance/CheckAttendance'
+
 import Classes from '../pages/user/Classes/Classes'
 import ClassMaterialPage from '../pages/user/ClassMaterial/ClassMaterialPage';
-import ExamSchedulePage from '../pages/user/ExamSchedulePage/ExamSchedulePage'
+
 import RegisterSubject from '../pages/user/RegisterSubject/RegisterSubject'
 import Schedule from '../pages/user/Schedule/Schedule'
 import UserInfo from '../pages/user/User infor/UserInforPage'
-import Notification from '../pages/user/Notification/Notification';
+
 import NotificationContentPage from '../pages/user/NotificationContent/NotificationContentPage';
-import InputScorePage from '../pages/user/InputScorePage/InputScorePage';
+
 import AddMaterialPage from '../pages/user/AddMaterialPage/AddMaterialPage';
 import ClassMaterialPageLecturerView from '../pages/user/ClassMaterial/Lectuer/ClassMaterialPageLecturerView';
 const publicRoutes = [
@@ -46,33 +46,41 @@ const publicRoutes = [
     { path: '/admin/user', component: User },
 ];
 
+
+const userPaths =
+{
+    home: '/user-home/:id',
+    notification: '/user-home/notification/:id',
+    user_infor: '/student-user-info/:id',
+    schedule: '/schedule/:id',
+    classes: '/classes/:id',
+    lecturerViewClass: '/classes/:id/lecturer',
+    lecutrerAddFile: '/classes/:id/lecturer/add',
+    studentViewClass: '/classes/:id/student',
+    studentRegister: '/student-register-subject'
+}
+
 const userRoutes = [
-    { path: '/classes/lecturer/classid/check-attendance', component: CheckAttendance },
-    { path: '/classes/lecturer/classid/inputscore', component: InputScorePage },
-    { path: '/classes/lecturer/classid/addmaterial', component: AddMaterialPage },
-    { path: '/classes/lecturer/classid', component: ClassMaterialPageLecturerView },
+    { path: userPaths.home, component: UserHome },
+    { path: userPaths.notification, component: NotificationContentPage },
 
-    { path: '/user-home', component: UserHome },
+    { path: userPaths.classes, component: Classes },
+    { path: userPaths.studentViewClass, component: ClassMaterialPage },
+    { path: userPaths.lecutrerAddFile, component: AddMaterialPage },
+    { path: userPaths.lecturerViewClass, component: ClassMaterialPageLecturerView },
 
-    { path: '/user-notification', component: Notification },
-    { path: '/user-notification/notifi_ID', component: NotificationContentPage },
+    { path: userPaths.schedule, component: Schedule },
 
-    { path: '/classes', component: Classes },
-    { path: '/classes/student/classid', component: ClassMaterialPage },
+    { path: userPaths.user_infor, component: UserInfo },
 
-
-    { path: '/student-exam-schedule', component: ExamSchedulePage },
-
-    { path: '/student-schedule', component: Schedule },
-    { path: '/student-user-info', component: UserInfo },
+    { path: userPaths.studentRegister, component: RegisterSubject }
 
 ];
 
 const privateRoutes = [
     { path: '/admin/login', component: Login, layout: null },
-    { path: '/student-register-subject', component: RegisterSubject },
 ];
 
 
 
-export { publicRoutes, privateRoutes, userRoutes };
+export { publicRoutes, privateRoutes, userRoutes, userPaths };
