@@ -1,5 +1,7 @@
 import { Button, Table, } from 'antd';
 import React from 'react';
+import SearchBox from '../SearchBox/SearchBox';
+
 function RegisterSubjectBoard() {
 
     const columns = [
@@ -77,6 +79,9 @@ function RegisterSubjectBoard() {
     };
     return (
         <>
+            <SearchBox></SearchBox>
+            <br></br>
+            <br></br>
             <div>Choose subject to register</div>
             <br></br>
             <Table

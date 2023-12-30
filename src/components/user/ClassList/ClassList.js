@@ -2,6 +2,7 @@ import './ClassList.scss'
 import { Link } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { userPaths } from '../../../routes/AppRoutes';
+import SearchBox from '../SearchBox/SearchBox';
 function ClassList(props) {
 
     const linkTo = props.role === 'lecturer' ? userPaths.lecturerViewClass : userPaths.studentViewClass;
@@ -40,6 +41,7 @@ function ClassList(props) {
     return (
         <>
             <div className='bigContainer'>
+                <SearchBox></SearchBox>
                 <div className='dropSemester'>
                     <Dropdown id='dropSemester'>
                         <Dropdown.Toggle variant="success" id="dropdown-basic">
