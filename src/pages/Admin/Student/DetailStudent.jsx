@@ -10,7 +10,7 @@ const { Column } = Table;
 
 const scoreListData = [
     {
-        term: '--HK I 2023-2024',
+        semester: '--HK I 2023-2024',
         scores: [
             {
                 ID: 'Se001.O11.PMCL',
@@ -33,8 +33,17 @@ const scoreListData = [
         ]
     },
     {
-        term: '--HK II 2023-2024',
+        semester: '--HK II 2023-2024',
         scores: [
+            {
+                ID: 'Se001',
+                name: 'Lap trinh',
+                progress: '9',
+                midtearn: '9',
+                practice: '9',
+                final: '9',
+                GPA: '9',
+            },
             {
                 ID: 'Se001',
                 name: 'Lap trinh',
@@ -105,12 +114,13 @@ function DetailStudent() {
     }
 
     useEffect(() => {
-        if (studentGLobalState.currentStudent !== null && studentGLobalState.currentStudent.id === studentId) {
-            setSelectedStudent(studentGLobalState.currentStudent);
-        }
-        else {
-            fetchSingleStudent();
-        }
+        // if (studentGLobalState.currentStudent !== null && studentGLobalState.currentStudent.id === studentId) {
+        //     setSelectedStudent(studentGLobalState.currentStudent);
+        // }
+        // else {
+
+        // }
+        fetchSingleStudent();
     }, [])
 
 
@@ -118,12 +128,12 @@ function DetailStudent() {
         {
             key: '1',
             label: 'ID',
-            children: selectedStudent.id || '',
+            children: selectedStudent?.id || '',
         },
         {
             key: '2',
             label: 'Username',
-            children: selectedStudent.username || '',
+            children: selectedStudent?.username || '',
         },
         {
             key: '3',
@@ -133,37 +143,37 @@ function DetailStudent() {
         {
             key: '4',
             label: 'Full Name',
-            children: selectedStudent.personalInfo?.name || '',
+            children: selectedStudent?.personalInfo?.name || '',
         },
         {
             key: '5',
             label: 'Password',
-            children: selectedStudent.password || '',
+            children: selectedStudent?.password || '',
         },
         {
             key: '6',
             label: 'Faculty',
-            children: selectedStudent.personalInfo?.facultyId || '',
+            children: selectedStudent?.personalInfo?.facultyId || '',
         },
         {
             key: '7',
             label: 'Gender',
-            children: selectedStudent.personalInfo?.gender || '',
+            children: selectedStudent?.personalInfo?.gender || '',
         },
         {
             key: '8',
             label: 'email',
-            children: selectedStudent.email || '',
+            children: selectedStudent?.email || '',
         },
         {
             key: '9',
             label: 'Program',
-            children: selectedStudent.personalInfo.program || '',
+            children: selectedStudent?.personalInfo?.program || '',
         },
         {
             key: '3',
             label: 'Date of Birth',
-            children: selectedStudent.personalInfo?.dateOfBirth || '',
+            children: selectedStudent?.personalInfo?.dateOfBirth || '',
         }
     ];
 
@@ -197,12 +207,12 @@ function DetailStudent() {
 
                 <Divider style={{ color: 'blue', fontSize: '16px' }}>Kết quả học tập</Divider>
                 {scoreListData.map((score) => (
-                    <div key={score.term}>
+                    <div key={score.semester}>
                         <Button type="text" onClick={() => handleTermClick(score.term)}>
-                            {score.term}
+                            {score.semester}
                         </Button>
                         {openTerms.includes(score.term) && (
-                            <Table dataSource={[score.scores]} columns={columns} pagination={false} />
+                            <Table dataSource={score.scores} columns={columns} pagination={false} />
                         )}
                     </div>
                 ))}

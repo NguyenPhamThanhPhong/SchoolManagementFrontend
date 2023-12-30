@@ -3,6 +3,12 @@ import { Link, useLocation } from 'react-router-dom';
 import './SideBar.scss';
 import 'boxicons/css/boxicons.min.css';
 
+const userState = {
+    user: {},
+    role: 'lecturer',
+    isLoggedin: true,
+}
+
 const sidebarNavItems = [
     {
         display: 'Home',
@@ -25,7 +31,7 @@ const sidebarNavItems = [
     {
         display: 'Classes',
         icon: <i className='bx bx-book'></i>,
-        to: '/classes',
+        to: userState.role === 'lecturer' ? '/classes/lecturer/classid' : '/classes/student/classid',
         section: 'classes'
     },
     {

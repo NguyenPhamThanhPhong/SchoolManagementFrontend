@@ -26,6 +26,12 @@ function ScheduleBoard() {
             daysOfWeek: ['4'],
             startTime: '8:00:00',
             endTime: '10:00:00',
+        },
+        {
+            title: ' OOP',
+            daysOfWeek: ['5'],
+            startTime: '07:30:00',
+            endTime: '12:00:00',
         }
     ]
     return (

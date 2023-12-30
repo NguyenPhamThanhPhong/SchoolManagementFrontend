@@ -29,6 +29,14 @@ import ClassMaterialPageLecturerView from '../pages/user/ClassMaterial/Lectuer/C
 import MyPage from '../pages/y-temp-page/my-page';
 import MyTempComponent from '../pages/y-temp-page/my-temp-page';
 
+
+const paths = {
+    admin_student: '/admin/student',
+    admin_lecturer: '/admin/lecturer',
+    admin_subject: '/admin/subject',
+    admin_orther: '/admin/orther',
+}
+
 const publicRoutes = [
     { path: '/admin', component: Home },
 
@@ -81,4 +89,4 @@ const myTestPages = [
     { path: '/my-temp-page', component: MyTempComponent },
 ]
 
-export { publicRoutes, privateRoutes, userRoutes, myTestPages };
+export { publicRoutes, privateRoutes, userRoutes, myTestPages, paths };
