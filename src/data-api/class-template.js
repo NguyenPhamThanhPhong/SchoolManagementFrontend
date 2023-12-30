@@ -63,12 +63,12 @@ class SchoolClassCreateRequest {
 }
 class TimeStamp {
     constructor(hour, minute) {
-        this.ticks = 0;
-        this.days = 0;
-        this.hours = hour;
-        this.milliseconds = 0;
-        this.minutes = minute;
-        this.seconds = 0;
+        this.hour = hour;
+        this.minute = minute;
+        this.sec = 0;
+    }
+    getTimeStamp = () => {
+        return `${this.hour}:${this.minute}:${this.sec}`;
     }
 }
 class SchedulePiece {
