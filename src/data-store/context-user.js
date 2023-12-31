@@ -4,7 +4,30 @@ import { SET_USER, SET_LOGIN, SET_LOGOUT } from "./constants";
 const Context = createContext();
 
 const initialState = {
-    user: null,
+    user: {
+        id: "1233132123132",
+        username: "1233132123132",
+        password: "123",
+        email: "21522458@gm.uit.edu.vn",
+        role: "lecturer",
+        personalInfo: {
+            dateOfBirth: {
+                $date: "2000-12-11T17:00:00.000Z"
+            },
+            name: "abcd",
+            gender: "male",
+            phone: "06165165",
+            facultyId: "SE",
+            program: "CLC"
+        },
+        classes: [],
+        scheduleAggregations: {},
+        creditInfo: {
+            semesterId: null,
+            subjects: []
+        },
+        programs: null
+    },
     isloggedIn: false,
     role: null,
     adminAccounts: [],

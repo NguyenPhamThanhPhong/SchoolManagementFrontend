@@ -31,11 +31,11 @@ function App() {
                     {userRoutes.map((route, index) => {
                         const Page = route.component;
                         let _Layout = AppLayout;
-                        if (route.layout) {
-                            _Layout = route.layout;
-                        } else if (route.layout === null) {
-                            _Layout = Fragment;
-                        }
+                        // if (route.layout) {
+                        //     _Layout = route.layout;
+                        // } else if (route.layout === null) {
+                        //     _Layout = Fragment;
+                        // }
                         return (
                             <Route
                                 key={index}

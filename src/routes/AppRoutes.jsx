@@ -61,14 +61,14 @@ const publicRoutes = [
 
 const userPaths =
 {
-    home: '/user-home/:id',
-    notification: '/user-home/notification/:id',
-    user_infor: '/student-user-info/:id',
-    schedule: '/schedule/:id',
-    classes: '/classes/:id',
-    lecturerViewClass: '/classes/:id/lecturer',
-    lecutrerAddFile: '/classes/:id/lecturer/add',
-    studentViewClass: '/classes/:id/student',
+    home: '/user-home',
+    notification: '/user-home/notification',
+    user_infor: '/student-user-info',
+    schedule: '/schedule',
+    classes: '/classes',
+    lecturerViewClass: '/classes/lecturer',
+    lecutrerAddFile: '/classes/lecturer/add',
+    studentViewClass: '/classes/student',
     studentRegister: '/student-register-subject'
 }
 
