@@ -98,7 +98,7 @@ const columns = [
     { title: 'GPA', dataIndex: 'GPA', key: 'GPA' },
 ];
 
-function DetailStudent() {
+function DetailLecturer() {
     const onPanelChange = (value, mode) => {
         console.log(value.format('YYYY-MM-DD'), mode);
     };
@@ -108,18 +108,18 @@ function DetailStudent() {
     const itemtab = [
         {
             key: '1',
-            label: 'Bảng điểm',
+            label: 'Danh sách lớp',
             children: <Table dataSource={scoreListData} columns={columns} pagination={false} />,
         },
         {
             key: '2',
-            label: 'Lịch học',
+            label: 'Lịch dạy',
             children: <Calendar title="Hello" onPanelChange={onPanelChange} />,
         },
         {
             key: '3',
-            label: 'Lịch thi',
-            children: 'Lịch thi',
+            label: 'Lịch coi thi',
+            children: 'Lịch coi thi',
         },
     ];
     return (
@@ -139,7 +139,7 @@ function DetailStudent() {
                         },
                     ]}
                 />
-                <Divider style={{ color: 'blue', fontSize: '16px' }}>Thông tin sinh viên</Divider>
+                <Divider style={{ color: 'blue', fontSize: '16px' }}>Thông tin giảng viên</Divider>
                 <Space
                     style={{ width: '100%', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}
                 >
@@ -162,4 +162,4 @@ function DetailStudent() {
     );
 }
 
-export default DetailStudent;
+export default DetailLecturer;

@@ -11,16 +11,17 @@ import SemesterFaculty from '../pages/Admin/SemesterFaculty/SemesterFaculty';
 import User from '../pages/Admin/User/User';
 import DetailClass from '../pages/Admin/Class/DetailClass';
 import DetailStudent from '../pages/Admin/Student/DetailStudent';
-import ScheduleStudent from '../pages/Admin/Student/ScheduleStudent';
+import DetailLecturer from '../pages/Admin/Lecturer/DetailLecturer';
 
 const publicRoutes = [
     { path: '/admin/', component: Home },
 
     { path: '/admin/student', component: Student },
     { path: '/admin/student/detail-student/:id', component: DetailStudent },
-    { path: '/admin/student/schedule', component: ScheduleStudent },
 
     { path: '/admin/lecturer', component: Lecturer },
+    { path: '/admin/lecturer/detail-lecturer/:id', component: DetailLecturer },
+
     { path: '/admin/subject', component: Subject },
 
     { path: '/admin/class', component: Class },

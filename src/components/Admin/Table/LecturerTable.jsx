@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table, Space, Button } from 'antd';
+import { Link, NavLink } from 'react-router-dom';
 
 const temp = [
     {
@@ -96,9 +97,9 @@ function LecturerTable({ handleDetail }) {
                     <Button danger variant="contained" type="primary">
                         Delete
                     </Button>
-                    <Button variant="contained" onClick={() => handleDetail(record)}>
-                        Detail
-                    </Button>
+                    <NavLink to={`/admin/lecturer/detail-lecturer/${record.mssv}`}>
+                        <Button variant="contained">Details</Button>
+                    </NavLink>
                     <Button variant="contained" type="link">
                         Reset
                     </Button>
