@@ -1,40 +1,40 @@
-import { Modal, Form, Input } from 'antd';
-import { useState } from 'react';
-
-import { Subject, subjectApi } from '../../../data-api';
-
-
-const CreateSubjectModal = ({ open, onCancel, onOk, deleteSubject, createSubject }) => {
-
-    const [id, setId] = useState('');
-    const [name, setName] = useState('');
-    const [prequisiteSubject, setPrequisiteSubject] = useState('');
-    const [previousSubject, setPreviousSubject] = useState('');
-
-    const handleCreate = async () => {
-        let subject = new Subject(id, name, prequisiteSubject, previousSubject, []);
-        await createSubject(subject);
-    }
-
+import { Modal, Form, Input, Select } from 'antd';
+const { Option } = Select;
+const CreateSubjectModal = ({ open, onCancel, onOk }) => {
     const createForm = (
-        <Form>
-            <Form.Item label="Id" name="id">
-                <Input value={id} onChange={(event) => { setId(event.target.value) }} />
+        <Form
+            labelCol={{
+                span: 6,
+            }}
+            wrapperCol={{
+                span: 16,
+            }}
+        >
+            <Form.Item label="ID" name="id" rules={[{ required: true, message: 'Please enter a id!' }]}>
+                <Input />
             </Form.Item>
-            <Form.Item label="Name" name="name">
-                <Input value={name} onChange={(event) => { setName(event.target.value) }} />
+            <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Please enter a name!' }]}>
+                <Input />
             </Form.Item>
-            <Form.Item label="prequisite Subject" name="prequisite subject">
-                <Input value={prequisiteSubject} onChange={(event) => { setPrequisiteSubject(event.target.value) }} />
+            <Form.Item label="Previous Subject" name="previous_subject">
+                <Select allowClear mode="multiple" defaultValue="subject1">
+                    <Option value="subject1">subject1</Option>
+                    <Option value="subject2">subject2</Option>
+                    <Option value="subject3">subject3</Option>
+                </Select>
             </Form.Item>
-            <Form.Item label="Previous Subject" name="Previous subject">
-                <Input value={previousSubject} onChange={(event) => { setPreviousSubject(event.target.value) }} />
+            <Form.Item label="Prequisite Subject" name="prequisite_subject">
+                <Select allowClear mode="multiple" defaultValue="subject1">
+                    <Option value="subject1">subject1</Option>
+                    <Option value="subject2">subject2</Option>
+                    <Option value="subject3">subject3</Option>
+                </Select>
             </Form.Item>
         </Form>
     );
 
     return (
-        <Modal title="Thêm mới môn học" open={open} onOk={handleCreate} onCancel={onCancel}>
+        <Modal title="Thêm mới môn học" visible={open} onOk={onOk} onCancel={onCancel}>
             {createForm}
         </Modal>
     );

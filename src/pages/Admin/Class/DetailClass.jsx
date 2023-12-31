@@ -1,8 +1,5 @@
-import { Card, Table, Divider, Space, Typography, List, Breadcrumb, Descriptions, Badge } from 'antd';
-import { React, useState, useEffect } from 'react';
-import { schoolClassApi, DateOfWeek } from '../../../data-api';
-import { useParams } from 'react-router-dom';
-
+import { Card, Table, Divider, Space, Typography, List, Breadcrumb, Descriptions, Badge, Tabs } from 'antd';
+import { React, useState } from 'react';
 
 const Column = Table.Column;
 const Title = Typography.Title;
@@ -99,7 +96,57 @@ function DetailClass() {
             children: '............................',
         },
     ];
-
+    const onChange = (key) => {
+        console.log(key);
+    };
+    const itemtab = [
+        {
+            key: '1',
+            label: 'List Student',
+            children: (
+                <Table dataSource={classListData} pagination={false}>
+                    <Column title="ID" dataIndex="id" key="id" />
+                    <Column title="Name" dataIndex="name" key="name" />
+                    <Column title="Progress" dataIndex="progress" key="progress" />
+                    <Column title="Midterm" dataIndex="midterm" key="midterm" />
+                    <Column title="Practice" dataIndex="practice" key="practice" />
+                    <Column title="Final" dataIndex="final" key="final" />
+                    <Column title="GPA" dataIndex="GPA" key="GPA" />
+                </Table>
+            ),
+        },
+        {
+            key: '2',
+            label: 'Exam Table',
+            children: (
+                <Table dataSource={examListData} pagination={false}>
+                    <Column title="Name" dataIndex="name" key="name" />
+                    <Column title="Date" dataIndex="date" key="date" />
+                    <Column title="Room" dataIndex="room" key="room" />
+                    <Column title="Duration" dataIndex="duration" key="duration" />
+                    <Column title="Notes" dataIndex="notes" key="notes" />
+                </Table>
+            ),
+        },
+        {
+            key: '3',
+            label: 'Document',
+            children: (
+                <Card style={{ flex: 2 }}>
+                    <List>
+                        <List.Item>
+                            <Space direction="vertical">
+                                <Title level={4}>Tuần 1-2</Title>
+                                <Title level={5}>Ghi chú: ........</Title>
+                                <Title level={5}>Tài liệu: TaiLieu.txt</Title>
+                                <Divider />
+                            </Space>
+                        </List.Item>
+                    </List>
+                </Card>
+            ),
+        },
+    ];
     return (
         <div>
             <Card>
@@ -119,46 +166,14 @@ function DetailClass() {
                 />
                 <Divider style={{ color: 'blue', fontSize: '16px' }}>Chi tiết lớp</Divider>
                 <Descriptions items={items} />
-                <Divider style={{ color: 'blue', fontSize: '16px' }}>Danh sach sinh vien</Divider>
-                <Table dataSource={classListData} pagination={false}>
-                    <Column title="ID" dataIndex="id" key="id" />
-                    <Column title="Name" dataIndex="name" key="name" />
-                    <Column title="Progress" dataIndex="progress" key="progress" />
-                    <Column title="Midterm" dataIndex="midterm" key="midterm" />
-                    <Column title="Practice" dataIndex="practice" key="practice" />
-                    <Column title="Final" dataIndex="final" key="final" />
-                    <Column title="GPA" dataIndex="GPA" key="GPA" />
-                </Table>
             </Card>
-            <Divider style={{ color: 'blue', fontSize: '16px' }}>
-                <a onClick={toggleExamTable}>Show Exam Table</a>
-            </Divider>
-            {examTableVisible && (
-                <Table dataSource={examListData} pagination={false}>
-                    <Column title="Name" dataIndex="name" key="name" />
-                    <Column title="Date" dataIndex="date" key="date" />
-                    <Column title="Room" dataIndex="room" key="room" />
-                    <Column title="Duration" dataIndex="duration" key="duration" />
-                    <Column title="Notes" dataIndex="notes" key="notes" />
-                </Table>
-            )}
-            <Divider style={{ color: 'blue', fontSize: '16px' }}>
-                <a onClick={toggleShowDocument}>Show Document</a>
-            </Divider>
-            {documentVisible && (
-                <Card style={{ flex: 2 }}>
-                    <List>
-                        <List.Item>
-                            <Space direction="vertical">
-                                <Title level={4}>Tuần 1-2</Title>
-                                <Title level={5}>Ghi chú: ........</Title>
-                                <Title level={5}>Tài liệu: TaiLieu.txt</Title>
-                                <Divider />
-                            </Space>
-                        </List.Item>
-                    </List>
-                </Card>
-            )}
+            <Tabs
+                defaultActiveKey="1"
+                tabBarStyle={{ margin: '0 auto' }}
+                items={itemtab}
+                size="large"
+                onChange={onChange}
+            />
         </div>
     );
 }

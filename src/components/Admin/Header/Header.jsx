@@ -1,13 +1,70 @@
 import React from 'react';
-import { Layout, Button, theme } from 'antd';
-import { MenuUnfoldOutlined, MenuFoldOutlined, BellOutlined, UserOutlined } from '@ant-design/icons';
+import { Layout, Button, theme, Dropdown, Badge } from 'antd';
+import { useNavigate } from 'react-router-dom';
+
+import {
+    MenuUnfoldOutlined,
+    MenuFoldOutlined,
+    BellOutlined,
+    UserOutlined,
+    TeamOutlined,
+    SolutionOutlined,
+    LogoutOutlined,
+} from '@ant-design/icons';
 
 const { Header } = Layout;
 
 const AppHeader = ({ collapsed, onToggleCollapse }) => {
+    const navigate = useNavigate();
     const {
         token: { colorBgContainer },
     } = theme.useToken();
+    const handleMenuClick = (e) => {
+        switch (e.key) {
+            case '1':
+                navigate('/admin/user');
+                break;
+            case '2':
+                navigate('/student/login');
+                break;
+            case '3':
+                navigate('/lecturer/login');
+                break;
+            case '4':
+                navigate('/admin/login');
+                break;
+            default:
+                break;
+        }
+    };
+    const items = [
+        {
+            label: 'Profile',
+            key: '1',
+            icon: <UserOutlined />,
+        },
+        {
+            label: 'Student Site',
+            key: '2',
+            icon: <TeamOutlined />,
+        },
+        {
+            label: 'Lecturer Site',
+            key: '3',
+            icon: <SolutionOutlined />,
+        },
+        {
+            label: 'Logout',
+            key: '4',
+            icon: <LogoutOutlined />,
+            danger: true,
+        },
+    ];
+    const menuProps = {
+        items,
+        onClick: handleMenuClick,
+    };
+
     return (
         <Header
             style={{
@@ -39,8 +96,13 @@ const AppHeader = ({ collapsed, onToggleCollapse }) => {
                     right: 10,
                 }}
             >
-                <Button type="text" icon={<BellOutlined />} />
-                <Button type="text" icon={<UserOutlined />} />
+                <Badge size="small" count={5}>
+                    <Button type="text" icon={<BellOutlined />} />
+                </Badge>
+
+                <Dropdown menu={menuProps}>
+                    <Button type="text" icon={<UserOutlined />}></Button>
+                </Dropdown>
             </div>
         </Header>
     );

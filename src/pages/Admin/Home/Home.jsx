@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { DollarCircleOutlined, ShoppingCartOutlined, ShoppingOutlined, UserOutlined } from '@ant-design/icons';
-import { Card, Space, Statistic, Table, Typography, Row, Col } from 'antd';
+import { SolutionOutlined, TeamOutlined, UserOutlined, PartitionOutlined } from '@ant-design/icons';
+import { Card, Statistic, Row, Col } from 'antd';
 import Chart from 'chart.js/auto';
 import './Home.scss';
 
@@ -9,26 +9,22 @@ import { useUserContext } from '../../../data-store';
 function Home() {
     const barChartRef = useRef(null);
     const pieChartRef = useRef(null);
-
-    const [userState, userDispatch] = useUserContext();
-
-    function HandleAPICall() {
-
-    }
+    const lineChartRef = useRef(null);
 
     useEffect(() => {
-        // Biểu đồ Bar Chart
-
+        // Biểu đồ barChart
         const barCtx = barChartRef.current.getContext('2d');
         const barChart = new Chart(barCtx, {
             type: 'bar',
             data: {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                labels: ['Faculty 1', 'Faculty 2', 'Faculty 3', 'Faculty 4', 'Faculty 5', 'Faculty 6'],
                 datasets: [
                     {
                         label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
-                        borderWidth: 1,
+                        barPercentage: 0.7,
+                        barThickness: 60,
+                        data: [10, 20, 30, 40, 50, 60],
+                        backgroundColor: 'blue',
                     },
                 ],
             },
@@ -41,16 +37,33 @@ function Home() {
             },
         });
 
-        // Biểu đồ Pie Chart
+        // Biểu đồ pie Chart
         const pieCtx = pieChartRef.current.getContext('2d');
         const pieChart = new Chart(pieCtx, {
-            type: 'doughnut',
+            type: 'pie',
             data: {
-                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                labels: ['<5', '5-7', '7-8', '8-9', '>9'],
                 datasets: [
                     {
-                        data: [12, 19, 3, 5, 2, 3],
-                        backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple', 'orange'],
+                        data: [12, 19, 3, 5, 2],
+                        backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple'],
+                    },
+                ],
+            },
+        });
+
+        // Biểu đồ line Chart
+        const lineCtx = lineChartRef.current.getContext('2d');
+        const lineChart = new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: ['2019', '2020', '2021', '2022', '2023'],
+                datasets: [
+                    {
+                        label: 'Data',
+                        data: [12, 19, 3, 5, 2],
+                        borderColor: 'green',
+                        backgroundColor: 'green',
                     },
                 ],
             },
@@ -60,6 +73,7 @@ function Home() {
         return () => {
             barChart.destroy();
             pieChart.destroy();
+            lineChart.destroy();
         };
     }, []);
 
@@ -73,27 +87,35 @@ function Home() {
         <div>
             <div>
                 <Row gutter={[16, 16]}>
-                    {renderDashboardCard('Total', 100000, <ShoppingCartOutlined />, 'green')}
-                    {renderDashboardCard('Revenue', 50000, <DollarCircleOutlined />, 'blue')}
-                    {renderDashboardCard('Items Sold', 200, <ShoppingOutlined />, 'orange')}
-                    {renderDashboardCard('Customers', 50, <UserOutlined />, 'purple')}
+                    {renderDashboardCard('Total Student', 100000, <UserOutlined />, 'green')}
+                    {renderDashboardCard('Total Lecturer', 50000, <SolutionOutlined />, 'blue')}
+                    {renderDashboardCard('Total Faculty', 200, <TeamOutlined />, 'orange')}
+                    {renderDashboardCard('Total Class', 50, <PartitionOutlined />, 'purple')}
                 </Row>
             </div>
-            <div className="pt-5">
+            <div className="pt-3">
                 <Row gutter={[16, 16]}>
                     <Col xs={24} sm={12} md={12} lg={12}>
-                        <Card>
-                            <h5 style={{ textAlign: 'center' }}>Biểu đồ Bar Chart</h5>
+                        <Card style={{ height: '100%' }}>
+                            <h5 style={{ textAlign: 'center' }}>Biểu đồ barChart thống kê sinh viên các khoa</h5>
                             <canvas id="barChart" ref={barChartRef}></canvas>
                         </Card>
                     </Col>
                     <Col xs={24} sm={12} md={12} lg={12}>
-                        <Card>
-                            <h5 style={{ textAlign: 'center' }}>Biểu đồ Pie Chart</h5>
-                            <canvas id="pieChart" ref={pieChartRef}></canvas>
+                        <Card style={{ height: '100%' }}>
+                            <h5 style={{ textAlign: 'center' }}>Biểu đồ pie Chart đánh giá điểm</h5>
+                            <canvas id="pieChart" ref={pieChartRef} style={{ margin: '0 auto' }}></canvas>
                         </Card>
                     </Col>
                 </Row>
+            </div>
+            <div>
+                <Card style={{ height: '100%', marginTop: '16px' }}>
+                    <h5 style={{ textAlign: 'center' }}>
+                        Biểu đồ line Chart đánh giá số lượng sinh viên thôi học qua các năm
+                    </h5>
+                    <canvas id="lineChart" ref={lineChartRef}></canvas>
+                </Card>
             </div>
         </div>
     );
@@ -102,16 +124,16 @@ function Home() {
 function DashBoardCard({ title, value, icon, iconColor }) {
     const iconStyle = {
         color: iconColor,
-        backgroundColor: 'rgba(0,255,0,0.25)',
         borderRadius: 20,
-        fontSize: 24,
-        padding: 8,
+        fontSize: 36,
+        padding: 12,
+        marginRight: '32px',
     };
 
     return (
         <div
             style={{
-                padding: '16px',
+                padding: '36px',
                 backgroundColor: '#fff',
                 borderRadius: '8px',
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',

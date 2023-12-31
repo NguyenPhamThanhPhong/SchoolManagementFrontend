@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Space, Table, Button, Input, Modal, Card, Pagination } from 'antd';
+import { Space, Table, Button, Input, Card, Pagination, Select } from 'antd';
 import { SearchOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
+import CreatePostModal from '../../../components/Admin/Modal/CreatePostModal';
+
 const { Search } = Input;
+const { Option } = Select;
 
 const Post = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -37,38 +40,6 @@ const Post = () => {
             key: '2',
             id: '2',
             title: 'Tiêu đề 2',
-            content: 'Nội dung 2',
-            date: '02/01/2023',
-            attachment: 'file2.txt',
-        },
-        {
-            key: '3',
-            id: '2',
-            title: 'Tiêu đề 3',
-            content: 'Nội dung 2',
-            date: '02/01/2023',
-            attachment: 'file2.txt',
-        },
-        {
-            key: '4',
-            id: '2',
-            title: 'Tiêu đề 4',
-            content: 'Nội dung 2',
-            date: '02/01/2023',
-            attachment: 'file2.txt',
-        },
-        {
-            key: '5',
-            id: '2',
-            title: 'Tiêu đề 5',
-            content: 'Nội dung 2',
-            date: '02/01/2023',
-            attachment: 'file2.txt',
-        },
-        {
-            key: '6',
-            id: '2',
-            title: 'Tiêu đề 6',
             content: 'Nội dung 2',
             date: '02/01/2023',
             attachment: 'file2.txt',
@@ -155,12 +126,11 @@ const Post = () => {
                 />
             </Card>
 
-            <Modal
-                title="Thêm mới môn học"
-                open={isCreateModalOpen}
-                onOk={handleCreateModalOk}
-                onCancel={handleCreateModalCancel}
-            ></Modal>
+            <CreatePostModal
+                isOpen={isCreateModalOpen}
+                handleOk={handleCreateModalOk}
+                handleCancel={handleCreateModalCancel}
+            />
         </div>
     );
 };

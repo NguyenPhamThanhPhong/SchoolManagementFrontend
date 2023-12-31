@@ -96,12 +96,6 @@ const User = () => {
                             key: 'email',
                         },
                         {
-                            title: <span className="custom-column-title">Số điện thoại</span>,
-                            dataIndex: 'sdt',
-                            key: 'sdt',
-                        },
-
-                        {
                             title: <span className="custom-column-title">Action</span>,
                             key: 'action',
                             render: (_, record) => (
@@ -126,7 +120,6 @@ const User = () => {
                             username: 'user1',
                             password: '********',
                             email: 'user1@example.com',
-                            sdt: '123456789',
                         },
                         {
                             key: '2',
@@ -134,7 +127,6 @@ const User = () => {
                             username: 'user2',
                             password: '*******',
                             email: 'user2@example.com',
-                            sdt: '987654321',
                         },
                     ]}
                 />
@@ -145,7 +137,36 @@ const User = () => {
                 open={isCreateModalOpen}
                 onOk={handleCreateModalOk}
                 onCancel={handleCreateModalCancel}
-            ></Modal>
+            >
+                <Form
+                    labelCol={{ span: 4 }}
+                    wrapperCol={{ span: 20 }}
+                    initialValues={{ remember: true }}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label="UserName"
+                        name="username"
+                        rules={[{ required: true, message: 'Please input your username!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="PassWord"
+                        name="password"
+                        rules={[{ required: true, message: 'Please input your password!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[{ required: true, message: 'Please input your email!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                </Form>
+            </Modal>
         </div>
     );
 };

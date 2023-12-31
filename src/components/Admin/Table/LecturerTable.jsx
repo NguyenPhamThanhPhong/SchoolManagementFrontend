@@ -1,110 +1,136 @@
 import React from 'react';
 import { Table, Space, Button } from 'antd';
+import { Link, NavLink } from 'react-router-dom';
 
-function LecturerTable({ handleDetail, lecturers }) {
-    let dataSource = lecturers || []
+const temp = [
+    {
+        key: '1',
+        stt: 1,
+        mssv: 'SV001',
+        name: 'John Brown',
+        ngaySinh: '01/01/1990',
+        email: 'john@example.com',
+        sdt: '123456789',
+        faculty: 'CNPM',
+        personalInfo: {
+            dateofBirth: '01/01/1994',
+        },
+    },
+    {
+        key: '2',
+        stt: 2,
+        mssv: 'SV002',
+        name: 'Jim Green',
+        ngaySinh: '02/02/1991',
+        email: 'jim@example.com',
+        sdt: '987654321',
+        faculty: 'CNPM',
+        personalInfo: {
+            dateofBirth: '01/01/1995',
+        },
+    },
+    {
+        key: '3',
+        stt: 3,
+        mssv: 'SV003',
+        name: 'Joe Black',
+        ngaySinh: '03/03/1992',
+        email: 'joe@example.com',
+        sdt: '456789123',
+        faculty: 'CNPM',
+        personalInfo: {
+            dateofBirth: '01/01/1996',
+        },
+    },
+];
 
-
-    const temp = [
+function LecturerTable({ handleDetail }) {
+    const columns = [
         {
-            stt: '1',
-            id: 'SV001',
-            email: 'john@example.com',
-            sdt: '123456789',
-            personalInfo: {
-                dateOfBirth: '01/01/1990',
-                name: 'John Brown',
-                phone: '456789123',
-                faculty: 'CNPM',
-
-            }
+            title: 'STT',
+            dataIndex: 'stt',
+            key: 'stt',
         },
         {
-            stt: '2',
-            id: 'SV002',
-            email: 'jim@example.com',
-            sdt: '987654321',
-            personalInfo: {
-                dateOfBirth: '01/01/1990',
-                name: 'Jim Green',
-                phone: '45645234afd23',
-                faculty: 'CNPM',
-
-            }
+            title: 'Mssv',
+            dataIndex: 'mssv',
+            key: 'mssv',
         },
         {
-            stt: '3',
-            id: 'SV003',
-            email: 'joe@example.com',
-            personalInfo: {
-                dateOfBirth: '01/01/1990',
-                name: 'Joe Black',
-                phone: '456789123',
-                faculty: 'CNPM',
-            }
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Ngày Sinh',
+            dataIndex: 'ngaySinh',
+            key: 'ngaySinh',
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+        },
+        {
+            title: 'SDT',
+            dataIndex: 'sdt',
+            key: 'sdt',
+        },
+        {
+            title: 'Faculty',
+            dataIndex: 'faculty',
+            key: 'faculty',
+        },
+        {
+            title: 'Date of Birth',
+            dataIndex: ['personalInfo', 'dateofBirth'],
+            key: 'dateofBirth',
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (_, record) => (
+                <Space size="middle">
+                    <Button variant="contained" type="primary">
+                        Edit
+                    </Button>
+                    <Button danger variant="contained" type="primary">
+                        Delete
+                    </Button>
+                    <NavLink to={`/admin/lecturer/detail-lecturer/${record.mssv}`}>
+                        <Button variant="contained">Details</Button>
+                    </NavLink>
+                    <Button variant="contained" type="link">
+                        Reset
+                    </Button>
+                </Space>
+            ),
         },
     ];
+
     return (
         <Table
-
-            columns={[
-                {
-                    title: 'stt',
-                    dataIndex: 'stt',
-                    key: 'stt',
-                },
-                {
-                    title: 'id',
-                    dataIndex: 'id',
-                    key: 'id',
-                },
-                {
-                    title: 'Name',
-                    dataIndex: ['personalInfo', 'name'],
-                    key: ['personalInfo', 'name'],
-                },
-                {
-                    title: 'Ngày Sinh',
-                    dataIndex: ['personalInfo', 'dateOfBirth'],
-                    key: ['personalInfo', 'dateOfBirth'],
-                },
-                {
-                    title: 'Email',
-                    dataIndex: 'email',
-                    key: 'email',
-                },
-                {
-                    title: 'SDT',
-                    dataIndex: ['personalInfo', 'phone'],
-                    key: ['personalInfo', 'phone'],
-                },
-                {
-                    title: 'Faculty',
-                    dataIndex: ['personalInfo', 'facultyId'],
-                    key: ['personalInfo', 'facultyId'],
-                },
-                {
-                    title: 'Action',
-                    key: 'action',
-                    render: (_, record) => (
-                        <Space size="middle">
-                            <Button variant="contained" type="primary">
-                                Edit
-                            </Button>
-                            <Button danger variant="contained" type="primary">
-                                Delete
-                            </Button>
-                            <Button variant="contained" onClick={() => handleDetail(record)}>
-                                Detail
-                            </Button>
-                            <Button variant="contained" type="link">
-                                Reset
-                            </Button>
-                        </Space>
-                    ),
-                },
-            ]}
-            dataSource={dataSource}
+            columns={columns}
+            dataSource={temp.map((item) => ({
+                ...item,
+                key: item.key,
+                action: (
+                    <Space size="middle">
+                        <Button variant="contained" type="primary">
+                            Edit
+                        </Button>
+                        <Button danger variant="contained" type="primary">
+                            Delete
+                        </Button>
+                        <Button variant="contained" onClick={() => handleDetail(item)}>
+                            Detail
+                        </Button>
+                        <Button variant="contained" type="link">
+                            Reset
+                        </Button>
+                    </Space>
+                ),
+            }))}
             rowSelection={{
                 type: 'checkbox',
             }}

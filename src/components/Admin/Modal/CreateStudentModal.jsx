@@ -1,75 +1,122 @@
-import React from 'react';
-import { Modal, Form, Input } from 'antd';
-import { useState } from 'react';
-
-import {
-    StudentApi,
-    SchoolMemberCreateRequest, PersonalInfo
-} from '../../../data-api';
-
-import { useStudentContext, appendStudent } from '../../../data-store';
-
+import React, { useState } from 'react';
+import { Modal, Form, Input, Select, AutoComplete, Table, DatePicker } from 'antd';
+const { Option } = Select;
 
 function CreateStudentModal({ open, onOk, onCancel }) {
+    const [selectedClass, setSelectedClass] = useState(null);
+    const [tableData, setTableData] = useState([]);
 
-    const [id, setId] = useState('');
-    const [name, setName] = useState('');
-    const [birthday, setBirthday] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [faculty, setFaculty] = useState('');
+    const dataSource = [
+        {
+            key: '1',
+            id: '1',
+            class_name: 'Huong dt',
+            subject: 'Class 1',
+        },
+        {
+            key: '2',
+            id: '2',
+            class_name: 'lap trinh',
+            subject: 'Class 2',
+        },
+    ];
 
-    const [studentState, studentDispatch] = useStudentContext();
+    const columns = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Class Name',
+            dataIndex: 'class_name',
+            key: 'class_name',
+        },
+        {
+            title: 'Subject',
+            dataIndex: 'subject',
+            key: 'subject',
+        },
+    ];
 
-    const createData = async (data) => {
-        try {
-            var response = await StudentApi.studentCreate(data)
-            if (!response.isError) {
-                studentDispatch(appendStudent(response.data.data))
-                onOk();
-            }
-            else {
-                console.log(response.data)
-            }
+    const handleClassChange = (value) => {
+        // Find the selected class in dataSource
+        const selectedClassData = dataSource.find((item) => item.subject === value);
+
+        // Update the tableData with the selected class information without removing existing data
+        if (selectedClassData) {
+            setTableData((prevData) => [...prevData, selectedClassData]);
         }
-        catch (error) {
-            console.log(error)
-        }
-    }
-
-    const handleOk = async () => {
-        console.log('making api creation')
-        console.log(id, name, birthday, email, phone, faculty)
-        const personalInfo = new PersonalInfo(birthday, name, 'male', phone, faculty, 'CLC')
-        const data = new SchoolMemberCreateRequest(id, id, '123', email, 'student', personalInfo, []);
-
-        console.log(JSON.stringify(data))
-
-        createData(data);
-
-    }
+    };
 
     return (
-        <Modal title="Tạo sinh viên" open={open} onOk={handleOk} onCancel={onCancel}>
-            <Form>
-                <Form.Item label="MSSV">
-                    <Input value={id} onChange={(event) => setId(event.target.value)} />
+        <Modal title="Tạo sinh viên" open={open} onOk={onOk} onCancel={onCancel}>
+            <Form
+                labelCol={{
+                    span: 4,
+                }}
+                wrapperCol={{
+                    span: 20,
+                }}
+            >
+                <Form.Item label="ID" name="id" rules={[{ required: true }]}>
+                    <Input />
                 </Form.Item>
-                <Form.Item label="Tên">
-                    <Input value={name} onChange={(event) => setName(event.target.value)} />
+                <Form.Item label="Name" name="name" rules={[{ required: true }]}>
+                    <Input />
                 </Form.Item>
-                <Form.Item label="Ngày sinh">
-                    <Input value={birthday} onChange={(event) => setBirthday(event.target.value)} />
+                <Form.Item label="Username" name="username">
+                    <Input />
                 </Form.Item>
-                <Form.Item label="Email">
-                    <Input value={email} onChange={(event) => setEmail(event.target.value)} />
+                <Form.Item label="Password" name="password">
+                    <Input />
                 </Form.Item>
-                <Form.Item label="Số điện thoại">
-                    <Input value={phone} onChange={(event) => setPhone(event.target.value)} />
+                <Form.Item label="Email" name="email">
+                    <Input />
                 </Form.Item>
-                <Form.Item label="Faculty">
-                    <Input value={faculty} onChange={(event) => setFaculty(event.target.value)} />
+                <Form.Item label="Dateofbirth" name="dateofbirth">
+                    <DatePicker />
                 </Form.Item>
+                <Form.Item label="Gender" name="gender">
+                    <Select allowClear>
+                        <Option value="nam">Nam</Option>
+                        <Option value="nu">Nu</Option>
+                        <Option value="orther">Orther</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item label="Phone" name="phone">
+                    <Input />
+                </Form.Item>
+                <Form.Item label="Faculty" name="faculty">
+                    <AutoComplete
+                        placeholder="Faculty"
+                        options={[
+                            {
+                                value: 'Faculty 1',
+                            },
+                            {
+                                value: 'Faculty 2',
+                            },
+                            {
+                                value: 'Faculty 3',
+                            },
+                        ]}
+                    />
+                </Form.Item>
+                <Form.Item label="Program" name="program">
+                    <Select allowClear>
+                        <Option value="clc">CLC</Option>
+                        <Option value="daitra">Đại trà</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item label="Classes" name="classes">
+                    <Select allowClear onChange={handleClassChange}>
+                        <Option value="Class 1">Class 1</Option>
+                        <Option value="Class 2">Class 2</Option>
+                        <Option value="Class 3">Class 3</Option>
+                    </Select>
+                </Form.Item>
+                <Table dataSource={tableData} columns={columns} pagination={false} />
             </Form>
         </Modal>
     );
