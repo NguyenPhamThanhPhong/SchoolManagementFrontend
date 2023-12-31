@@ -4,6 +4,10 @@ const { Option } = Select;
 
 function CreateClassModal({ open, onOk, onCancel }) {
     const [componentDisabled, setComponentDisabled] = useState(true);
+
+    const [name, setName] = useState('');
+    const [subjectId, setSubjectId] = useState('');
+
     return (
         <Modal title="Add New Class" open={open} onOk={onOk} onCancel={onCancel}>
             <Form
