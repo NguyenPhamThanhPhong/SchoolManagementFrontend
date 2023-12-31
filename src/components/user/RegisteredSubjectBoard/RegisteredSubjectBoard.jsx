@@ -1,6 +1,8 @@
 import { Table, } from 'antd';
 import React from 'react';
 import { Button } from 'antd'
+import SearchBox from '../SearchBox/SearchBox';
+
 function RegisteredSubjectBoard() {
 
     const columns = [
@@ -78,6 +80,9 @@ function RegisteredSubjectBoard() {
     };
     return (
         <>
+            <SearchBox></SearchBox>
+            <br></br>
+            <br></br>
             <div>Choose subject to delete</div>
             <br></br>
             <Table

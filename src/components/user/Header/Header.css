@@ -9,7 +9,7 @@
 }
 .header_searchBar {
     position: absolute;
-    height: 6vh;
+    height: 5vh;
     width: 55%;
     background-color: #fff;
     top: 28%;
@@ -27,4 +27,26 @@
 }
 input::placeholder {
     color: #2f88ff;
+}
+.UserandNavigation {
+    margin-top: 0.5%;
+    width: 80px;
+    height: 12vh;
+    float: right;
+    color: #2f88ff;
+    font-size: 48px;
+}
+
+.logo {
+    margin-top: 0.5%;
+    margin-left: 1%;
+    width: 80px;
+    height: 12vh;
+    float: left;
+    color: #2f88ff;
+    font-size: 50px;
+}
+.uniName {
+    font-size: 30px;
+    font-family: sans-serif;
 }

@@ -1,6 +1,5 @@
 import WeekMaterialLecturerView from '../../../../components/user/ClassMaterial/Lecturer/WeekMaterialLecturerView';
 import InputScore from '../../../../components/user/InputScore/InputScore';
-import CheckAttendance from '../../CheckAttendance/CheckAttendance';
 import './ClassMaterialPageLecturerView.scss'
 
 import { Tabs } from 'antd';
@@ -18,11 +17,6 @@ const items = [
     key: '2',
     label: 'Scores',
     children: <InputScore></InputScore>,
-  },
-  {
-    key: '3',
-    label: 'Attendances',
-    children: <CheckAttendance></CheckAttendance>,
   },
 ];
 function ClassMaterialPageLecturerView() {

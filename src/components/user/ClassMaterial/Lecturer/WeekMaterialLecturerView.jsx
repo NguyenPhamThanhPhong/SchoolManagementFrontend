@@ -1,6 +1,7 @@
 import './WeekMaterialLecturerView.scss'
 import { Button, Divider } from 'antd';
 import FileHolder from '../FileHolder';
+import { userPaths } from '../../../../routes/AppRoutes';
 function WeekMaterialLecturerView() {
     const WFiles = ['Helloworld.pdf', 'Hi.pdf']
     const Weeks =
@@ -27,7 +28,7 @@ function WeekMaterialLecturerView() {
                             Week {item.Wnumber}
                         </Divider>
                         <FileHolder WFiles={item.WFile} />
-                        <Button type="link" href='/classes/lecturer/classid/addmaterial'>+ New file</Button>
+                        <Button type="link" href={userPaths.lecutrerAddFile}>+ New file</Button>
 
                     </div>
 

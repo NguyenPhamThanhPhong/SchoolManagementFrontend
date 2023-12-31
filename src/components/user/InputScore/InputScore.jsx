@@ -86,13 +86,11 @@ const InputScore = () => {
             key: '0',
             name: 'Tran Van A',
             student_id: '32',
-            week: '',
         },
         {
             key: '1',
             name: 'Ten gi do',
             student_id: '21155',
-            week: '',
         },
     ]);
 
@@ -183,7 +181,7 @@ const InputScore = () => {
                 columns={columns}
                 pagination={{ position: ['none'], }}
             />
-            <Button className='SaveScore'  >Save</Button>
+            <Button className='SaveScore' >Save</Button>
         </div>
     );
 };

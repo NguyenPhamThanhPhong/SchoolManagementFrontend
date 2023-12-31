@@ -19,13 +19,30 @@ const items = [
   },
 ];
 function Schedule() {
-  return (
-    <>
-      <div className="MainScreenSchedule">
-        <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-      </div>
-    </>
-  );
+  const userState = {
+    user: {},
+    role: 'student',
+    isLoggedin: true,
+  }
+  if (userState.role === 'lecturer') {
+    return (
+      <>
+        <div className="MainScreenSchedule">
+          <ScheduleBoard></ScheduleBoard>
+        </div>
+      </>
+    );
+  }
+  else {
+    return (
+      <>
+        <div className="MainScreenSchedule">
+          <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+        </div>
+      </>
+    );
+  }
+
 }
 
 export default Schedule;

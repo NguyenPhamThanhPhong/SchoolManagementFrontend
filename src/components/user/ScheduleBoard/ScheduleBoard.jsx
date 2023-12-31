@@ -8,30 +8,29 @@ import Dropdown from 'react-bootstrap/Dropdown';
 function renderEventContent(eventInfo) {
     return (
         <>
-            <b>{eventInfo.timeText}</b>
-            <i>{eventInfo.event.title}</i>
+            <b style={{ fontSize: '15px' }}>{eventInfo.timeText}</b>
+            <br></br>
+            <h style={{ fontSize: '18px' }}>{eventInfo.event.title} - {eventInfo.event.extendedProps.classID}</h>
+            <br></br>
+            <i>{eventInfo.event.extendedProps.dateStart} - {eventInfo.event.extendedProps.dateEnd}</i>
         </>
     )
 }
-
-
-
 
 
 function ScheduleBoard() {
     let Semester = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
     const events = [
         {
-            title: ' OOP',
+            title: ' OOP',// để title như tên lớp
             daysOfWeek: ['4'],
             startTime: '8:00:00',
             endTime: '10:00:00',
-        },
-        {
-            title: ' OOP',
-            daysOfWeek: ['5'],
-            startTime: '07:30:00',
-            endTime: '12:00:00',
+            extendedProps: {
+                classID: 'OOP1',
+                dateStart: '20/11/2023',
+                dateEnd: '20/12/2023'
+            },
         }
     ]
     return (

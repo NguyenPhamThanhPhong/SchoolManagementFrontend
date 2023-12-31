@@ -2,42 +2,36 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './SideBar.scss';
 import 'boxicons/css/boxicons.min.css';
-
-const userState = {
-    user: {},
-    role: 'lecturer',
-    isLoggedin: true,
-}
-
+import { userPaths } from '../../../routes/AppRoutes';
 const sidebarNavItems = [
     {
         display: 'Home',
         icon: <i className='bx bx-home'></i>,
-        to: '/user-home',
+        to: userPaths.home,
         section: 'user-home'
     },
-    {
-        display: 'Notification',
-        icon: <i className='bx bx-bell'></i>,
-        to: '/user-notification',
-        section: 'user-notification'
-    },
+    // {
+    //     display: 'Notification',
+    //     icon: <i className='bx bx-bell'></i>,
+    //     to: '/user-notification',
+    //     section: 'user-notification'
+    // },
     {
         display: 'Schedule',
         icon: <i className='bx bx-calendar'></i>,
-        to: '/student-schedule',
-        section: 'student-schedule'
+        to: userPaths.schedule,
+        section: 'schedule'
     },
     {
         display: 'Classes',
         icon: <i className='bx bx-book'></i>,
-        to: userState.role === 'lecturer' ? '/classes/lecturer/classid' : '/classes/student/classid',
+        to: userPaths.classes,
         section: 'classes'
     },
     {
         display: 'User',
         icon: <i className='bx bx-user'></i>,
-        to: '/student-user-info',
+        to: userPaths.user_infor,
         section: 'student-user-info'
     },
     {

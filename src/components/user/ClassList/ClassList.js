@@ -1,9 +1,13 @@
 import './ClassList.scss'
 import { Link } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
-function ClassList() {
-    let Semester = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
+import { userPaths } from '../../../routes/AppRoutes';
+import SearchBox from '../SearchBox/SearchBox';
+function ClassList(props) {
 
+    const linkTo = props.role === 'lecturer' ? userPaths.lecturerViewClass : userPaths.studentViewClass;
+
+    let Semester = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
     let ClassItems = [
         {
             ClassId: "Class1",
@@ -37,6 +41,7 @@ function ClassList() {
     return (
         <>
             <div className='bigContainer'>
+                <SearchBox></SearchBox>
                 <div className='dropSemester'>
                     <Dropdown id='dropSemester'>
                         <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -52,7 +57,7 @@ function ClassList() {
                 <ul className="list-group">
                     {ClassItems.map((item =>
                     (<li className="list-group" key={item.ClassId}>
-                        <Link to='/classes/student/classid' className="classitemContainer" style={{ textDecoration: 'none' }}>
+                        <Link to={linkTo} className="classitemContainer" style={{ textDecoration: 'none' }}>
                             <div className='firstLine'>{item.SubjectName} - {item.ClassId}</div>
                             <div className='secondLine'>{item.LecturerName}</div>
                         </Link>
