@@ -1,10 +1,29 @@
-import React, { useState } from 'react';
-import { Table, Button, Space } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Space, message } from 'antd';
+import { useSemesterContext, setSemesters, SemesterInitialState } from '../../../data-store';
+import { SemesterApi } from '../../../data-api';
 
 function SemesterTable(props) {
     const [currentPage, setCurrentPage] = useState(1);
 
-    let dataSource = props.dataSource;
+    const [semesterState, semesterDispatch] = useSemesterContext();
+
+    const fetchSemesters = async () => {
+        try {
+            const response = await SemesterApi.getAll();
+            if (!response.isError) {
+                semesterDispatch(setSemesters(response.data.data));
+            }
+        } catch (error) {
+            message.error('Fetch semester failed');
+        }
+    }
+
+    useEffect(() => {
+        fetchSemesters();
+    }, []);
+
+    let dataSource = semesterState.semesters || [];
 
     // If dataSource is not provided or is empty, create a default array
     if (!dataSource || dataSource.length === 0) {

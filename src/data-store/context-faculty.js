@@ -13,12 +13,12 @@ function facultyReducer(state, action) {
         case SET_FACULTIES:
             return {
                 ...state,
-                faculties: action.payload.faculties,
+                faculties: action.payload,
             }
         case SET_CURRENT_FACULTY:
             return {
                 ...state,
-                currentFaculty: action.payload.currentFaculty,
+                currentFaculty: action.payload,
             }
         case SET_LOGOUT:
             return initialState;

@@ -8,6 +8,15 @@ class CreateUserRequest {
     }
 }
 
+class Semester {
+    constructor(id, startDate, endDate) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.classIds = [];
+    }
+}
+
 class Subject {
     constructor(id, name, facultyId, prequisiteIds, previousSubjectIds, classIds) {
         this.id = id;
@@ -120,6 +129,7 @@ const DateOfWeek = {
 
 export {
     CreateUserRequest,
+    Semester,
     SchoolMemberCreateRequest,
     PersonalInfo,
     UpdateParameter,

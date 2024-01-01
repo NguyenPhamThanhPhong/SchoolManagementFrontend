@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext } from "react";
-import { SET_SEMESTERS, SET_CURRENT_SEMESTER, SET_LOGOUT } from "./constants";
+import { SET_SEMESTERS, SET_CURRENT_SEMESTER, SET_LOGOUT, APPEND_SEMESTER, REMOVE_SEMESTER } from "./constants";
 
 const Context = createContext();
 
@@ -13,12 +13,22 @@ function semesterReducer(state, action) {
         case SET_SEMESTERS:
             return {
                 ...state,
-                semesters: action.payload.semesters,
+                semesters: action.payload,
             }
         case SET_CURRENT_SEMESTER:
             return {
                 ...state,
-                currentSemester: action.payload.currentSemester,
+                currentSemester: action.payload,
+            }
+        case APPEND_SEMESTER:
+            return {
+                ...state,
+                semesters: [...state.semesters, action.payload],
+            }
+        case REMOVE_SEMESTER:
+            return {
+                ...state,
+                semesters: state.semesters.filter(semester => semester.id !== action.payload),
             }
         case SET_LOGOUT:
             return initialState;

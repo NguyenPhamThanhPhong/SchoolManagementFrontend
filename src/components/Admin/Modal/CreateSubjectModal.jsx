@@ -1,6 +1,6 @@
 import { Modal, Form, Input, Select, message } from 'antd';
 import { useState } from 'react';
-import { useSubjectContext, appendSubject } from '../../../data-store';
+import { useSubjectContext, useFacultyContext, appendSubject } from '../../../data-store';
 import { subjectApi, Subject } from '../../../data-api';
 
 const CreateSubjectModal = ({ open, onCancel, onOk }) => {
@@ -8,14 +8,14 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
     const { Option } = Select;
 
     const [subjectState, subjectDispatch] = useSubjectContext();
+    const [facultyState, facultyDispatch] = useFacultyContext();
 
-    const createSubject = async (subject) => {
-
-    }
+    let subjects = subjectState.subjects;
+    let faculties = facultyState.faculties;
 
     const validateId = (rule, value, callback) => {
-        if (value === 'my-val') {
-            callback('You should not enter "my-val"');
+        if (subjects.some((subject) => subject.id === value)) {
+            callback(`subject ID: ${value} already exist`);
         } else {
             callback();
         }
@@ -27,9 +27,9 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
                 let subject = new Subject(
                     values.id,
                     values.name,
-                    values.faculty,
-                    values.previous_subject,
-                    values.prerequisite_subject
+                    values.faculty || "",
+                    values.previous_subject || [],
+                    values.prerequisite_subject || []
                 );
                 try {
                     const response = await subjectApi.subjectCreate(subject);
@@ -88,12 +88,15 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
                 <Input />
             </Form.Item>
             <Form.Item label="Faculty" name="faculty">
-                <Select allowClear mode="multiple">
-                    <Option value="subject1">SE</Option>
-                    <Option value="subject2">IS</Option>
-                    <Option value="subject3">CS</Option>
+                <Select mode="single" showSearch optionFilterProp="children" allowClear>
+                    {faculties.map((faculty) => (
+                        <Option key={faculty.id} value={faculty.id}>
+                            {faculty.name}
+                        </Option>
+                    ))}
                 </Select>
             </Form.Item>
+
             <Form.Item label="Previous Subject" name="previous_subject">
                 <Select allowClear mode="multiple" defaultValue="subject1">
                     <Option value="subject1">subject1</Option>
