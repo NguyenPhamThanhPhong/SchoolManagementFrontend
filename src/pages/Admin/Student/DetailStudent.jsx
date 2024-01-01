@@ -102,7 +102,7 @@ function DetailStudent() {
                         bordered={true}
                         src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
                     />
-                    <Descriptions bordered items={items} />
+                    <Descriptions bordered />
                 </Space>
                 <Tabs
                     defaultActiveKey="1"

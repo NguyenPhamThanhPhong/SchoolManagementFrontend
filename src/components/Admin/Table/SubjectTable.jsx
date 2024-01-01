@@ -8,7 +8,6 @@ const SubjectTable = ({ showDrawer, subjects, deleteSubject }) => {
     let currentData = subjects.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
 
-    console.log(currentData);
 
     const handleDelete = (id) => {
 

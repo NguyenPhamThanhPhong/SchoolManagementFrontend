@@ -9,11 +9,12 @@ class CreateUserRequest {
 }
 
 class Subject {
-    constructor(id, name, prequisiteId, previousSubjectId, classIds) {
+    constructor(id, name, facultyId, prequisiteIds, previousSubjectIds, classIds) {
         this.id = id;
         this.name = name;
-        this.prequisiteId = prequisiteId;
-        this.previousSubjectId = previousSubjectId;
+        this.facultyId = facultyId;
+        this.prequisiteIds = prequisiteIds;
+        this.previousSubjectIds = previousSubjectIds;
         this.classIds = classIds;
     }
 }
