@@ -1,5 +1,5 @@
 import { createContext, useReducer, useContext } from "react";
-import { SET_FACULTIES, SET_CURRENT_FACULTY, SET_LOGOUT } from "./constants";
+import { SET_FACULTIES, SET_CURRENT_FACULTY, SET_LOGOUT, APPEND_FACULTY, REMOVE_FACULTY } from "./constants";
 
 const Context = createContext();
 
@@ -19,6 +19,16 @@ function facultyReducer(state, action) {
             return {
                 ...state,
                 currentFaculty: action.payload,
+            }
+        case APPEND_FACULTY:
+            return {
+                ...state,
+                faculties: [...state.faculties, action.payload],
+            }
+        case REMOVE_FACULTY:
+            return {
+                ...state,
+                faculties: state.faculties.filter(faculty => faculty.id !== action.payload)
             }
         case SET_LOGOUT:
             return initialState;

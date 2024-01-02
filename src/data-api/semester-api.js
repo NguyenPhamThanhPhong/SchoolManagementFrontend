@@ -36,6 +36,14 @@ const updateSemester = async (userData) => {
         return { isError: true, data: error };
     }
 }
+const autoGenerateSemester = async (semesters) => {
+    try {
+        const response = await axios.post(APIUtil.baseURL + '/semester-auto-generate', semesters, APIUtil.jsonHeader);
+        return { isError: false, data: response };
+    } catch (error) {
+        return { isError: true, data: error };
+    }
+}
 
 const deleteSemester = async (id) => {
     try {
@@ -50,6 +58,7 @@ const SemesterApi = {
     getAll,
     getOne,
     createSemester,
+    autoGenerateSemester,
     updateSemester,
     deleteSemester
 }

@@ -9,12 +9,21 @@ class CreateUserRequest {
 }
 
 class Semester {
-    constructor(id, startDate, endDate) {
+    constructor(id, startTime, endTime, classIds = []) {
         this.id = id;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.classIds = [];
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.classIds = classIds;
     }
+}
+class Faculty {
+    constructor(id, name, desciprtion, subjectIds = []) {
+        this.id = id;
+        this.name = name;
+        this.desciprtion = desciprtion;
+        this.subjectIds = subjectIds;
+    }
+
 }
 
 class Subject {
@@ -98,6 +107,30 @@ class StudentLog {
         }
     }
 }
+// Remove the unused TextFilters constant
+const TextFilters = {
+    generateFilter: (parameter) => {
+        const regexPattern = parameter.value.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); // Escape special characters
+        const regex = new RegExp(regexPattern, 'i');
+        return {
+            field: parameter.fieldName,
+            operator: parameter.action,
+            value: regex  // Use the created regex here
+        };
+    },
+    generateCommonFilter: (value) => {
+        const regexPattern = value.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); // Escape special characters
+        const regex = new RegExp(regexPattern, 'i'); // Case-insensitive regex
+
+        return {
+            $or: [
+                { _id: { $regex: regex } },
+                { Name: { $regex: regex } }
+            ]
+        };
+    }
+};
+
 
 const UpdateAction = {
     set: 0,
@@ -130,6 +163,7 @@ const DateOfWeek = {
 export {
     CreateUserRequest,
     Semester,
+    Faculty,
     SchoolMemberCreateRequest,
     PersonalInfo,
     UpdateParameter,
@@ -138,6 +172,7 @@ export {
     TimeStamp,
     SchedulePiece,
     StudentLog,
+    TextFilters,
     DateOfWeek,
     UpdateAction
 }

@@ -1,135 +1,151 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Button, Input, DatePicker, message, Space, Form, Select, Modal } from 'antd';
 import SemesterTable from '../../../components/Admin/Table/SemesterTable';
 import FacultyTable from '../../../components/Admin/Table/FacultyTable';
+import CreateSemesterModal from '../../../components/Admin/Modal/CreateSemesterModal';
+import CreateFacultyModal from '../../../components/Admin/Modal/CreateFacultyModal';
+import AutoGenerateModal from '../../../components/Admin/Modal/AutoGenerateModal';
+
 import {
-    useSemesterContext, setSemesters, SemesterInitialState, appendSemester,
-    useFacultyContext, setFaculties, FacultyInitialState, appendFaculty
+    useSemesterContext, setSemesters, SemesterInitialState, appendSemester, removeSemester,
+    useFacultyContext, setFaculties, FacultyInitialState, appendFaculty, removeFaculty
 } from '../../../data-store';
-import { SemesterApi, FacultyApi, Semester } from '../../../data-api';
+import { SemesterApi, FacultyApi, Semester, Faculty, TextFilters } from '../../../data-api';
 
 
 import { SearchOutlined } from '@ant-design/icons';
 const { Search } = Input;
 const { Option } = Select;
 function SemesterFaculty() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSemesterModalOpen, setIsSemesterModalOpen] = useState(false);
     const [isModalFacultyOpen, setIsModalFacultyOpen] = useState(false);
+    const [isAutoGenerateOpen, setIsAutoGenerateOpen] = useState(false);
 
 
     const [semesterState, semesterDispatch] = useSemesterContext();
     const [facultyState, facultyDispatch] = useFacultyContext();
 
-    let semesters = semesterState.semesters;
+    const [semesterSearch, setSemesterSearch] = useState('');
+    const [facultySearch, setFacultySearch] = useState('');
 
-    const createSemester = async (semester) => {
+    const [filteredSemesters, setFilteredSemesters] = useState(semesterState.semesters);
+    const [filteredFaculties, setFilteredFaculties] = useState(facultyState.faculties);
+
+
+    const onSearchSemester = async (value) => {
+        setSemesterSearch(value);
+        let result = semesterState.semesters.filter((semester) => {
+            // Convert both semester ID and search value to lowercase
+            const semesterId = semester.id.toLowerCase();
+            const searchValue = value.toLowerCase();
+
+            // Remove spaces and special characters from both semester ID and search value
+            const cleanSemesterId = semesterId.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+            const cleanSearchValue = searchValue.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+
+            // Perform case-insensitive, space- and special character-ignoring search
+            return cleanSemesterId.includes(cleanSearchValue);
+        });
+
+        setFilteredSemesters(result);
+    }
+
+    const onSearchFaculty = async (value) => {
+        setFacultySearch(value);
+
+        let result = facultyState.faculties.filter((faculty) => {
+            // Convert both faculty ID, faculty name, and search value to lowercase
+            const facultyId = faculty.id.toLowerCase();
+            const facultyName = faculty.name.toLowerCase();
+            const searchValue = value.toLowerCase();
+
+            // Remove spaces and special characters from both faculty ID, faculty name, and search value
+            const cleanFacultyId = facultyId.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+            const cleanFacultyName = facultyName.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+            const cleanSearchValue = searchValue.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+
+            // Perform case-insensitive, space- and special character-ignoring search
+            return cleanFacultyId.includes(cleanSearchValue) || cleanFacultyName.includes(cleanSearchValue);
+        });
+
+        setFilteredFaculties(result);
+    }
+
+
+    const fetchSemesters = async () => {
         try {
-            const response = await SemesterApi.create(semester);
+            const response = await SemesterApi.getAll();
             if (!response.isError) {
-                const newSemester = response.data.data;
-                semesterDispatch(setSemesters([...semesterState.semesters, newSemester]));
-                message.success('Create semester successfully');
+                semesterDispatch(setSemesters(response.data.data));
+            }
+        } catch (error) {
+            message.error('Fetch semester failed');
+        }
+    }
+    const fetchFaculties = async () => {
+        try {
+            const response = await FacultyApi.getAll();
+            if (!response.isError) {
+                facultyDispatch(setFaculties(response.data.data));
             }
         } catch (error) {
             console.log(error);
         }
     }
 
-    const showModalSemester = () => {
-        setIsModalOpen(true);
-    };
+    const handleDeleteSingleSemester = async (id) => {
+        try {
+            let response = await SemesterApi.deleteSemester(id);
+            console.log(response);
+            if (!response.isError) {
+                console.log(response.data.data);
+                semesterDispatch(removeSemester(id));
+                message.success('Delete semester successfully');
+            }
+            else {
+                console.log(response);
+                message.error(`Delete semester failed ${response?.data?.data}`);
+            }
+        }
+        catch (error) {
+            message.error(`Delete semester failed ${error}`);
+        }
+    }
+    const handleDeleteSingleFaculty = async (id) => {
+        console.log(id);
+        try {
+            let response = await FacultyApi.deleteFaculty(id);
+            if (!response.isError) {
+                facultyDispatch(removeFaculty(id));
+                message.success('Delete faculty successfully');
+            }
+            else {
+                message.error(`Delete faculty failed ${response?.data}`);
+            }
+        }
+        catch (error) {
+            message.error(`Delete faculty failed ${error}`);
+
+        }
+    }
+
+    useEffect(() => {
+        fetchSemesters();
+        fetchFaculties();
+    }, []);
+
+    useEffect(() => {
+        setFilteredSemesters(semesterState.semesters);
+    }, [semesterState.semesters]);
+    useEffect(() => {
+        setFilteredFaculties(facultyState.faculties);
+    }, [facultyState.faculties]);
+
     const showModalFaculty = () => {
         setIsModalFacultyOpen(true);
     };
 
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
 
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-    const handleModalFacultyOk = () => {
-        setIsModalFacultyOpen(false);
-    };
-
-    const handleModalFacultyCancel = () => {
-        setIsModalFacultyOpen(false);
-    };
-
-    function CreateSemesterModal() {
-
-        const [form] = Form.useForm();
-        const validateId = (rule, value, callback) => {
-            if (semesters.some((semester) => semester.id === value)) {
-                callback(`semester "${value}" already exist`);
-            } else {
-                callback();
-            }
-        };
-
-        const handleSubmit = async () => {
-            form.validateFields().then(
-                async (values) => {
-                    let { id, start, end } = values;
-                    const formatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                    start = new Date(start).toLocaleDateString('en-GB', formatOptions);
-                    end = new Date(end).toLocaleDateString('en-GB', formatOptions);
-                    let semester = new Semester(id, start || null, end || null)
-                    console.log(semester);
-                    try {
-                        const response = await SemesterApi.createSemester(semester);
-                        if (!response.isError) {
-                            semesterDispatch(appendSemester(response.data.data));
-                            message.success(`Create subject successfully! ${semester.id}`);
-                            form.resetFields();
-                            handleOk();
-                        } else {
-                            message.error(`Create subject failed! ${response.data}`);
-                            message.error(`${JSON.stringify(semester)}`);
-                        }
-                    } catch (error) {
-                        message.error(`Create subject failed! ${error}`);
-                    }
-                },
-                (reason) => {
-                    const errorMessage = reason.errorFields
-                        ? `Create subject failed: ${reason.errorFields[0].name} - ${reason.errorFields[0].errors[0]}`
-                        : 'Create subject failed. Please check the form inputs.';
-                    message.error(errorMessage);
-                }
-            );
-        }
-
-        return (
-            <Modal title="Create Semester" visible={isModalOpen} onOk={handleSubmit} onCancel={handleCancel}>
-                <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
-                    <Form.Item
-                        label="Name"
-                        name="id"
-                        rules={[{ required: true, message: 'Please enter a name!' },
-                        { validator: validateId }]}
-                    >
-                        <Input style={{ width: '100%' }} />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Start time"
-                        name="start"
-                    >
-                        <DatePicker style={{ width: '100%' }} />
-                    </Form.Item>
-                    <Form.Item
-                        label="End time"
-                        name="end"
-                    >
-                        <DatePicker style={{ width: '100%' }} />
-                    </Form.Item>
-
-                </Form>
-            </Modal>
-        );
-    }
 
     return (
         <div style={{ display: 'flex', gap: '16px' }}>
@@ -141,19 +157,30 @@ function SemesterFaculty() {
                     </Select>
                     <Search
                         placeholder="Search..."
-                        onSearch={(value) => console.log(value)}
+                        value={semesterSearch}
+                        onChange={(e) => { onSearchSemester(e.target.value) }}
                         style={{ width: 200 }}
                         prefix={<SearchOutlined />}
                     />
-                    <Button type="primary" onClick={showModalSemester}>
+                    <Button type="primary" onClick={() => { setIsSemesterModalOpen(true) }}>
                         Create
                     </Button>
-                    <Button type="primary">Auto Create</Button>
+                    <Button type="primary" onClick={() => { setIsAutoGenerateOpen(true) }} >Auto Create</Button>
                 </Space>
-                <SemesterTable />
-                <CreateSemesterModal>
-
+                <SemesterTable semesters={filteredSemesters} handleDelete={handleDeleteSingleSemester} />
+                <CreateSemesterModal
+                    isSemesterModalOpen={isSemesterModalOpen}
+                    setIsSemesterModalOpen={setIsSemesterModalOpen}
+                    semesters={semesterState.semesters} semesterDispatch={semesterDispatch}>
                 </CreateSemesterModal>
+                <AutoGenerateModal
+                    semesters={semesterState.semesters}
+                    semesterDispatch={semesterDispatch}
+                    isAutoGenerateOpen={isAutoGenerateOpen}
+                    setIsAutoGenerateOpen={setIsAutoGenerateOpen}
+                >
+
+                </AutoGenerateModal>
             </Card>
 
             <Card title="Faculty" style={{ flex: 1, width: '50%' }}>
@@ -164,7 +191,8 @@ function SemesterFaculty() {
                     </Select>
                     <Search
                         placeholder="Search..."
-                        onSearch={(value) => console.log(value)}
+                        value={facultySearch}
+                        onChange={(e) => { onSearchFaculty(e.target.value) }}
                         style={{ width: 200 }}
                         prefix={<SearchOutlined />}
                     />
@@ -172,24 +200,11 @@ function SemesterFaculty() {
                         Create
                     </Button>
                 </Space>
-                <FacultyTable />
-                <Modal
-                    title="Create Faculty"
-                    open={isModalFacultyOpen}
-                    onOk={handleModalFacultyOk}
-                    onCancel={handleModalFacultyCancel}
-                >
-                    <Space direction="vertical" size={16} style={{ display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ width: '20%' }}>Name:</label>
-                            <Input style={{ width: '80%' }} />
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ width: '20%' }}>Desciption:</label>
-                            <Input style={{ width: '80%' }} />
-                        </div>
-                    </Space>
-                </Modal>
+                <FacultyTable faculties={filteredFaculties} handleDelete={handleDeleteSingleFaculty} />
+                <CreateFacultyModal
+                    isModalFacultyOpen={isModalFacultyOpen}
+                    setIsModalFacultyOpen={setIsModalFacultyOpen}
+                    faculties={facultyState.faculties} facultyDispatch={facultyDispatch} />
             </Card>
         </div>
     );

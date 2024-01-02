@@ -30,13 +30,33 @@ const SubjectTable = ({ showDrawer, subjects, deleteSubject }) => {
                     key: 'name',
                 },
                 {
-                    title: 'Prerequisite Subject',
-                    dataIndex: 'prequisiteId',
+                    title: 'Prequisite Subject',
+                    render: (_, record) => (
+                        <Space size="middle">
+                            <p>
+                                {record.prequisiteIds?.map((id) => {
+                                    return <p>{id}</p>
+                                })}
+                            </p>
+                            {/* {record.prerequisiteIds.map((id) => {
+                                return <p>{id}</p>
+                            })} */}
+                        </Space>
+                    ),
                     key: 'prequisiteId',
                 },
                 {
                     title: 'previousSubjectId',
-                    dataIndex: 'previousSubjectId',
+                    render: (_, record) => (
+                        <Space size="middle">
+                            <p>
+                                {record.previousSubjectIds?.map((id) => {
+                                    return <p>{id}</p>
+                                })}
+                            </p>
+
+                        </Space>
+                    ),
                     key: 'previousSubjectId',
                 },
                 {

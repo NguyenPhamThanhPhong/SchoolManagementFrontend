@@ -37,6 +37,15 @@ const updateFaculty = async (userData) => {
     }
 }
 
+const autoGenerateFaculty = async (faculties) => {
+    try {
+        const response = await axios.post(APIUtil.baseURL + '/faculty-auto-generate', faculties, APIUtil.jsonHeader);
+        return { isError: false, data: response };
+    } catch (error) {
+        return { isError: true, data: error };
+    }
+}
+
 const deleteFaculty = async (id) => {
     try {
         const response = await axios.delete(APIUtil.baseURL + `/faculty-delete/${id}`)
@@ -50,6 +59,7 @@ const FacultyApi = {
     getAll,
     getOne,
     createFaculty,
+    autoGenerateFaculty,
     updateFaculty,
     deleteFaculty
 }

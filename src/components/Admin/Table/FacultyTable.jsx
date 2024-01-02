@@ -1,31 +1,13 @@
 import { React, useEffect, useState } from 'react';
 import { Table, Button, Space } from 'antd';
-import { useFacultyContext, setFaculties, removeFaculty, FacultyInitialState } from '../../../data-store';
-import { FacultyApi } from '../../../data-api';
 
 function FacultyTable(props) {
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [facultyState, facultyDispatch] = useFacultyContext();
-
-    const fetchFaculties = async () => {
-        try {
-            const response = await FacultyApi.getAll();
-            if (!response.isError) {
-                const dataArray = Array.isArray(response.data.data) ? response.data.data : [];
-                facultyDispatch(setFaculties(dataArray));
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    useEffect(() => {
-        fetchFaculties();
-    }, []);
+    const { handleDelete, handleEdit } = props;
 
 
-    let dataSource = facultyState.faculties || [];
+    let dataSource = props.faculties || [];
     dataSource = dataSource.map((item, index) => ({ ...item, stt: index + 1 }));
 
 
@@ -57,7 +39,7 @@ function FacultyTable(props) {
             render: (record) => (
                 <Space size="middle">
                     <Button type="primary">Edit</Button>
-                    <Button type="primary" danger>
+                    <Button onClick={async () => { await handleDelete(record.id) }} type="primary" danger>
                         Delete
                     </Button>
                 </Space>

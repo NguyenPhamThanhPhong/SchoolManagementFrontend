@@ -1,5 +1,5 @@
 import { Modal, Form, Input, Select, message } from 'antd';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSubjectContext, useFacultyContext, appendSubject } from '../../../data-store';
 import { subjectApi, Subject } from '../../../data-api';
 
@@ -7,11 +7,49 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
     const [form] = Form.useForm();
     const { Option } = Select;
 
+
+    useEffect(() => {
+        form.setFieldsValue({
+            id: "",
+            facultyId: ""
+        });
+    }, []);
+
     const [subjectState, subjectDispatch] = useSubjectContext();
     const [facultyState, facultyDispatch] = useFacultyContext();
 
     let subjects = subjectState.subjects;
     let faculties = facultyState.faculties;
+
+    const handleSelectFaculty = (value) => {
+        const currentValues = form.getFieldsValue();
+        let currentID = currentValues.id;
+        const facultyId = currentValues.facultyId;
+
+        // Use a regular expression to find the position of the first digit in the currentID
+        if (currentID === undefined || currentID === null) {
+            currentID = "";
+        }
+        if (facultyId === undefined || facultyId === null) {
+            facultyId = "";
+        }
+
+        const firstDigitIndex = currentID?.search(/\d/);
+
+        // If a digit is found, replace the substring from the start to the first digit with the facultyId
+        if (firstDigitIndex !== -1) {
+            currentID = facultyId + currentID?.slice(firstDigitIndex);
+        } else {
+            // If no digit is found, append the facultyId to the currentID
+            currentID = facultyId;
+        }
+
+        form.setFieldsValue({
+            id: currentID,
+            facultyId: value
+        });
+    };
+
 
     const validateId = (rule, value, callback) => {
         if (subjects.some((subject) => subject.id === value)) {
@@ -70,8 +108,10 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
             }}
         >
             <Form.Item
+
                 label="ID"
                 name="id"
+                defaultValue=""
                 rules={[{ required: true, message: 'Please enter an ID!' },
                 { validator: validateId }
                 ]}
@@ -81,37 +121,44 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
             <Form.Item
                 label="Name"
                 name="name"
+                defaultValue=""
                 rules={[
                     { required: true, message: 'Please enter a name!' },
                 ]}
             >
                 <Input />
             </Form.Item>
-            <Form.Item label="Faculty" name="faculty">
-                <Select mode="single" showSearch optionFilterProp="children" allowClear>
+            <Form.Item label="Faculty" name="facultyId" defaultValue="" rules={[
+                { required: true, message: 'Please select a faculty' },
+            ]} >
+                <Select mode="single" showSearch optionFilterProp="children" onChange={handleSelectFaculty} allowClear>
                     {faculties.map((faculty) => (
                         <Option key={faculty.id} value={faculty.id}>
-                            {faculty.name}
+                            {faculty.id + " - " + faculty.name}
                         </Option>
                     ))}
                 </Select>
             </Form.Item>
 
-            <Form.Item label="Previous Subject" name="previous_subject">
-                <Select allowClear mode="multiple" defaultValue="subject1">
-                    <Option value="subject1">subject1</Option>
-                    <Option value="subject2">subject2</Option>
-                    <Option value="subject3">subject3</Option>
-                    <Option value="subject4">subject4</Option>
-                    <Option value="subject5">subject5</Option>
-                    <Option value="subject6">subject6</Option>
+            <Form.Item label="Previous Subject" name="previousSubjectId">
+                <Select allowClear mode="multiple">
+                    {
+                        subjects.map((subject) => {
+                            let display = subject.id + " - " + subject.name;
+                            return <Option value={subject.id}>{display}</Option>
+                        })
+                    }
+
                 </Select>
             </Form.Item>
-            <Form.Item label="Prerequisite Subject" name="prerequisite_subject">
-                <Select allowClear mode="multiple" defaultValue="subject1">
-                    <Option value="subject1">subject1</Option>
-                    <Option value="subject2">subject2</Option>
-                    <Option value="subject3">subject3</Option>
+            <Form.Item label="Prerequisite Subject" name="prequisiteSubjectId">
+                <Select allowClear mode="multiple" >
+                    {
+                        subjects.map((subject) => {
+                            let display = subject.id + " - " + subject.name;
+                            return <Option value={subject.id}>{display}</Option>
+                        })
+                    }
                 </Select>
             </Form.Item>
         </Form>
