@@ -21,6 +21,46 @@ const Subject = () => {
 
 
     const [subjectState, subjectDispatch] = useSubjectContext();
+
+    const [subjectSearch, setSubjectSearch] = useState('');
+    const [filteredSubjects, setFilteredSubjects] = useState(subjectState.subjects);
+
+    const onSearchSubject = async (value) => {
+        setSubjectSearch(value);
+        let result = subjectState.subjects.filter((subject) => {
+            // Convert both subject ID and search value to lowercase
+            const subjectId = subject?.id?.toLowerCase();
+            const subjectName = subject?.name?.toLowerCase();
+            const searchValue = value.toLowerCase();
+
+            const cleanSubjectId = subjectId.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+            const cleanSubjectName = subjectName.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+            const cleanSearchValue = searchValue.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+
+            return cleanSubjectId.includes(cleanSearchValue) || cleanSubjectName.includes(cleanSearchValue);
+        });
+
+        // let pre = subjectState.subjects.filter((subject) => {
+        //     // Convert both subject ID and search value to lowercase
+        //     const subjectId = subject.id.toLowerCase();
+        //     const searchValue = value.toLowerCase();
+
+        //     const cleanSubjectId = subjectId.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+        //     const cleanSearchValue = searchValue.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+
+        //     // Check if the subject ID or any prequisiteId matches the searchValue
+        //     const matchesSearch = (subject.prequisiteIds && subject.prequisiteIds.some(prequisiteId => {
+        //         const cleanPrequisiteId = prequisiteId.toLowerCase().replace(/\s/g, '').replace(/[^\w\s]/g, '');
+        //         return cleanPrequisiteId.includes(cleanSearchValue);
+        //     }));
+
+
+        //     return matchesSearch;
+        // });
+
+        setFilteredSubjects(result);
+    }
+
     const fetchSubjects = async () => {
         try {
             const response = await subjectApi.subjectManyRange(0, 50);
@@ -68,11 +108,19 @@ const Subject = () => {
     useEffect(() => {
         fetchSubjects();
     }, []);
+    useEffect(() => {
+        setFilteredSubjects(subjectState.subjects);
+    }, [subjectState.subjects]);
 
     const showDrawer = (subject) => {
         setSelectedSubject(subject);
         setIsDrawerOpen(true);
     };
+
+    const handleEdit = (subject) => {
+        setSelectedSubject(subject);
+        setIsCreateModalOpen(true);
+    }
 
     const onCloseDrawer = () => {
         setIsDrawerOpen(false);
@@ -86,29 +134,32 @@ const Subject = () => {
                 </div>
                 <Space style={{ marginBottom: 16 }}>
                     <Select style={{ width: 150 }} placeholder="Select Name">
-                        <Option value="hoahoc">Hoa Hoc</Option>
-                        <Option value="vatly">Vat Ly</Option>
+                        <Option value="pre">Prequisite subjects - Previous subjects</Option>
+                        <Option value="idName">Subject ID - Subject Name</Option>
                     </Select>
                     <Search
                         placeholder="Search..."
-                        onSearch={(value) => console.log(value)}
+                        value={subjectSearch}
+                        onChange={(e) => { onSearchSubject(e.target.value) }}
                         style={{ width: 200 }}
                         prefix={<SearchOutlined />}
                     />
-                    <Button type="primary" onClick={() => { setIsCreateModalOpen(true) }}>
+                    <Button type="primary" onClick={() => { setIsCreateModalOpen(true); setSelectedSubject(null); }}>
                         Thêm mới
                     </Button>
                 </Space>
-                <SubjectTable deleteSubject={deleteSubject} subjects={subjectState.subjects} showDrawer={showDrawer} />
+                <SubjectTable deleteSubject={deleteSubject} handleEdit={handleEdit} subjects={filteredSubjects} showDrawer={showDrawer} />
             </Card>
             <CreateSubjectModal
                 deleteSubject={deleteSubject}
                 createSubject={createSubject}
+                selectedSubject={selectedSubject}
                 open={isCreateModalOpen}
                 onCancel={() => { setIsCreateModalOpen(false) }}
                 onOk={() => { setIsCreateModalOpen(false) }}
             />
-            <ShowSubjectDrawer open={isDrawerOpen} onClose={onCloseDrawer} selectedSubject={selectedSubject} />
+            <ShowSubjectDrawer open={isDrawerOpen} onClose={onCloseDrawer}
+                selectedSubject={selectedSubject} />
         </div>
     );
 };

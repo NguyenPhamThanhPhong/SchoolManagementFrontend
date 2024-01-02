@@ -3,17 +3,23 @@ import { useState, useEffect } from 'react';
 import { useSubjectContext, useFacultyContext, appendSubject } from '../../../data-store';
 import { subjectApi, Subject } from '../../../data-api';
 
-const CreateSubjectModal = ({ open, onCancel, onOk }) => {
+const CreateSubjectModal = ({ open, onCancel, onOk, selectedSubject }) => {
     const [form] = Form.useForm();
     const { Option } = Select;
 
+    const [isCreate, setiscreate] = useState(true);
 
     useEffect(() => {
-        form.setFieldsValue({
-            id: "",
-            facultyId: ""
-        });
-    }, []);
+        if (selectedSubject !== undefined || selectedSubject !== null)
+            form.setFieldsValue({
+                id: selectedSubject?.id,
+                name: selectedSubject?.name,
+                facultyId: selectedSubject?.facultyId,
+                prequisiteSubjectIds: selectedSubject?.prequisiteSubjectIds,
+                previousSubjectIds: selectedSubject?.previousSubjectIds
+            })
+        setiscreate((selectedSubject === undefined || selectedSubject === null));
+    }, [selectedSubject]);
 
     const [subjectState, subjectDispatch] = useSubjectContext();
     const [facultyState, facultyDispatch] = useFacultyContext();
@@ -36,11 +42,9 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
 
         const firstDigitIndex = currentID?.search(/\d/);
 
-        // If a digit is found, replace the substring from the start to the first digit with the facultyId
         if (firstDigitIndex !== -1) {
             currentID = facultyId + currentID?.slice(firstDigitIndex);
         } else {
-            // If no digit is found, append the facultyId to the currentID
             currentID = facultyId;
         }
 
@@ -52,7 +56,7 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
 
 
     const validateId = (rule, value, callback) => {
-        if (subjects.some((subject) => subject.id === value)) {
+        if (isCreate && subjects.some((subject) => subject.id === value)) {
             callback(`subject ID: ${value} already exist`);
         } else {
             callback();
@@ -65,9 +69,9 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
                 let subject = new Subject(
                     values.id,
                     values.name,
-                    values.faculty || "",
-                    values.previous_subject || [],
-                    values.prerequisite_subject || []
+                    values.facultyId || "",
+                    values.prequisiteSubjectIds || [],
+                    values.previousSubjectIds || []
                 );
                 try {
                     const response = await subjectApi.subjectCreate(subject);
@@ -92,19 +96,55 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
         );
     };
 
+    const handleUpdate = async () => {
+        form.validateFields().then(
+            async (values) => {
+                let subject = new Subject(
+                    values.id,
+                    values.name,
+                    values.facultyId || "",
+                    values.prequisiteSubjectIds || [],
+                    values.previousSubjectIds || []
+                );
+                console.log(subject)
+                try {
+
+                    const response = await subjectApi.subjectUpdateInstance(subject, selectedSubject?.name)
+                    if (!response.isError) {
+                        subjectDispatch(appendSubject(response.data.data));
+                        message.success(`Update subject successfully! ${subject.id}`);
+                        form.resetFields();
+                        onOk();
+                    } else {
+                        message.error(`Update subject failed! ${response.data}`);
+                    }
+                } catch (error) {
+                    message.error(`Update subject failed! ${error}`);
+                }
+            },
+            (reason) => {
+                const errorMessage = reason.errorFields
+                    ? `Update subject failed: ${reason.errorFields[0].name} - ${reason.errorFields[0].errors[0]}`
+                    : 'Update subject failed. Please check the form inputs.';
+                message.error(errorMessage);
+            }
+        );
+    }
+
     const handleCancel = () => {
         form.resetFields();
         onCancel();
+
     }
 
     const createForm = (
         <Form
             form={form}
             labelCol={{
-                span: 6,
+                span: 8,
             }}
             wrapperCol={{
-                span: 16,
+                span: 20,
             }}
         >
             <Form.Item
@@ -140,7 +180,7 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
                 </Select>
             </Form.Item>
 
-            <Form.Item label="Previous Subject" name="previousSubjectId">
+            <Form.Item label="Previous Subject" name="previousSubjectIds">
                 <Select allowClear mode="multiple">
                     {
                         subjects.map((subject) => {
@@ -148,10 +188,9 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
                             return <Option value={subject.id}>{display}</Option>
                         })
                     }
-
                 </Select>
             </Form.Item>
-            <Form.Item label="Prerequisite Subject" name="prequisiteSubjectId">
+            <Form.Item label="Prerequisite Subject" name="prequisiteSubjectIds">
                 <Select allowClear mode="multiple" >
                     {
                         subjects.map((subject) => {
@@ -165,7 +204,7 @@ const CreateSubjectModal = ({ open, onCancel, onOk }) => {
     );
 
     return (
-        <Modal title="Add New Subject" visible={open} onOk={handleSubmit} onCancel={handleCancel}>
+        <Modal title="Add New Subject" visible={open} okText={isCreate ? "Create" : "Update"} onOk={isCreate ? handleSubmit : handleUpdate} onCancel={handleCancel}>
             {createForm}
         </Modal>
     );

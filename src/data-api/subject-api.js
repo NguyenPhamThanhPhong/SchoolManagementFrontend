@@ -29,9 +29,11 @@ const subjectGetbyId = async (id) => {
     }
 }
 
-const subjectUpdateInstance = async (subject) => {
+const subjectUpdateInstance = async (subject, prevName = "") => {
+    console.log(APIUtil.baseURL + `/subject-update-instance/${prevName}`);
+    console.log(JSON.stringify(subject))
     try {
-        const response = await axios.put(APIUtil.baseURL + '/subject-update-instance', subject, APIUtil.jsonHeader);
+        const response = await axios.post(APIUtil.baseURL + `/subject-update-instance/${prevName}`, subject, APIUtil.jsonHeader);
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };

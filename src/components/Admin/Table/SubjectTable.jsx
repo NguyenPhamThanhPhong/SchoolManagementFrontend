@@ -1,7 +1,7 @@
 import { Space, Button, Table } from 'antd';
 import { React, useState } from 'react';
 
-const SubjectTable = ({ showDrawer, subjects, deleteSubject }) => {
+const SubjectTable = ({ showDrawer, subjects, deleteSubject, handleEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const pageSize = 5;
@@ -9,9 +9,7 @@ const SubjectTable = ({ showDrawer, subjects, deleteSubject }) => {
 
 
 
-    const handleDelete = (id) => {
 
-    }
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -64,7 +62,7 @@ const SubjectTable = ({ showDrawer, subjects, deleteSubject }) => {
                     key: 'action',
                     render: (_, record) => (
                         <Space size="middle">
-                            <Button type="primary" onClick={() => console.log('Edit')}>
+                            <Button type="primary" onClick={() => { handleEdit(record) }}>
                                 Edit
                             </Button>
                             <Button onClick={() => { deleteSubject(record.id) }} danger variant="contained" type="primary">

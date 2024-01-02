@@ -27,7 +27,7 @@ class Faculty {
 }
 
 class Subject {
-    constructor(id, name, facultyId, prequisiteIds, previousSubjectIds, classIds) {
+    constructor(id, name, facultyId, prequisiteIds, previousSubjectIds, classIds = []) {
         this.id = id;
         this.name = name;
         this.facultyId = facultyId;
