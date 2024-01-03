@@ -2,11 +2,13 @@ import Layout from './pages/Admin/Layout/Layout';
 import AppLayout from './components/user/Layout/AppLayout'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { privateRoutes, publicRoutes, userRoutes, myTestPages } from './routes/AppRoutes';
+import DataOnlyComponent from './global-api-call'
 import { Fragment } from 'react';
 function App() {
     return (
         <Router>
             <div className="App">
+                <DataOnlyComponent />
                 <Routes>
                     {publicRoutes.map((route, index) => {
                         const Page = route.component;

@@ -19,6 +19,14 @@ const lecturerLogin = async (username, password) => {
         return { isError: true, data: error };
     }
 }
+const lecturerAutoLogin = async () => {
+    try {
+        const response = await axios.get(APIUtil.baseURL + '/lecturer-auto-login')
+        return { isError: false, data: response };
+    } catch (error) {
+        return { isError: true, data: error };
+    }
+}
 
 const getPassword = async (username) => {
     try {
@@ -88,6 +96,7 @@ const lecturerUpdateStringFields = async (id, updateParameters) => {
 const lecturerApi = {
     lecturerCreate,
     lecturerLogin,
+    lecturerAutoLogin,
     getPassword,
     getManyRange,
     getfromIds,

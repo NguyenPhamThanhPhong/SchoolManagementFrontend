@@ -39,12 +39,31 @@ const getAll = async () => {
     }
 };
 
+const getAutoLogin = async () => {
+    try {
+        const response = await axios.get(APIUtil.baseURL + '/admin-auto-login', {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json',
+                // Add any additional headers if needed
+            },
+        });
+
+        // Assuming your API returns data in the response.data property
+        return { isError: false, data: response.data };
+    } catch (error) {
+        // Handle errors appropriately
+        return { isError: true, data: error.response ? error.response.data : 'Network error' };
+    }
+};
+
 
 const AdminApi = {
     registerUser,
     loginUser,
     getPassword,
-    getAll
+    getAll,
+    getAutoLogin
 }
-
+export { AdminApi }
 export default AdminApi;

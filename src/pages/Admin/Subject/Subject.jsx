@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-key */
+
 import React, { useEffect, useState } from 'react';
 import { Space, Button, Input, Select, Card } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';

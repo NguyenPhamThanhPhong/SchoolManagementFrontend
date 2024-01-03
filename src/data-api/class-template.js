@@ -68,7 +68,7 @@ class UpdateParameter {
 }
 
 class SchoolClassCreateRequest {
-    constructor(id, name, subject, roomName, program, classType, semesterId, schedule, studentLog) {
+    constructor(id, name, subject = {}, semesterId, lecturer, roomName, program, classType, studentLog, schedule = []) {
         this.ID = id;
         this.Name = name;
         this.RoomName = roomName;
@@ -77,6 +77,7 @@ class SchoolClassCreateRequest {
         this.Subject = subject;
         this.SemesterId = semesterId;
         this.Schedule = schedule;
+        this.lecturer = lecturer;
         this.StudentLog = studentLog;
     }
 }

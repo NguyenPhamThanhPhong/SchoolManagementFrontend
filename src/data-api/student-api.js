@@ -20,6 +20,15 @@ const studentLogin = async (username, password) => {
         return { isError: true, data: error };
     }
 }
+const studentAutoLogin = async () => {
+    try {
+        const response = await axios.get(APIUtil.baseURL + '/student-auto-login')
+        return { isError: false, data: response };
+    } catch (error) {
+        return { isError: true, data: error };
+    }
+
+}
 
 const studentGetPassword = async (username) => {
     try {
@@ -100,6 +109,7 @@ const studentUpdateInstance = async (student) => {
 const StudentApi = {
     studentCreate,
     studentLogin,
+    studentAutoLogin,
     studentGetPassword,
     studentGetFromFilter,
     studentGetFromIds,
