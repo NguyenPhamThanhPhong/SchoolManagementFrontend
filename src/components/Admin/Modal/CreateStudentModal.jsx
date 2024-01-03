@@ -1,26 +1,51 @@
 /* eslint-disable react/jsx-key */
-import React, { useState } from 'react';
-import { Modal, Form, Input, Select, AutoComplete, Table, DatePicker } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Modal, Form, Input, Select, AutoComplete, Table, DatePicker, message } from 'antd';
+import { useStudentContext, useFacultyContext, useSchoolClassContext, appendStudent } from '../../../data-store';
+import { StudentApi, SchoolMemberCreateRequest, PersonalInfo, formatDate } from '../../../data-api';
+
 const { Option } = Select;
 
 function CreateStudentModal({ open, onOk, onCancel }) {
-    const [selectedClass, setSelectedClass] = useState(null);
+    const [form] = Form.useForm();
+
     const [tableData, setTableData] = useState([]);
 
-    const dataSource = [
-        {
-            key: '1',
-            id: '1',
-            class_name: 'Huong dt',
-            subject: 'Class 1',
-        },
-        {
-            key: '2',
-            id: '2',
-            class_name: 'lap trinh',
-            subject: 'Class 2',
-        },
-    ];
+    const [studentState, studentDispatch] = useStudentContext();
+    const [facultyState, facultyDispatch] = useFacultyContext();
+    const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
+
+    const [unselectedClasses, setUnselectedClasses] = useState(schoolClassState?.schoolClasses);
+
+    const validateId = async (rule, value, callback) => {
+        if (studentState.students.some((student) => student.id === value)) {
+            callback(`Student ID: ${value} already exist`);
+        } else {
+            callback();
+        }
+    }
+    const handleIdChange = (value) => {
+        form.setFieldValue({
+            id: value,
+            username: value,
+            email: value + "@gm.uit.edu.vn",
+        })
+    }
+
+    const validateUsername = async (rule, value, callback) => {
+        if (studentState?.students.some((student) => student.username === value)) {
+            callback(`Username: ${value} already exist`);
+        } else {
+            callback();
+        }
+    }
+
+    useEffect(() => {
+        setTableData([]);
+        setUnselectedClasses(schoolClassState?.schoolClasses);
+    }, [schoolClassState?.schoolClasses]);
+
+
 
     const columns = [
         {
@@ -30,29 +55,62 @@ function CreateStudentModal({ open, onOk, onCancel }) {
         },
         {
             title: 'Class Name',
-            dataIndex: 'class_name',
-            key: 'class_name',
+            dataIndex: 'name',
+            key: 'name',
         },
         {
             title: 'Subject',
-            dataIndex: 'subject',
-            key: 'subject',
+            render: (text, record) => (
+                <p>
+                    {record.subject?.id + "-" + record.subject?.name}
+                </p>
+            ),
+            key: ['subject', 'id'],
         },
     ];
 
-    const handleClassChange = (value) => {
-        // Find the selected class in dataSource
-        const selectedClassData = dataSource.find((item) => item.subject === value);
+    const handleSubmit = async () => {
+        form.validateFields().then(async (values) => {
+            let { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = values;
+            console.log(faculty)
+            let classIds = tableData.map((item) => item.id);
+            dateofbirth = formatDate(dateofbirth);
+            let personalInformation = new PersonalInfo(dateofbirth, name, gender, phone, faculty, program);
+            let student = new SchoolMemberCreateRequest(id, username, password, email, "student", personalInformation, classIds);
+            console.log(student);
+            try {
+                let response = await StudentApi.studentCreate(student);
+                if (!response.isError) {
+                    studentDispatch(appendStudent(response.data.data));
+                    message.success(`Create student successfully! ${student.id}`);
+                    form.resetFields();
+                    onOk();
+                }
+                else {
+                    message.error(`Create student failed! ${response.data}`);
+                    message.error(`${JSON.stringify(student)}`);
+                }
+            }
+            catch (error) {
+                message.error(`Create student failed! ${error}`);
+            }
+        })
+    }
 
-        // Update the tableData with the selected class information without removing existing data
+
+    const handleClassChange = (value) => {
+        const selectedClassData = unselectedClasses?.find((item) => item.id === value);
+
         if (selectedClassData) {
             setTableData((prevData) => [...prevData, selectedClassData]);
+            setUnselectedClasses((prevData) => prevData.filter((item) => item.id !== value));
         }
     };
 
     return (
-        <Modal title="Tạo sinh viên" open={open} onOk={onOk} onCancel={onCancel}>
+        <Modal title="Tạo sinh viên" open={open} onOk={handleSubmit} onCancel={onCancel}>
             <Form
+                form={form}
                 labelCol={{
                     span: 4,
                 }}
@@ -60,13 +118,19 @@ function CreateStudentModal({ open, onOk, onCancel }) {
                     span: 20,
                 }}
             >
-                <Form.Item label="ID" name="id" rules={[{ required: true }]}>
-                    <Input />
+                <Form.Item
+                    label="ID"
+                    name="id"
+                    rules={[{ required: true, message: 'Please enter an ID!' },
+                    { validator: validateId }]}
+                >
+                    <Input onChange={(e) => { form.setFieldValue(handleIdChange(e.target.value)) }} style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item label="Name" name="name" rules={[{ required: true }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item label="Username" name="username">
+                <Form.Item label="Username" name="username" rules={[{ required: true, message: 'Please enter a username!' },
+                { validator: validateUsername }]} >
                     <Input />
                 </Form.Item>
                 <Form.Item label="Password" name="password">
@@ -85,36 +149,41 @@ function CreateStudentModal({ open, onOk, onCancel }) {
                         <Option value="orther">Orther</Option>
                     </Select>
                 </Form.Item>
-                <Form.Item label="Phone" name="phone">
+                <Form.Item
+                    label="Phone"
+                    name="phone"
+                    rules={[
+                        { required: true, message: 'Please enter a phone number' },
+                        { pattern: /^[0-9]*$/, message: 'Please enter a valid phone number (numeric characters only)' },
+                    ]}
+                >
                     <Input />
                 </Form.Item>
-                <Form.Item label="Faculty" name="faculty">
-                    <AutoComplete
-                        placeholder="Faculty"
-                        options={[
-                            {
-                                value: 'Faculty 1',
-                            },
-                            {
-                                value: 'Faculty 2',
-                            },
-                            {
-                                value: 'Faculty 3',
-                            },
-                        ]}
-                    />
+
+                <Form.Item label="Faculty" name="faculty" defaultValue="" rules={[
+                    { required: true, message: 'Please select a faculty' },
+                ]} >
+                    <Select mode="single" showSearch optionFilterProp="children" allowClear>
+                        {facultyState.faculties?.map((faculty) => (
+                            <Option key={faculty.id} value={faculty.id}>
+                                {faculty.id + " - " + faculty.name}
+                            </Option>
+                        ))}
+                    </Select>
                 </Form.Item>
                 <Form.Item label="Program" name="program">
                     <Select allowClear>
-                        <Option value="clc">CLC</Option>
-                        <Option value="daitra">Đại trà</Option>
+                        <Option value="high quality program">high quality program</Option>
+                        <Option value="Normal">Normal</Option>
                     </Select>
                 </Form.Item>
                 <Form.Item label="Classes" name="classes">
                     <Select allowClear onChange={handleClassChange}>
-                        <Option value="Class 1">Class 1</Option>
-                        <Option value="Class 2">Class 2</Option>
-                        <Option value="Class 3">Class 3</Option>
+                        {
+                            unselectedClasses?.map((item) => (
+                                <Option value={item.id}>{item.id + "-" + item.name}</Option>
+                            ))
+                        }
                     </Select>
                 </Form.Item>
                 <Table dataSource={tableData} columns={columns} pagination={false} />

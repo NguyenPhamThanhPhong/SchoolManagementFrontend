@@ -44,7 +44,14 @@ const temp = [
     },
 ];
 
-function LecturerTable({ handleDetail }) {
+function LecturerTable({ handleDetail, lecturers, handleDelete }) {
+
+    let display = lecturers || temp;
+
+
+    display = display.map((item, index) => { return { ...item, key: index, stt: index + 1 } })
+
+    console.log(JSON.stringify(display));
     const columns = [
         {
             title: 'STT',
@@ -52,39 +59,34 @@ function LecturerTable({ handleDetail }) {
             key: 'stt',
         },
         {
-            title: 'Mssv',
-            dataIndex: 'mssv',
-            key: 'mssv',
+            title: 'MSGV',
+            dataIndex: 'id',
+            key: 'id',
         },
         {
             title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: ['personalInfo', 'name'],
+            key: 'id',
         },
         {
             title: 'Ngày Sinh',
-            dataIndex: 'ngaySinh',
-            key: 'ngaySinh',
+            dataIndex: ['personalInfo', 'dateOfBirth'],
+            key: 'id',
         },
         {
             title: 'Email',
             dataIndex: 'email',
-            key: 'email',
+            key: 'id',
         },
         {
             title: 'SDT',
-            dataIndex: 'sdt',
-            key: 'sdt',
+            dataIndex: ['personalInfo', 'phone'],
+            key: 'id',
         },
         {
             title: 'Faculty',
-            dataIndex: 'faculty',
-            key: 'faculty',
-        },
-        {
-            title: 'Date of Birth',
-            dataIndex: ['personalInfo', 'dateofBirth'],
-            key: 'dateofBirth',
+            dataIndex: ['personalInfo', 'facultyId'],
+            key: 'id',
         },
         {
             title: 'Action',
@@ -111,7 +113,7 @@ function LecturerTable({ handleDetail }) {
     return (
         <Table
             columns={columns}
-            dataSource={temp.map((item) => ({
+            dataSource={display.map((item) => ({
                 ...item,
                 key: item.key,
                 action: (
@@ -119,7 +121,7 @@ function LecturerTable({ handleDetail }) {
                         <Button variant="contained" type="primary">
                             Edit
                         </Button>
-                        <Button danger variant="contained" type="primary">
+                        <Button onClick={() => { handleDelete(item) }} danger variant="contained" type="primary">
                             Delete
                         </Button>
                         <Button variant="contained" onClick={() => handleDetail(item)}>

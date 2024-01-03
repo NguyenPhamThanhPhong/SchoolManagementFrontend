@@ -69,9 +69,10 @@ class UpdateParameter {
 
 class SchoolClassCreateRequest {
     constructor(id, name, subject = {}, semesterId, lecturer, roomName, program, classType, studentLog, schedule = []) {
+        console.log(roomName)
         this.ID = id;
         this.Name = name;
-        this.RoomName = roomName;
+        this.roomName = roomName;
         this.Program = program;
         this.ClassType = classType;
         this.Subject = subject;
@@ -159,6 +160,16 @@ const DateOfWeek = {
         }
     }
 }
+function formatDate(isoDateString) {
+    const date = new Date(isoDateString);
+
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+}
+
 
 
 export {
@@ -175,5 +186,6 @@ export {
     StudentLog,
     TextFilters,
     DateOfWeek,
+    formatDate,
     UpdateAction
 }

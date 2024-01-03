@@ -110,9 +110,10 @@ const Subject = () => {
     useEffect(() => {
         fetchSubjects();
     }, []);
+
     useEffect(() => {
-        setFilteredSubjects(subjectState.subjects);
-    }, [subjectState.subjects]);
+        setFilteredSubjects(subjectState?.subjects);
+    }, [subjectState?.subjects]);
 
     const showDrawer = (subject) => {
         setSelectedSubject(subject);

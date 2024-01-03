@@ -8,31 +8,18 @@ import {
 import { schoolClassApi } from '../../../data-api';
 
 
-function ClassTable({ showDrawer }) {
+function ClassTable({ showDrawer, schoolClasses }) {
     const [currentPage, setCurrentPage] = useState(1);
 
     const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
 
 
-    const fetchSchoolClasses = async (start, end) => {
-        try {
-            let response = await schoolClassApi.classGetManyRange(start, end)
-            if (!response.isError) {
-                schoolClassDispatch(setSchoolClasses(response.data.data));
-            }
-            else
-                console.log(response.data)
-        }
-        catch (error) {
-            console.log(error)
-        }
-    }
+
     const deleteSchoolClass = async (id, prevUrls) => {
         try {
             let response = await schoolClassApi.classDelete(id, prevUrls)
             if (!response.isError) {
-                if (response.data.data?.toString().contains('deleted'))
-                    schoolClassDispatch(removeSchoolClass(id));
+                schoolClassDispatch(removeSchoolClass(id));
             }
             else
                 console.log(response.data)
@@ -41,11 +28,6 @@ function ClassTable({ showDrawer }) {
             console.log(error)
         }
     }
-
-
-    useEffect(() => {
-        fetchSchoolClasses(0, 50);
-    }, []);
 
     const handleDeleteClick = (record) => {
         if (record !== null && record !== undefined) {
@@ -57,7 +39,7 @@ function ClassTable({ showDrawer }) {
         }
     }
 
-    const dataSource = schoolClassState.schoolClasses || [];
+    const dataSource = schoolClasses || [];
 
     const columns = [
         {
@@ -86,9 +68,15 @@ function ClassTable({ showDrawer }) {
             key: 'classType',
         },
         {
-            title: 'Subject ID',
-            dataIndex: 'subjectId',
-            key: 'subjectId',
+            title: 'Subject',
+            render: (_, record) => (
+                <Space size="middle">
+                    <p>
+                        {record.subject?.id + record.subject?.name}
+                    </p>
+                </Space>
+            ),
+            key: ['subject', 'id'],
         },
         {
             title: 'Action',

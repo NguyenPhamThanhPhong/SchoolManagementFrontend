@@ -28,10 +28,11 @@ const DataOnlyComponent = () => {
     let start = 0;
     let end = 1000;
 
-    const fetchLecutrers = async (start, end) => {
+    const fetchLecutrers = async () => {
         if (lecturer === lecturerIntialState) {
             try {
-                let response = await lecturerApi.getManyRange(start, end)
+                let response = await lecturerApi.getManyRange(0, 1000)
+                console.log(response)
                 if (!response.isError) {
                     lecturerDispatch(setLecturers(response.data.data));
                 }
@@ -43,10 +44,10 @@ const DataOnlyComponent = () => {
             }
         }
     }
-    const fetchStudents = async (start, end) => {
+    const fetchStudents = async () => {
         if (student === studentIntialState) {
             try {
-                let response = await StudentApi.getManyRange(start, end)
+                let response = await StudentApi.studentGetManyRange(0, 1000)
                 if (!response.isError) {
                     studentDispatch(setStudents(response.data.data));
                 }
@@ -73,10 +74,10 @@ const DataOnlyComponent = () => {
             }
         }
     }
-    const fetchSchoolClasses = async (start, end) => {
+    const fetchSchoolClasses = async () => {
         if (schoolClass === schoolClassInitialState) {
             try {
-                let response = await schoolClassApi.getManyRange(start, end)
+                let response = await schoolClassApi.classGetManyRange(0, 1000)
                 if (!response.isError) {
                     schoolClassDispatch(setSchoolClasses(response.data.data));
                 }
@@ -93,7 +94,7 @@ const DataOnlyComponent = () => {
         console.log(`in fetching subject ${subject === SubjectInitialState}`)
         if (subject === SubjectInitialState) {
             try {
-                let response = await subjectApi.subjectManyRange(start, end)
+                let response = await subjectApi.subjectManyRange(0, 1000)
                 if (!response.isError) {
                     subjectDispatch(setSubjects(response.data.data));
                 }
@@ -143,6 +144,7 @@ const DataOnlyComponent = () => {
         console.log('executing global q23412341234api call')
         await Promise.all([
             fetchFaculties(),
+            fetchLecutrers(),
             fetchSchoolClasses(),
             fetchSemesters(),
             fetchStudents(),

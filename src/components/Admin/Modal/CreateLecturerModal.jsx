@@ -1,10 +1,52 @@
-import React, { useState } from 'react';
-import { Modal, Form, Input, Select, AutoComplete, Table, DatePicker } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Modal, Form, Input, Select, AutoComplete, Table, DatePicker, message } from 'antd';
+
+import { useLecturerContext, useFacultyContext, useSchoolClassContext, appendLecturer } from '../../../data-store';
+import { LecturerApi, SchoolMemberCreateRequest, PersonalInfo, formatDate } from '../../../data-api';
 const { Option } = Select;
 
 function CreateLecturerModal({ open, onOk, onCancel }) {
-    const [selectedClass, setSelectedClass] = useState(null);
+    const [form] = Form.useForm();
+
     const [tableData, setTableData] = useState([]);
+    const [lecturerState, lecturerDispatch] = useLecturerContext();
+    const [facultyState, facultyDispatch] = useFacultyContext();
+    const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
+
+
+    const [unselectedClasses, setUnselectedClasses] = useState(schoolClassState?.schoolClasses);
+
+    let lecturers = lecturerState?.lecturers;
+
+    const validateId = async (rule, value, callback) => {
+        let x = form.getFieldValue('id');
+        console.log(x);
+        if (lecturerState.lecturers?.some((lecturer) => lecturer.id === value)) {
+            callback(`lecturer ID: ${value} already exist`);
+        } else {
+            callback();
+        }
+    }
+    const validateUsername = async (rule, value, callback) => {
+        if (lecturerState.lecturers.some((lecturer) => lecturer.username === value)) {
+            callback(`Username: ${value} already exist`);
+        } else {
+            callback();
+        }
+    }
+
+    useEffect(() => {
+        setTableData([]);
+        setUnselectedClasses(schoolClassState?.schoolClasses);
+    }, [schoolClassState?.schoolClasses]);
+
+    const handleIdChange = (value) => {
+        form.setFieldValue({
+            id: value,
+            username: value,
+            email: value + "@gm.uit.edu.vn",
+        })
+    }
 
     const dataSource = [
         {
@@ -29,13 +71,17 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
         },
         {
             title: 'Class Name',
-            dataIndex: 'class_name',
-            key: 'class_name',
+            dataIndex: 'name',
+            key: 'name',
         },
         {
             title: 'Subject',
-            dataIndex: 'subject',
-            key: 'subject',
+            render: (text, record) => (
+                <p>
+                    {record.subject?.id + "-" + record.subject?.name}
+                </p>
+            ),
+            key: ['subject', 'id'],
         },
     ];
 
@@ -51,21 +97,14 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
 
     return (
         <Modal title="Create Lecturer" open={open} onOk={onOk} onCancel={onCancel}>
-            <Form
-                labelCol={{
-                    span: 4,
-                }}
-                wrapperCol={{
-                    span: 20,
-                }}
-            >
-                <Form.Item label="ID" name="id" rules={[{ required: true }]}>
+            <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
+                <Form.Item label="ID" name="id" rules={[{ required: true, message: "please enter id" }, { validator: validateId }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item label="Name" name="name" rules={[{ required: true }]}>
+                <Form.Item label="Name" name="name" rules={[{ required: true, message: "please enter name" }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item label="Username" name="username">
+                <Form.Item label="Username" name="username" rules={[{ required: true, message: "please enter name" }, { validator: validateUsername }]}>
                     <Input />
                 </Form.Item>
                 <Form.Item label="Password" name="password">
@@ -74,14 +113,14 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
                 <Form.Item label="Email" name="email">
                     <Input />
                 </Form.Item>
-                <Form.Item label="Dateofbirth" name="dateofbirth">
-                    <DatePicker />
+                <Form.Item label="Dateofbirth" name="dateofbirth" initialValue={new Date()}>
+                    <DatePicker format="DD/MM/YYYY" />
                 </Form.Item>
                 <Form.Item label="Gender" name="gender">
                     <Select allowClear>
-                        <Option value="nam">Nam</Option>
-                        <Option value="nu">Nu</Option>
-                        <Option value="orther">Orther</Option>
+                        <Option value="nam">Male</Option>
+                        <Option value="nu">Female</Option>
+                        <Option value="orther">Other</Option>
                     </Select>
                 </Form.Item>
                 <Form.Item label="Phone" name="phone">
@@ -90,17 +129,14 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
                 <Form.Item label="Faculty" name="faculty">
                     <AutoComplete
                         placeholder="Faculty"
-                        options={[
-                            {
-                                value: 'Faculty 1',
-                            },
-                            {
-                                value: 'Faculty 2',
-                            },
-                            {
-                                value: 'Faculty 3',
-                            },
-                        ]}
+                        options={
+                            facultyState?.faculties?.map((item) => {
+                                return {
+                                    value: item.id,
+                                    label: item.name,
+                                };
+                            })
+                        }
                     />
                 </Form.Item>
                 <Form.Item label="Program" name="program">
@@ -112,14 +148,20 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
                 <Form.Item label="Classes" name="classes">
                     <Select allowClear onChange={handleClassChange}>
                         <Option value="Class 1">Class 1</Option>
-                        <Option value="Class 2">Class 2</Option>
-                        <Option value="Class 3">Class 3</Option>
+                        {
+                            schoolClassState?.schoolClasses?.map((item) => {
+                                return <Option value={item.id}>{item.id + " - " + item.name}</Option>
+                            })
+                        }
                     </Select>
                 </Form.Item>
                 <Table dataSource={tableData} columns={columns} pagination={false} />
+
             </Form>
         </Modal>
     );
 }
 
 export default CreateLecturerModal;
+
+

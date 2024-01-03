@@ -9,25 +9,10 @@ import {
 } from '../../../data-store/index';
 
 
-function StudentTable({ handleDetail }) {
+function StudentTable({ handleDetail, students }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [studentState, studentDispatch] = useStudentContext();
-    let students = studentState.students
 
-    const fetchStudent = async () => {
-        try {
-            let response = await StudentApi.studentGetManyRange(0, 50)
-            if (!response.isError) {
-                studentDispatch(setStudents(response.data.data));
-            }
-            else {
-
-            }
-        }
-        catch (error) {
-            console.log('Failed to fetch: ', error);
-        }
-    }
     const deleteStudent = async (id) => {
         try {
             let response = await StudentApi.studentDelete(id)
@@ -42,13 +27,11 @@ function StudentTable({ handleDetail }) {
         }
     }
 
+
     const handleStudentDetail = (record) => {
         studentDispatch(setCurrentStudent(record));
     }
 
-    useEffect(() => {
-        fetchStudent();
-    }, []);
 
     let dataSource = students || []
     dataSource = dataSource.map((item, index) => ({ ...item, stt: index + 1 }));

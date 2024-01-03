@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Space, Button, Input, Select, Card } from 'antd';
+import { Space, Button, Input, Select, Card, message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import CreateLecturerModal from '../../../components/Admin/Modal/CreateLecturerModal';
 import SendNotiLecturerModal from '../../../components/Admin/Modal/SendNotiLecturerModal';
@@ -7,7 +7,7 @@ import ShowLecturerDrawer from '../../../components/Admin/Drawer/ShowLecturerDra
 import LecturerTable from '../../../components/Admin/Table/LecturerTable';
 
 
-import { useLecturerContext, setLecturers } from '../../../data-store';
+import { useLecturerContext, setLecturers, useFacultyContext, setStudents } from '../../../data-store';
 import { lecturerApi } from '../../../data-api/lecturer-api';
 
 
@@ -22,6 +22,9 @@ const Lecturer = () => {
 
     const [lecturerState, lecturerDispatch] = useLecturerContext();
 
+    const [filtredLecturers, setFiltredLecturers] = useState(lecturerState.lecturers);
+    const [searchText, setSearchText] = useState('');
+    const [selectedFaculty, setSelectedFaculty] = useState(null);
 
     const fetchLecutrers = async (start, end) => {
         try {
@@ -37,13 +40,30 @@ const Lecturer = () => {
         }
     }
 
-
-
     useEffect(() => {
         document.title = 'Quản lý giảng viên';
-        fetchLecutrers(0, 10);
-
+        fetchLecutrers(0, 50);
     }, []);
+
+
+    const onSearch = () => {
+        if (lecturerState !== null && lecturerState !== undefined) {
+            let result = lecturerState.lecturers.filter((lecturer) => {
+                let search = searchText.toLowerCase();
+                search = search.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+                let name = lecturer?.personalInfo?.name?.toLowerCase();
+                name = name.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+                let id = lecturer?.id?.toLowerCase();
+                id = id.replace(/\s/g, '').replace(/[^\w\s]/g, '');
+                return lecturer.personalInfo?.facultyId?.includes(selectedFaculty || "") && (name.includes(search) || id.includes(search));
+            })
+            setFiltredLecturers(result);
+        }
+    }
+
+    useEffect(() => {
+        onSearch();
+    }, [selectedFaculty, searchText])
 
     const handleDetail = (record) => {
         setSelectedStudent(record);
@@ -109,7 +129,7 @@ const Lecturer = () => {
                         Thêm mới
                     </Button>
                 </Space>
-                <LecturerTable lecturers={lecturerState.lecturers} handleDetail={handleDetail} />
+                <LecturerTable lecturers={filtredLecturers} handleDetail={handleDetail} />
             </Card>
             <SendNotiLecturerModal
                 open={isOpen}

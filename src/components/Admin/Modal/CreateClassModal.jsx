@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input, Select, AutoComplete, TimePicker, Checkbox } from 'antd';
+import { Modal, Form, Input, Select, AutoComplete, TimePicker, Checkbox, message } from 'antd';
 import { useSchoolClassContext, useSubjectContext, useLecturerContext, useSemesterContext } from '../../../data-store';
-import { SchoolClassCreateRequest, DateOfWeek } from '../../../data-api';
+import { appendSchoolClass } from '../../../data-store';
+import { SchoolClassCreateRequest, DateOfWeek, schoolClassApi } from '../../../data-api';
 
 
 const { Option } = Select;
@@ -34,9 +35,30 @@ function CreateClassModal({ open, onOk, onCancel }) {
         }
     }
     const handleSubmit = async () => {
-        const { id, name, subject, semester, lecturer, roomName, program, classType } = form.getFieldsValue();
-        const schoolClass = new SchoolClassCreateRequest(id, name, subject, semester, lecturer, roomName, program, classType, [], schedule);
-        console.log(JSON.stringify(schoolClass));
+        form.validateFields().then(async (values) => {
+            const { id, name, subject, semester, lecturer, roomName, program, classType } = values
+            console.log(roomName)
+            const schoolClass = new SchoolClassCreateRequest(id, name, JSON.parse(subject), semester, JSON.parse(lecturer), roomName, program, classType, [], schedule);
+            console.log(JSON.stringify(schoolClass));
+            try {
+                let response = await schoolClassApi.classCreate(schoolClass);
+                console.log(response);
+                if (!response.isError) {
+                    schoolClassDispatch(appendSchoolClass(response.data.data));
+                    message.success("Create class successfully");
+                    onOk();
+                    form.resetFields();
+                }
+                else {
+                    console.log(response);
+                    message.error(response?.data);
+                }
+            }
+            catch (error) {
+                console.log(error);
+                message.error(error);
+            }
+        })
 
     }
 
@@ -47,11 +69,20 @@ function CreateClassModal({ open, onOk, onCancel }) {
         if (componentDisabled) {
             const currentValues = form.getFieldsValue();
             let name = currentValues?.name || "";
-            let subjectId = currentValues?.subject || {}
+            let subjectId = currentValues?.subject;
+
             if (name === undefined || name === null)
                 name = "";
             if (subjectId === undefined || subjectId === null)
                 subjectId = "";
+
+            try {
+                subjectId = JSON.parse(subjectId)?.id || {}
+            }
+            catch (error) {
+                subjectId = "";
+            }
+
             form.setFieldsValue({
                 id: subjectId + "." + name
             });
@@ -91,7 +122,7 @@ function CreateClassModal({ open, onOk, onCancel }) {
                 ]} >
                     <Select mode="single" showSearch optionFilterProp="children" onChange={handleIdGenerate} allowClear>
                         {SubjectState.subjects?.map((subject) => (
-                            <Option key={subject.id} value={subject?.id}>
+                            <Option key={subject.id} value={JSON.stringify({ id: subject?.id, name: subject?.name })}>
                                 {subject?.id + " - " + subject?.name}
                             </Option>
                         ))}
@@ -109,19 +140,20 @@ function CreateClassModal({ open, onOk, onCancel }) {
                     </Select>
                 </Form.Item>
 
+
                 <Form.Item label="Lecturer" name="lecturer" defaultValue="" rules={[
-                    { required: true, message: 'Please select a faculty' },
+                    { required: true, message: 'Please select a lecturer' },
                 ]} >
-                    <Select mode="single" showSearch optionFilterProp="children" onChange={handleSelectSubject} allowClear>
+                    <Select mode="single" showSearch optionFilterProp="children" allowClear>
                         {LecturerState.lecturers?.map((lecturer) => (
-                            <Option key={{ id: lecturer.id, name: lecturer.name }} value={lecturer.id}>
+                            <Option key={lecturer?.id} value={JSON.stringify({ id: lecturer?.id, name: lecturer.personalInfo?.name })}>
                                 {lecturer.id + " - " + lecturer.personalInfo?.name}
                             </Option>
                         ))}
                     </Select>
                 </Form.Item>
 
-                <Form.Item label="Room" name="room">
+                <Form.Item label="Room" name="roomName">
                     <Input />
                 </Form.Item>
                 <Form.Item label="Program" name="program">
