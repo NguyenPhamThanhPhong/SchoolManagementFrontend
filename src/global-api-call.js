@@ -152,8 +152,6 @@ const DataOnlyComponent = () => {
         ])
     }
     async function handleFirstLoadLogic() {
-        const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
-        console.log('token is =' + token)
         await fetchAutoLogin();
         await fetchAdminDatas();
     }

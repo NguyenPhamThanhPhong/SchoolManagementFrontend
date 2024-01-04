@@ -1,6 +1,20 @@
-import { Card, Table, Divider, Descriptions, Badge, Breadcrumb, Button, Space, Calendar, Tabs, Avatar } from 'antd';
-import { EyeOutlined, EyeInvisibleOutlined, UserOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
+import {
+    Card,
+    Table,
+    Divider,
+    Descriptions,
+    Badge,
+    Breadcrumb,
+    Button,
+    Space,
+    Calendar,
+    Tabs,
+    Avatar,
+    Input,
+} from 'antd';
+import { EyeOutlined, EyeInvisibleOutlined, EditOutlined } from '@ant-design/icons';
+import LecturerExamListTable from '../../../components/Admin/Table/LecturerExamListTable';
 
 const scoreListData = [
     {
@@ -99,6 +113,22 @@ const columns = [
 ];
 
 function DetailLecturer() {
+    const [editing, setEditing] = useState(false);
+    const [editedDescriptions, setEditedDescriptions] = useState([...items]);
+
+    const handleEdit = () => {
+        setEditing(true);
+    };
+
+    const handleSave = () => {
+        setEditing(false);
+        console.log('Saved:', editedDescriptions);
+    };
+
+    const handleCancel = () => {
+        setEditing(false);
+        setEditedDescriptions([...items]);
+    };
     const onPanelChange = (value, mode) => {
         console.log(value.format('YYYY-MM-DD'), mode);
     };
@@ -119,9 +149,35 @@ function DetailLecturer() {
         {
             key: '3',
             label: 'Lịch coi thi',
-            children: 'Lịch coi thi',
+            children: <LecturerExamListTable />,
         },
     ];
+    const renderDescriptions = () => {
+        if (editing) {
+            return (
+                <Descriptions bordered>
+                    {editedDescriptions.map((item) => (
+                        <Descriptions.Item key={item.key} label={item.label}>
+                            <Input
+                                value={item.children}
+                                onChange={(e) => {
+                                    const updatedDescriptions = editedDescriptions.map((d) => {
+                                        if (d.key === item.key) {
+                                            return { ...d, children: e.target.value };
+                                        }
+                                        return d;
+                                    });
+                                    setEditedDescriptions(updatedDescriptions);
+                                }}
+                            />
+                        </Descriptions.Item>
+                    ))}
+                </Descriptions>
+            );
+        }
+
+        return <Descriptions bordered items={items} />;
+    };
     return (
         <div>
             <Card>
@@ -148,7 +204,21 @@ function DetailLecturer() {
                         bordered={true}
                         src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
                     />
-                    <Descriptions bordered items={items} />
+                    <Space>
+                        {editing ? (
+                            <>
+                                <Button type="primary" onClick={handleSave}>
+                                    Save
+                                </Button>
+                                <Button onClick={handleCancel}>Cancel</Button>
+                            </>
+                        ) : (
+                            <Button icon={<EditOutlined />} onClick={handleEdit}>
+                                Edit
+                            </Button>
+                        )}
+                    </Space>
+                    {renderDescriptions()}
                 </Space>
                 <Tabs
                     defaultActiveKey="1"

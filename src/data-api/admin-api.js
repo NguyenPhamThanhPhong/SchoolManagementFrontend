@@ -41,11 +41,14 @@ const getAll = async () => {
 };
 
 const getAutoLogin = async () => {
-    const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
-    let isTokenExpired = false;
     try {
+        let tryToken = document.cookie;
+        if (tryToken === undefined || tryToken === null || tryToken === '')
+            return { isError: true, data: 'Token not found' };
+        const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
+        let isTokenExpired = false;
         if (!isTokenExpired) {
-            const response = await axios.post(APIUtil.baseURL + '/admin-auto-login', {
+            const response = await axios.get(APIUtil.baseURL + '/admin-auto-login', {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
