@@ -10,12 +10,6 @@ const sidebarNavItems = [
         to: userPaths.home,
         section: 'user-home'
     },
-    // {
-    //     display: 'Notification',
-    //     icon: <i className='bx bx-bell'></i>,
-    //     to: '/user-notification',
-    //     section: 'user-notification'
-    // },
     {
         display: 'Schedule',
         icon: <i className='bx bx-calendar'></i>,

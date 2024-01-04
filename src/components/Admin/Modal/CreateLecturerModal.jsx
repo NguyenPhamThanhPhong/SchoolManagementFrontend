@@ -113,7 +113,7 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
                 <Form.Item label="Email" name="email">
                     <Input />
                 </Form.Item>
-                <Form.Item label="Dateofbirth" name="dateofbirth" initialValue={new Date()}>
+                <Form.Item label="Dateofbirth" name="dateofbirth" >
                     <DatePicker format="DD/MM/YYYY" />
                 </Form.Item>
                 <Form.Item label="Gender" name="gender">
