@@ -1,0 +1,38 @@
+.NotificationitemContainer {
+    border-bottom-style: solid;
+    background-color: #f7f9fc;
+    color: #2f88ff;
+    height: 14vh;
+    border-radius: 11px;
+    margin-top: 1%;
+    margin-right: 1%;
+    padding-left: 2%;
+    padding-top: 1%;
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: sans-serif;
+}
+
+.secondLine {
+    margin-top: 2%;
+}
+.dropSemester {
+    padding-top: 2%;
+}
+#dropdown-basic {
+    background-color: #2f88ff;
+    color: white;
+}
+#dropdown-basic-items {
+    color: #2f88ff;
+}
+#dropSemester {
+    position: relative;
+}
+.bigContainerNotif {
+    position: fixed;
+
+    overflow-y: scroll;
+    width: 77%;
+    height: 90vh;
+}

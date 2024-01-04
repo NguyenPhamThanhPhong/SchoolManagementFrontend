@@ -2,7 +2,7 @@ import './NotificationList.scss'
 import { Link } from 'react-router-dom';
 import { Divider } from 'antd';
 import { userPaths } from '../../../routes/AppRoutes';
-function NotificationList() {
+function NotificationList(props) {
 
 
     let NotificationItems = [
@@ -26,18 +26,26 @@ function NotificationList() {
             NotificationId: "Noti5",
             Time: 'Time5'
         },
+        {
+            NotificationId: "Noti5",
+            Time: 'Time5'
+        },
+        {
+            NotificationId: "Noti5",
+            Time: 'Time5'
+        },
 
 
 
     ]
     return (
         <>
-            <div className='bigContainer'>
-                <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }}>Notification</Divider>
+            <div className='bigContainerNotif'>
+                <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }}>{props.NotiType}</Divider>
                 <ul className="list-group">
                     {NotificationItems.map((item =>
                     (<li className="list-group" key={item.NotificationId}>
-                        <Link to={userPaths.notification} className="classitemContainer" style={{ textDecoration: 'none' }}>
+                        <Link to={userPaths.notification} className="NotificationitemContainer" style={{ textDecoration: 'none' }}>
                             <div className='firstLine'>{item.NotificationId}</div>
                             <div className='secondLine'>{item.Time}</div>
                         </Link>
