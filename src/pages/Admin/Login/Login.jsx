@@ -34,10 +34,13 @@ const Login = () => {
                     console.log(response.data.status)
                     if (response.data.status === 200) {
                         navigate('/admin')
-                        console.log(response.data.data)
-                        let loginData =
-                        {
-                            user: response.data.data,
+
+                        const expires = new Date();
+                        expires.setTime(expires.getTime() + 2 * 24 * 60 * 60 * 1000);
+                        document.cookie = `token=${response.data.data?.accessToken};expires=${expires.toUTCString()};path=/`;
+
+                        let loginData = {
+                            user: response.data.data?.account,
                             isLogin: true,
                             role: 'admin',
                             adminAccounts: []

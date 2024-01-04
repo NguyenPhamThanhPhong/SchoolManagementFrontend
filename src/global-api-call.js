@@ -32,7 +32,6 @@ const DataOnlyComponent = () => {
         if (lecturer === lecturerIntialState) {
             try {
                 let response = await lecturerApi.getManyRange(0, 1000)
-                console.log(response)
                 if (!response.isError) {
                     lecturerDispatch(setLecturers(response.data.data));
                 }
@@ -127,6 +126,7 @@ const DataOnlyComponent = () => {
         if (user === UserInitialState) {
             try {
                 let response = await AdminApi.getAutoLogin();
+                console.log(response)
                 if (!response.isError) {
                     userDispatch(setLogin({ user: response?.data?.data, isloggedIn: true, role: response?.data?.data?.role }));
                 }
@@ -141,7 +141,7 @@ const DataOnlyComponent = () => {
 
 
     async function fetchAdminDatas() {
-        console.log('executing global q23412341234api call')
+
         await Promise.all([
             fetchFaculties(),
             fetchLecutrers(),
@@ -152,13 +152,14 @@ const DataOnlyComponent = () => {
         ])
     }
     async function handleFirstLoadLogic() {
-        // await fetchAutoLogin();
+        const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
+        console.log('token is =' + token)
+        await fetchAutoLogin();
         await fetchAdminDatas();
     }
 
 
     useEffect(() => {
-        console.log('executing global api call')
         handleFirstLoadLogic();
 
     }, [])
