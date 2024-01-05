@@ -7,6 +7,20 @@ import { Tabs } from 'antd';
 const onChange = (key) => {
   console.log(key);
 };
+const ScoreData = [
+  {
+    key: '0',
+    No_: 1,
+    name: 'Tran Van A',
+    student_id: '32',
+    progress_score: '8'
+  },
+  {
+    key: '1',
+    name: 'Ten gi do',
+    student_id: '21155',
+  },
+];
 const items = [
   {
     key: '1',
@@ -16,7 +30,7 @@ const items = [
   {
     key: '2',
     label: 'Scores',
-    children: <InputScore></InputScore>,
+    children: <InputScore ScoreData={ScoreData}></InputScore>,
   },
 ];
 function ClassMaterialPageLecturerView() {
