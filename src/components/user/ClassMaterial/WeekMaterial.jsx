@@ -1,6 +1,7 @@
 import './WeekMaterial.scss'
 import { Divider } from 'antd';
 import FileHolder from './FileHolder';
+import parse from 'html-react-parser';
 function WeekMaterial(props, { Sections }) {
 
     return (

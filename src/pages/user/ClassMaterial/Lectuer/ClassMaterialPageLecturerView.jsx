@@ -27,14 +27,17 @@ const Sections =
   [
     {
       SectionTitle: 1,
+      Content: '<h2>Hello</h2>',
       WFile: WFiles,
     },
     {
       SectionTitle: 2,
+      Content: '<h2>Hello</h2>',
       WFile: WFiles,
     },
     {
       SectionTitle: 3,
+      Content: '<h1>Hello</h1>',
       WFile: WFiles,
     },
   ];
