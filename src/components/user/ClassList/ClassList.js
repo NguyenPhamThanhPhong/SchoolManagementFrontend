@@ -41,7 +41,7 @@ function ClassList(props) {
     return (
         <>
             <div className='bigContainer'>
-                <SearchBox></SearchBox>
+                <SearchBox size="large"></SearchBox>
                 <div className='dropSemester'>
                     <Dropdown id='dropSemester'>
                         <Dropdown.Toggle variant="success" id="dropdown-basic">

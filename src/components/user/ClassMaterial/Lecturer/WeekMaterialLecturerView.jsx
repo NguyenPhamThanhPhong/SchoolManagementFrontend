@@ -28,12 +28,13 @@ function WeekMaterialLecturerView() {
                             Week {item.Wnumber}
                         </Divider>
                         <FileHolder WFiles={item.WFile} />
-                        <Button type="link" href={userPaths.lecutrerAddFile}>+ New file</Button>
-
+                        <Button type="link" href={userPaths.lecutrerAddFile}><i class='bx bx-edit-alt' style={{ color: '#2f88ff' }}  ></i>Edit section</Button>
                     </div>
 
                 ))}
-
+                <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }} >
+                </Divider>
+                <Button type="link" href={userPaths.lecutrerAddFile}>+ Add new section</Button>
             </div>
 
         </>)

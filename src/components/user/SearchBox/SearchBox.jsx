@@ -5,7 +5,7 @@ function SearchBox(props) {
     const onSearch = (value, _e, info) => console.log(info?.source, value);
     return (
         <>
-            <Search placeholder="Search..." onSearch={onSearch} enterButton />
+            <Search size="large" placeholder="Search..." onSearch={onSearch} enterButton />
         </>
     )
 }

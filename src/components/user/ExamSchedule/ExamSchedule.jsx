@@ -3,8 +3,7 @@ import React from 'react';
 import './ExamSchedule.scss'
 import { Button } from 'antd'
 import Dropdown from 'react-bootstrap/Dropdown';
-function ExamSchedule() {
-    let Semester = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
+function ExamSchedule(props, { Semester }) {
     const columns = [
         {
             title: 'No.',
@@ -80,10 +79,10 @@ function ExamSchedule() {
                 <div className='dropSemester_1'>
                     <Dropdown id='dropSemester_1'>
                         <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            {Semester[Semester.length - 1]}
+                            {props.Semester[props.Semester.length - 1]}
                         </Dropdown.Toggle>
                         <Dropdown.Menu >
-                            {Semester.map((item =>
+                            {props.Semester.map((item =>
                                 (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
                             ))}
                         </Dropdown.Menu>
