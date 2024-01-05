@@ -1,7 +1,7 @@
-import { Table,  } from 'antd';
+import { Table, } from 'antd';
 import React from 'react';
-function ScoreBoard() {
-    
+function ScoreBoard(props) {
+
     const columns = [
         {
             title: 'No.',
@@ -44,102 +44,16 @@ function ScoreBoard() {
             key: 'average_score',
         },
     ];
-    const data = [
-        {
-            key:1 ,
-            No_:'Semester 1(2023- 2024)',
-            children:[
-                {
-                    key: 2 ,
-                    No_:'1',
-                    subject_id: 'OOP.1',
-                    subject_name: 'OOP',
-                    progress_score:10,
-                    midterm_score:10,
-                    practice_score:10,
-                    finalterm_score:10, 
-                    average_score: 10
-                },
-                {
-                    key: 3 ,
-                    No_:'1',
-                    subject_id: 'OOP.1',
-                    subject_name: 'OOP',
-                    progress_score:10,
-                    midterm_score:10,
-                    practice_score:10,
-                    finalterm_score:10, 
-                    average_score: 10
-                },
-                {
-                    key: 4 ,
-                    No_:'1',
-                    subject_id: 'OOP.1',
-                    subject_name: 'OOP',
-                    progress_score:10,
-                    midterm_score:10,
-                    practice_score:10,
-                    finalterm_score:10, 
-                    average_score: 10 
-                }
-            ]
-        },
-        {
-            key:5 ,
-            No_:'Semester 1(2023- 2024)',
-            children:[
-                {
-                    key: 6 ,
-                    No_:'1',
-                    subject_id: 'OOP.1',
-                    subject_name: 'OOP',
-                    progress_score:10,
-                    midterm_score:10,
-                    practice_score:10,
-                    finalterm_score:10, 
-                    average_score: 10
-                },
-                {
-                    key: 7 ,
-                    No_:'2',
-                    subject_id: 'OOP.1',
-                    subject_name: 'OOP',
-                    progress_score:10,
-                    midterm_score:10,
-                    practice_score:10,
-                    finalterm_score:10, 
-                    average_score: 10
-                },
-                {
-                    key: 8 ,
-                    No_:'3',
-                    subject_id: 'OOP.1',
-                    subject_name: 'OOP',
-                    progress_score:10,
-                    midterm_score:10,
-                    practice_score:10,
-                    finalterm_score:10, 
-                    average_score: 10 
-                }
-            ]
-        },
-        {
-            key:10 ,
-            No_:'Semester 1(2023- 2024)',
-            children:[
-                
-            ]
-        }
-    ]
+    const data = props.StudentScoreData;
     return (
         <>
-        <Table
-            columns={columns}
-            
-            dataSource={data}
-        />
+            <Table
+                columns={columns}
+
+                dataSource={data}
+            />
         </>
-        
+
     );
 }
 export default ScoreBoard;

@@ -18,30 +18,17 @@ function renderEventContent(eventInfo) {
 }
 
 
-function ScheduleBoard() {
-    let Semester = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
-    const events = [
-        {
-            title: ' OOP',// để title như tên lớp
-            daysOfWeek: ['4'],
-            startTime: '8:00:00',
-            endTime: '10:00:00',
-            extendedProps: {
-                classID: 'OOP1',
-                dateStart: '20/11/2023',
-                dateEnd: '20/12/2023'
-            },
-        }
-    ]
+function ScheduleBoard(props, { Semester, ScheduleEvents }) {
+    const events = props.ScheduleEvents;
     return (
         <div className='MainContainErSchedule'>
             <div className='dropSemester_1'>
                 <Dropdown id='dropSemester_1'>
                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        {Semester[Semester.length - 1]}
+                        {props.Semester[props.Semester.length - 1]}
                     </Dropdown.Toggle>
                     <Dropdown.Menu >
-                        {Semester.map((item =>
+                        {props.Semester.map((item =>
                             (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
                         ))}
                     </Dropdown.Menu>

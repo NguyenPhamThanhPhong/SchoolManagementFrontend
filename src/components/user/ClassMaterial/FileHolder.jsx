@@ -1,4 +1,5 @@
-
+import 'boxicons/css/boxicons.min.css';
+import { Button } from 'antd';
 import './FileHolder.scss'
 
 const FileHolder = ({ WFiles }) => {

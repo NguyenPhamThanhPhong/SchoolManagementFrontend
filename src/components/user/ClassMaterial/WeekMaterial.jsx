@@ -1,30 +1,16 @@
 import './WeekMaterial.scss'
 import { Divider } from 'antd';
 import FileHolder from './FileHolder';
-function WeekMaterial() {
-    const WFiles = ['Helloworld.pdf', 'Hi.pdf']
-    const Weeks =
-        [
-            {
-                Wnumber: 1,
-                WFile: WFiles,
-            },
-            {
-                Wnumber: 2,
-                WFile: WFiles,
-            },
-            {
-                Wnumber: 3,
-                WFile: WFiles,
-            },
-        ];
+import parse from 'html-react-parser';
+function WeekMaterial(props, { Sections }) {
+
     return (
         <>
             <div className='WeekMaterial'>
-                {Weeks.map((item =>
+                {props.Sections.map((item =>
                     <div>
                         <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }} >
-                            Week {item.Wnumber}
+                            {item.SectionTitle}
                         </Divider>
                         <FileHolder WFiles={item.WFile} />
                     </div>

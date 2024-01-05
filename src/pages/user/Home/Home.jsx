@@ -5,21 +5,52 @@ import { Tabs } from 'antd';
 const onChange = (key) => {
   console.log(key);
 };
+let NotificationItems = [
+  {
+    NotificationId: "Noti1",
+    Time: "Time1"
+  },
+  {
+    NotificationId: "Noti2",
+    Time: "Time2"
+  },
+  {
+    NotificationId: "Noti3",
+    Time: "Time3"
+  },
+  {
+    NotificationId: "Noti4",
+    Time: "Time4"
+  },
+  {
+    NotificationId: "Noti5",
+    Time: 'Time5'
+  },
+  {
+    NotificationId: "Noti5",
+    Time: 'Time5'
+  },
+  {
+    NotificationId: "Noti5",
+    Time: 'Time5'
+  },
+]
+//
 const items = [
   {
     key: '1',
     label: 'Faculty notification',
-    children: <NotificationList NotiType={'Faculty notification'}></NotificationList>,
+    children: <NotificationList NotiType={'Faculty notification'} NotificationItems={NotificationItems}></NotificationList>,
   },
   {
     key: '2',
     label: 'General notification',
-    children: <NotificationList NotiType={'General notification'}></NotificationList>,
+    children: <NotificationList NotiType={'General notification'} NotificationItems={NotificationItems}></NotificationList>,
   },
   {
     key: '3',
     label: 'Your notification',
-    children: <NotificationList NotiType={'Your notification'}></NotificationList>,
+    children: <NotificationList NotiType={'Your notification'} NotificationItems={NotificationItems}></NotificationList>,
   },
 ];
 function Home() {

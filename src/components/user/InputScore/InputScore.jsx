@@ -80,19 +80,10 @@ const EditableCell = ({
     }
     return <td {...restProps}>{childNode}</td>;
 };
-const InputScore = () => {
-    const [dataSource, setDataSource] = useState([
-        {
-            key: '0',
-            name: 'Tran Van A',
-            student_id: '32',
-        },
-        {
-            key: '1',
-            name: 'Ten gi do',
-            student_id: '21155',
-        },
-    ]);
+const InputScore = (props) => {
+    const [dataSource, setDataSource] = useState(
+        props.ScoreData
+    );
 
     const defaultColumns = [
         {
