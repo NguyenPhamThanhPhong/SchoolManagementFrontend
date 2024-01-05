@@ -30,7 +30,7 @@ const sidebarNavItems = [
     },
     {
         display: 'Register',
-        icon: <i className='bx bx-user'></i>,
+        icon: <i class='bx bx-log-in-circle'></i>,
         to: '/student-register-subject',
         section: 'student-register-subject'
     },

@@ -6,7 +6,10 @@ import './Schedule.scss'
 const onChange = (key) => {
   console.log(key);
 };
-let Semester = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
+//
+let SemesterSchedule = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
+let SemesterExamSchedule = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
+
 const events = [
   {
     title: ' OOP',// để title như tên lớp
@@ -31,16 +34,48 @@ const events = [
     },
   }
 ]
+const ExamData = [
+  {
+    key: 1,
+    No_: '1',
+    subject_id: 'OOP.1',
+    class_id: 'OOP.PMCL',
+    room: 'C108',
+    exam_date: '1/1/2024',
+    exam_form: 'Paper',
+    note: '',
+  },
+  {
+    key: 2,
+    No_: '2',
+    subject_id: 'OOP.1',
+    class_id: 'OOP.PMCL',
+    room: 'C108',
+    exam_date: '1/1/2024',
+    exam_form: 'Paper',
+    note: '',
+  },
+  {
+    key: 3,
+    No_: '3',
+    subject_id: 'OOP.1',
+    class_id: 'OOP.PMCL',
+    room: 'C108',
+    exam_date: '1/1/2024',
+    exam_form: 'Paper',
+    note: '',
+  }
+]
 const items = [
   {
     key: '1',
     label: 'Schedule',
-    children: <ScheduleBoard Semester={Semester} ScheduleEvents={events}></ScheduleBoard>,
+    children: <ScheduleBoard Semester={SemesterSchedule} ScheduleEvents={events}></ScheduleBoard>,
   },
   {
     key: '2',
     label: 'Exam schedule',
-    children: <ExamSchedule Semester={Semester}></ExamSchedule>,
+    children: <ExamSchedule Semester={SemesterExamSchedule} ExamData={ExamData}></ExamSchedule>,
   },
 ];
 function Schedule() {

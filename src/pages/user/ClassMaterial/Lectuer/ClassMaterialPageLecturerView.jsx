@@ -21,11 +21,29 @@ const ScoreData = [
     student_id: '21155',
   },
 ];
+//
+const WFiles = ['Helloworld.pdf', 'Hi.pdf']
+const Sections =
+  [
+    {
+      SectionTitle: 1,
+      WFile: WFiles,
+    },
+    {
+      SectionTitle: 2,
+      WFile: WFiles,
+    },
+    {
+      SectionTitle: 3,
+      WFile: WFiles,
+    },
+  ];
+//
 const items = [
   {
     key: '1',
     label: 'Class material',
-    children: <WeekMaterialLecturerView></WeekMaterialLecturerView>,
+    children: <WeekMaterialLecturerView Sections={Sections}></WeekMaterialLecturerView>,
   },
   {
     key: '2',

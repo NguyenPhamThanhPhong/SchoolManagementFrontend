@@ -17,14 +17,13 @@ function UserInformation(props) {
                     <li class="list-group-item" id='inforItem'><span className='title_infor_item'>Phone number: </span> {props.Phone_number}</li>
                     <li class="list-group-item" id='inforItem'><span className='title_infor_item'>Program: </span> {props.Program}</li>
                     <li class="list-group-item" id='inforItem'><span className='title_infor_item'>Faculty: </span>{props.Faculty}</li>
-
                 </ul>
 
             </div>
 
             <div className='Score'>
                 <span>Student's score</span>
-                <ScoreBoard></ScoreBoard>
+                <ScoreBoard StudentScoreData={props.StudentScoreData}></ScoreBoard>
             </div>
         </div>
     )

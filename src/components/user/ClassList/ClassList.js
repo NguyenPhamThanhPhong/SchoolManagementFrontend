@@ -3,41 +3,10 @@ import { Link } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { userPaths } from '../../../routes/AppRoutes';
 import SearchBox from '../SearchBox/SearchBox';
-function ClassList(props) {
+function ClassList(props, { Semester, ClassItems }) {
 
     const linkTo = props.role === 'lecturer' ? userPaths.lecturerViewClass : userPaths.studentViewClass;
 
-    let Semester = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
-    let ClassItems = [
-        {
-            ClassId: "Class1",
-            SubjectName: "Subject1",
-            LecturerName: "Lecturer1"
-        },
-        {
-            ClassId: "Class2",
-            SubjectName: "Subject2",
-            LecturerName: "Lecturer2"
-        },
-        {
-            ClassId: "Class3",
-            SubjectName: "Subject3",
-            LecturerName: "Lecturer3"
-        },
-        {
-            ClassId: "Class4",
-            SubjectName: "Subject4",
-            LecturerName: "Lecturer4"
-        },
-        {
-            ClassId: "Class5",
-            SubjectName: "Subject5",
-            LecturerName: 'Lecturer5'
-        },
-
-
-
-    ]
     return (
         <>
             <div className='bigContainer'>
@@ -45,17 +14,17 @@ function ClassList(props) {
                 <div className='dropSemester'>
                     <Dropdown id='dropSemester'>
                         <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            {Semester[Semester.length - 1]}
+                            {props.Semester[props.Semester.length - 1]}
                         </Dropdown.Toggle>
                         <Dropdown.Menu >
-                            {Semester.map((item =>
+                            {props.Semester.map((item =>
                                 (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
                             ))}
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
                 <ul className="list-group">
-                    {ClassItems.map((item =>
+                    {props.ClassItems.map((item =>
                     (<li className="list-group" key={item.ClassId}>
                         <Link to={linkTo} className="classitemContainer" style={{ textDecoration: 'none' }}>
                             <div className='firstLine'>{item.SubjectName} - {item.ClassId}</div>

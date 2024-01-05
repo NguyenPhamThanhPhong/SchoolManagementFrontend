@@ -41,38 +41,7 @@ function ExamSchedule(props, { Semester }) {
             key: 'note',
         },
     ];
-    const data = [
-        {
-            key: 1,
-            No_: '1',
-            subject_id: 'OOP.1',
-            class_id: 'OOP.PMCL',
-            room: 'C108',
-            exam_date: '1/1/2024',
-            exam_form: 'Paper',
-            note: '',
-        },
-        {
-            key: 2,
-            No_: '2',
-            subject_id: 'OOP.1',
-            class_id: 'OOP.PMCL',
-            room: 'C108',
-            exam_date: '1/1/2024',
-            exam_form: 'Paper',
-            note: '',
-        },
-        {
-            key: 3,
-            No_: '3',
-            subject_id: 'OOP.1',
-            class_id: 'OOP.PMCL',
-            room: 'C108',
-            exam_date: '1/1/2024',
-            exam_form: 'Paper',
-            note: '',
-        }
-    ]
+    const data = props.ExamData;
     return (
         <>
             <div className='MainContainErExamSchedule'>

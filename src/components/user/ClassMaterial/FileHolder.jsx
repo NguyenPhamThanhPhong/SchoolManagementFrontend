@@ -8,7 +8,7 @@ const FileHolder = ({ WFiles }) => {
     return (
         <>
             {Files.map((item =>
-                <div className="FileHodlerScss"><Button type="link"><i class='bx bx-trash' style={{ color: '#fd0005' }}  ></i></Button>{item}</div>
+                <div className="FileHodlerScss">{item}</div>
             ))}
         </>
 
