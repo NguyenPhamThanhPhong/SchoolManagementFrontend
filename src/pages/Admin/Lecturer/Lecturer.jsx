@@ -7,7 +7,7 @@ import ShowLecturerDrawer from '../../../components/Admin/Drawer/ShowLecturerDra
 import LecturerTable from '../../../components/Admin/Table/LecturerTable';
 
 
-import { useLecturerContext, setLecturers, useFacultyContext, setStudents } from '../../../data-store';
+import { useLecturerContext, setLecturers, useFacultyContext, setStudents, removeLecturer } from '../../../data-store';
 import { lecturerApi } from '../../../data-api/lecturer-api';
 
 
@@ -21,6 +21,7 @@ const Lecturer = () => {
     const [selectedStudent, setSelectedStudent] = useState(null);
 
     const [lecturerState, lecturerDispatch] = useLecturerContext();
+    const [facultyState, facultyDispatch] = useFacultyContext();
 
     const [filtredLecturers, setFiltredLecturers] = useState(lecturerState.lecturers);
     const [searchText, setSearchText] = useState('');
@@ -46,6 +47,22 @@ const Lecturer = () => {
     }, []);
 
 
+    const handleDelete = async (record) => {
+        try {
+            let response = await lecturerApi.lecturerDelete(record.id);
+            if (!response.isError) {
+                lecturerDispatch(removeLecturer(record.id));
+                message.success('Deleted successfully');
+            }
+            else {
+                message.error(response.data.message);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
     const onSearch = () => {
         if (lecturerState !== null && lecturerState !== undefined) {
             let result = lecturerState.lecturers.filter((lecturer) => {
@@ -57,6 +74,7 @@ const Lecturer = () => {
                 id = id.replace(/\s/g, '').replace(/[^\w\s]/g, '');
                 return lecturer.personalInfo?.facultyId?.includes(selectedFaculty || "") && (name.includes(search) || id.includes(search));
             })
+            // message.info(`Found ${result.length} results`)
             setFiltredLecturers(result);
         }
     }
@@ -65,45 +83,22 @@ const Lecturer = () => {
         onSearch();
     }, [selectedFaculty, searchText])
 
+    useEffect(() => {
+        if (lecturerState?.lecturers !== null && lecturerState?.lecturers !== undefined) {
+            setFiltredLecturers(lecturerState?.lecturers);
+        }
+        else
+            setFiltredLecturers([]);
+    }, [lecturerState?.lecturers])
+
+
     const handleDetail = (record) => {
         setSelectedStudent(record);
         setIsDetailDrawerOpen(true);
     };
 
-    const showNotificationModal = () => {
-        setIsOpen(true);
-    };
 
-    const showCreateModal = () => {
-        setIsCreateModalOpen(true);
-    };
 
-    const handleNotificationModalOk = () => {
-        setIsOpen(false);
-    };
-
-    const handleNotificationModalCancel = () => {
-        setIsOpen(false);
-    };
-
-    const handleCreateModalOk = () => {
-        setIsCreateModalOpen(false);
-    };
-
-    const handleCreateModalCancel = () => {
-        setIsCreateModalOpen(false);
-    };
-
-    const handleSendNotification = () => {
-        showNotificationModal();
-    };
-
-    const handleCreate = () => {
-        showCreateModal();
-    };
-    const closeDrawer = () => {
-        setIsDetailDrawerOpen(false);
-    };
 
     return (
         <div>
@@ -112,36 +107,39 @@ const Lecturer = () => {
                     <h5>Quản lý giảng viên</h5>
                 </div>
                 <Space style={{ marginBottom: 16 }}>
-                    <Select style={{ width: 150 }} placeholder="Select Khoa">
-                        <Option value="K42">K42</Option>
-                        <Option value="K43">K43</Option>
+                    <Select style={{ width: 150 }} placeholder="Select Khoa" onSelect={setSelectedFaculty}>
+                        {
+                            facultyState?.faculties?.map((faculty) => {
+                                return <Option key={faculty.id} value={faculty.id}>{faculty.name}</Option>
+                            })
+                        }
                     </Select>
                     <Search
                         placeholder="Search..."
-                        onSearch={(value) => console.log(value)}
+                        onChange={(e) => { setSearchText(e.target.value) }}
                         style={{ width: 200 }}
                         prefix={<SearchOutlined />}
                     />
-                    <Button type="primary" onClick={handleSendNotification}>
+                    <Button type="primary" onClick={() => { setIsOpen(true) }}>
                         Gửi thông báo
                     </Button>
-                    <Button type="primary" onClick={handleCreate}>
+                    <Button type="primary" onClick={() => { setIsCreateModalOpen(true) }}>
                         Thêm mới
                     </Button>
                 </Space>
-                <LecturerTable lecturers={filtredLecturers} handleDetail={handleDetail} />
+                <LecturerTable lecturers={filtredLecturers} handleDetail={handleDetail} handleDelete={handleDelete} />
             </Card>
             <SendNotiLecturerModal
                 open={isOpen}
-                onOk={handleNotificationModalOk}
-                onCancel={handleNotificationModalCancel}
+                onOk={() => { setIsOpen(false) }}
+                onCancel={() => { setIsOpen(false) }}
             />
             <CreateLecturerModal
                 open={isCreateModalOpen}
-                onOk={handleCreateModalOk}
-                onCancel={handleCreateModalCancel}
+                onOk={() => { setIsCreateModalOpen(false) }}
+                onCancel={() => { setIsCreateModalOpen(false) }}
             />
-            <ShowLecturerDrawer onClose={closeDrawer} open={isDetailDrawerOpen} selectedStudent={selectedStudent} />
+            <ShowLecturerDrawer onClose={() => { setIsDetailDrawerOpen(false) }} open={isDetailDrawerOpen} selectedStudent={selectedStudent} />
         </div>
     );
 };

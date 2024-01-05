@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Select, AutoComplete, Table, DatePicker, message } from 'antd';
+import { Modal, Form, Input, Select, AutoComplete, Button, Table, DatePicker, message } from 'antd';
 
 import { useLecturerContext, useFacultyContext, useSchoolClassContext, appendLecturer } from '../../../data-store';
-import { LecturerApi, SchoolMemberCreateRequest, PersonalInfo, formatDate } from '../../../data-api';
+import { lecturerApi } from '../../../data-api';
+import { SchoolMemberCreateRequest, PersonalInfo, formatDate, isValidDate } from '../../../data-api';
 const { Option } = Select;
 
 function CreateLecturerModal({ open, onOk, onCancel }) {
@@ -18,16 +19,14 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
 
     let lecturers = lecturerState?.lecturers;
 
-    const validateId = async (rule, value, callback) => {
-        let x = form.getFieldValue('id');
-        console.log(x);
-        if (lecturerState.lecturers?.some((lecturer) => lecturer.id === value)) {
-            callback(`lecturer ID: ${value} already exist`);
+    const validateId = (rule, value, callback) => {
+        if (lecturers.some((lecturer) => lecturer.id === value)) {
+            callback(`lecturer "${value}" already exist`);
         } else {
             callback();
         }
-    }
-    const validateUsername = async (rule, value, callback) => {
+    };
+    const validateUsername = (rule, value, callback) => {
         if (lecturerState.lecturers.some((lecturer) => lecturer.username === value)) {
             callback(`Username: ${value} already exist`);
         } else {
@@ -40,28 +39,67 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
         setUnselectedClasses(schoolClassState?.schoolClasses);
     }, [schoolClassState?.schoolClasses]);
 
-    const handleIdChange = (value) => {
-        form.setFieldValue({
+    const handleIdChange = () => {
+        const value = form.getFieldValue("id");
+        form.setFieldsValue({
             id: value,
             username: value,
             email: value + "@gm.uit.edu.vn",
         })
+
     }
 
-    const dataSource = [
-        {
-            key: '1',
-            id: '1',
-            class_name: 'Huong dt',
-            subject: 'Class 1',
-        },
-        {
-            key: '2',
-            id: '2',
-            class_name: 'lap trinh',
-            subject: 'Class 2',
-        },
-    ];
+    const handleClassChange = (value) => {
+        const selectedClassData = unselectedClasses.find((item) => item?.id === value);
+
+        if (selectedClassData) {
+            setTableData((prevData) => [...prevData, selectedClassData]);
+            setUnselectedClasses((prevData) => prevData.filter((item) => item?.id !== value));
+        }
+    };
+    const handleRemoveClass = (value) => {
+        message.info("Remove class " + JSON.stringify(value));
+        const selectedClassData = tableData.find((item) => item?.id === value);
+        if (selectedClassData) {
+            setUnselectedClasses((prevData) => [...prevData, selectedClassData]);
+            setTableData((prevData) => prevData.filter((item) => item?.id !== value));
+        }
+    }
+    const handleSubmit = async () => {
+        try {
+            await form.validateFields();
+            const values = form.getFieldsValue();
+            const { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = values;
+            const classIds = tableData.map((item) => item.id);
+            const formattedDateOfBirth = formatDate(dateofbirth);
+            const personalInformation = new PersonalInfo(isValidDate(formattedDateOfBirth) ? formattedDateOfBirth : null, name, gender, phone, faculty, program);
+            const lecturer = new SchoolMemberCreateRequest(id, username, password, email, "lecturer", personalInformation, classIds);
+
+            try {
+                const response = await lecturerApi.lecturerCreate(lecturer);
+                console.log(response);
+
+                if (!response.isError) {
+                    lecturerDispatch(appendLecturer(response.data.data));
+                    message.success(`Create lecturer successfully! ${lecturer.id}`);
+                    form.resetFields();
+                    onOk();
+                } else {
+                    message.error(`Create lecturer failed! ${response.data}`);
+                    message.error(`${JSON.stringify(lecturer)}`);
+                }
+            } catch (error) {
+                message.error(`Create lecturer failed! ${error}`);
+            }
+        } catch (error) {
+            let messageError = "create lecturer failed!";
+            error.errorFields?.map((item) => {
+                messageError += "\n" + item.errors;
+            });
+            message.error(messageError);
+        }
+    };
+
 
     const columns = [
         {
@@ -83,26 +121,27 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
             ),
             key: ['subject', 'id'],
         },
+        {
+            title: 'Action',
+            render: (text, record) => (
+                <Button danger >
+                    Remove
+                </Button>
+            ),
+            key: 'action',
+        }
     ];
 
-    const handleClassChange = (value) => {
-        // Find the selected class in dataSource
-        const selectedClassData = dataSource.find((item) => item.subject === value);
 
-        // Update the tableData with the selected class information without removing existing data
-        if (selectedClassData) {
-            setTableData((prevData) => [...prevData, selectedClassData]);
-        }
-    };
 
     return (
-        <Modal title="Create Lecturer" open={open} onOk={onOk} onCancel={onCancel}>
+        <Modal title="Create Lecturer" open={open} onOk={handleSubmit} onCancel={onCancel}>
             <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
                 <Form.Item label="ID" name="id" rules={[{ required: true, message: "please enter id" }, { validator: validateId }]}>
-                    <Input />
+                    <Input onChange={handleIdChange} />
                 </Form.Item>
                 <Form.Item label="Name" name="name" rules={[{ required: true, message: "please enter name" }]}>
-                    <Input />
+                    <Input onChange={handleIdChange} />
                 </Form.Item>
                 <Form.Item label="Username" name="username" rules={[{ required: true, message: "please enter name" }, { validator: validateUsername }]}>
                     <Input />
@@ -147,9 +186,8 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
                 </Form.Item>
                 <Form.Item label="Classes" name="classes">
                     <Select allowClear onChange={handleClassChange}>
-                        <Option value="Class 1">Class 1</Option>
                         {
-                            schoolClassState?.schoolClasses?.map((item) => {
+                            unselectedClasses?.map((item) => {
                                 return <Option value={item.id}>{item.id + " - " + item.name}</Option>
                             })
                         }

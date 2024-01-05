@@ -7,7 +7,7 @@ const onChange = (key) => {
 };
 let NotificationItems = [
   {
-    NotificationId: "Noti1",
+    NotificationId: "asdfjaklsdjflkjwejaljrqwejlkrjqjwe",
     Time: "Time1"
   },
   {
@@ -45,7 +45,9 @@ const items = [
   {
     key: '2',
     label: 'General notification',
-    children: <NotificationList NotiType={'General notification'} NotificationItems={NotificationItems}></NotificationList>,
+    children:
+      <NotificationList NotiType={'General notification'} NotificationItems={NotificationItems}>
+      </NotificationList>,
   },
   {
     key: '3',

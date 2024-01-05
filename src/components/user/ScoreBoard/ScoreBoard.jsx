@@ -43,6 +43,11 @@ function ScoreBoard(props) {
             dataIndex: 'average_score',
             key: 'average_score',
         },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+        }
     ];
     const data = props.StudentScoreData;
     return (

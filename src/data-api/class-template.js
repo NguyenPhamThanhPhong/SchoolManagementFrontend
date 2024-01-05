@@ -169,7 +169,18 @@ function formatDate(isoDateString) {
 
     return `${day}/${month}/${year}`;
 }
+function isValidDate(inputString) {
+    // Check if the inputString is null or undefined
+    if (inputString === null || inputString === undefined) {
+        return false;
+    }
 
+    // Define a regular expression for the "dd/MM/yyyy" format
+    const dateFormatRegex = /^(0[1-9]|[1-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/;
+
+    // Test if the inputString matches the regular expression
+    return dateFormatRegex.test(inputString);
+}
 
 
 export {
@@ -187,5 +198,6 @@ export {
     TextFilters,
     DateOfWeek,
     formatDate,
+    isValidDate,
     UpdateAction
 }

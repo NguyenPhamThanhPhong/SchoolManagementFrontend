@@ -1,4 +1,4 @@
-import { Button, Table, } from 'antd';
+import { Button, Table, message } from 'antd';
 import React from 'react';
 import SearchBox from '../SearchBox/SearchBox';
 
@@ -12,8 +12,8 @@ function RegisterSubjectBoard() {
         },
         {
             title: 'Subject Id',
-            dataIndex: 'subject_id',
-            key: 'subject_id',
+            dataIndex: 'subjectId',
+            key: 'subjectId',
         },
         {
             title: 'Subject name',
@@ -45,7 +45,7 @@ function RegisterSubjectBoard() {
         {
             key: 1,
             No_: 'Subject name',
-            subject_id: '',
+            subjectId: '',
             subject_name: '',
             date_start: '',
             date_end: '',
@@ -55,13 +55,14 @@ function RegisterSubjectBoard() {
                 {
                     key: 2,
                     No_: '1',
-                    subject_id: 'OOP.1',
+                    subjectId: 'OOP.1',
                     subject_name: 'OOP',
                     date_start: '10',
                     date_end: '10',
                     lecturer_name: '10',
                     class_period: '10',
-                }
+                },
+
             ]
         }
     ]
@@ -69,6 +70,7 @@ function RegisterSubjectBoard() {
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
             console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            message.info('You have selected ' + selectedRowKeys + ' items')
         },
         onSelect: (record, selected, selectedRows) => {
             console.log(record, selected, selectedRows);

@@ -63,7 +63,7 @@ const publicRoutes = [
 const userPaths =
 {
     home: '/user-home',
-    notification: '/user-home/notification',
+    notification: '/user-home/notification/:id',
     user_infor: '/student-user-info',
     schedule: '/schedule',
     classes: '/classes',

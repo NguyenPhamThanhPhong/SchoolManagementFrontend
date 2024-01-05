@@ -2,34 +2,53 @@ import './ScheduleBoard.scss'
 import ScheduleHeader from './ScheduleHeader';
 import FullCalendar from '@fullcalendar/react'
 //import dayGridPlugin from '@fullcalendar/daygrid'
+import { useState } from 'react';
 import timeGridPlugin from '@fullcalendar/timegrid'
 import Dropdown from 'react-bootstrap/Dropdown';
 
-function renderEventContent(eventInfo) {
-    return (
-        <>
-            <b style={{ fontSize: '15px' }}>{eventInfo.timeText}</b>
-            <br></br>
-            <h style={{ fontSize: '18px' }}>{eventInfo.event.title} - {eventInfo.event.extendedProps.classID}</h>
-            <br></br>
-            <i>{eventInfo.event.extendedProps.dateStart} - {eventInfo.event.extendedProps.dateEnd}</i>
-        </>
-    )
-}
+import { message } from 'antd';
 
 
-function ScheduleBoard(props, { Semester, ScheduleEvents }) {
+
+
+function ScheduleBoard(props) {
     const events = props.ScheduleEvents;
+
+    let mySemester = "";
+    console.log(!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
+    if (!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
+        mySemester = props.Semester[0];
+
+    const [selectedSemester, setSelectedSemester] = useState(mySemester);
+
+    const handleSelect = (eventKey) => {
+        setSelectedSemester(eventKey);
+    };
+
+    function renderEventContent(eventInfo) {
+        return (
+            <>
+                <b style={{ fontSize: '15px' }}>{eventInfo.timeText}</b>
+                <br></br>
+                <h style={{ fontSize: '18px' }}>{eventInfo.event.extendedProps.classID}</h>
+                <br></br>
+                <i>{eventInfo.event.extendedProps.dateStart} - {eventInfo.event.extendedProps.dateEnd}</i>
+            </>
+        )
+    }
+
     return (
         <div className='MainContainErSchedule'>
             <div className='dropSemester_1'>
-                <Dropdown id='dropSemester_1'>
+
+                <Dropdown id='dropSemester_1' onSelect={handleSelect}>
+
                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        {props.Semester[props.Semester.length - 1]}
+                        {selectedSemester}
                     </Dropdown.Toggle>
                     <Dropdown.Menu >
                         {props.Semester.map((item =>
-                            (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
+                            (<Dropdown.Item eventKey={item}>{item}</Dropdown.Item>)
                         ))}
                     </Dropdown.Menu>
                 </Dropdown>
