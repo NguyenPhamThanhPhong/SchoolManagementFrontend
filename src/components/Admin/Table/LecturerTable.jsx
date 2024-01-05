@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Space, Button } from 'antd';
+import { Table, Space, Button, message } from 'antd';
 import { Link, NavLink } from 'react-router-dom';
 
 const temp = [
@@ -44,14 +44,15 @@ const temp = [
     },
 ];
 
-function LecturerTable({ handleDetail, lecturers, handleDelete }) {
+function LecturerTable({ handleDetail, lecturers }) {
 
     let display = lecturers || temp;
 
 
+
+
     display = display.map((item, index) => { return { ...item, key: index, stt: index + 1 } })
 
-    console.log(JSON.stringify(display));
     const columns = [
         {
             title: 'STT',
@@ -110,6 +111,11 @@ function LecturerTable({ handleDetail, lecturers, handleDelete }) {
         },
     ];
 
+    const handleDelete = (record) => {
+        message.info('hello')
+        console.log('helloasdlkfjalk>?')
+    }
+
     return (
         <Table
             columns={columns}
@@ -118,13 +124,13 @@ function LecturerTable({ handleDetail, lecturers, handleDelete }) {
                 key: item.key,
                 action: (
                     <Space size="middle">
-                        <Button variant="contained" type="primary">
+                        <Button variant="contained" type="primary" onClick={() => handleDetail(item)}>
                             Edit
                         </Button>
-                        <Button onClick={() => { handleDelete(item) }} danger variant="contained" type="primary">
+                        <Button danger variant="contained" type="primary" onClick={() => { handleDelete('123') }}>
                             Delete
                         </Button>
-                        <Button variant="contained" onClick={() => handleDetail(item)}>
+                        <Button variant="contained" >
                             Detail
                         </Button>
                         <Button variant="contained" type="link">

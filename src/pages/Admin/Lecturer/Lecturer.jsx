@@ -7,7 +7,7 @@ import ShowLecturerDrawer from '../../../components/Admin/Drawer/ShowLecturerDra
 import LecturerTable from '../../../components/Admin/Table/LecturerTable';
 
 
-import { useLecturerContext, setLecturers, useFacultyContext, setStudents } from '../../../data-store';
+import { useLecturerContext, setLecturers, useFacultyContext, setStudents, removeLecturer } from '../../../data-store';
 import { lecturerApi } from '../../../data-api/lecturer-api';
 
 
