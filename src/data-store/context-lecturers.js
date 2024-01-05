@@ -27,9 +27,10 @@ const lecturerReducer = (state, action) => {
                 currentLecturer: null
             }
         case REMOVE_LECTURER:
+
             return {
                 ...state,
-                lecturers: state.lecturers.filter(lecturer => lecturer.id !== action.payload?.id),
+                lecturers: state.lecturers.filter(lecturer => lecturer.id !== action.payload),
                 currentLecturer: null
             };
         default:

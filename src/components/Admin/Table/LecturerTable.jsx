@@ -44,7 +44,7 @@ const temp = [
     },
 ];
 
-function LecturerTable({ handleDetail, lecturers }) {
+function LecturerTable({ handleDetail, lecturers, handleDelete }) {
 
     let display = lecturers || temp;
 
@@ -97,24 +97,20 @@ function LecturerTable({ handleDetail, lecturers }) {
                     <Button variant="contained" type="primary">
                         Edit
                     </Button>
-                    <Button danger variant="contained" type="primary">
+                    <Button danger variant="contained" type="primary" onClick={async () => { await handleDelete(record) }}>
                         Delete
                     </Button>
                     <NavLink to={`/admin/lecturer/detail-lecturer/${record.mssv}`}>
                         <Button variant="contained">Details</Button>
                     </NavLink>
-                    <Button variant="contained" type="link">
+                    {/* <Button variant="contained" type="link">
                         Reset
-                    </Button>
+                    </Button> */}
                 </Space>
             ),
         },
     ];
 
-    const handleDelete = (record) => {
-        message.info('hello')
-        console.log('helloasdlkfjalk>?')
-    }
 
     return (
         <Table
@@ -122,22 +118,6 @@ function LecturerTable({ handleDetail, lecturers }) {
             dataSource={display.map((item) => ({
                 ...item,
                 key: item.key,
-                action: (
-                    <Space size="middle">
-                        <Button variant="contained" type="primary" onClick={() => handleDetail(item)}>
-                            Edit
-                        </Button>
-                        <Button danger variant="contained" type="primary" onClick={() => { handleDelete('123') }}>
-                            Delete
-                        </Button>
-                        <Button variant="contained" >
-                            Detail
-                        </Button>
-                        <Button variant="contained" type="link">
-                            Reset
-                        </Button>
-                    </Space>
-                ),
             }))}
             rowSelection={{
                 type: 'checkbox',

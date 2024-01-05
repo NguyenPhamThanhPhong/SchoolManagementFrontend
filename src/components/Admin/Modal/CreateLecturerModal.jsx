@@ -49,20 +49,6 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
 
     }
 
-    const dataSource = [
-        {
-            key: '1',
-            id: '1',
-            class_name: 'Huong dt',
-            subject: 'Class 1',
-        },
-        {
-            key: '2',
-            id: '2',
-            class_name: 'lap trinh',
-            subject: 'Class 2',
-        },
-    ];
     const handleClassChange = (value) => {
         const selectedClassData = unselectedClasses.find((item) => item?.id === value);
 
@@ -80,33 +66,40 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
         }
     }
     const handleSubmit = async () => {
-        form.validateFields().then(async (values) => {
-            let { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = values;
-            let classIds = tableData.map((item) => item.id);
-            dateofbirth = formatDate(dateofbirth);
-            let personalInformation = new PersonalInfo(isValidDate(dateofbirth) ? dateofbirth : null, name, gender, phone, faculty, program);
-            let lecturer = new SchoolMemberCreateRequest(id, username, password, email, "lecturer", personalInformation, classIds);
-            console.log(JSON.stringify(lecturer))
-            message.info('Submit ' + JSON.stringify(values))
+        try {
+            await form.validateFields();
+            const values = form.getFieldsValue();
+            const { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = values;
+            const classIds = tableData.map((item) => item.id);
+            const formattedDateOfBirth = formatDate(dateofbirth);
+            const personalInformation = new PersonalInfo(isValidDate(formattedDateOfBirth) ? formattedDateOfBirth : null, name, gender, phone, faculty, program);
+            const lecturer = new SchoolMemberCreateRequest(id, username, password, email, "lecturer", personalInformation, classIds);
+
             try {
-                let response = await lecturerApi.lecturerCreate(lecturer)
+                const response = await lecturerApi.lecturerCreate(lecturer);
                 console.log(response);
+
                 if (!response.isError) {
                     lecturerDispatch(appendLecturer(response.data.data));
                     message.success(`Create lecturer successfully! ${lecturer.id}`);
                     form.resetFields();
                     onOk();
-                }
-                else {
+                } else {
                     message.error(`Create lecturer failed! ${response.data}`);
                     message.error(`${JSON.stringify(lecturer)}`);
                 }
+            } catch (error) {
+                message.error(`Create lecturer failed! ${error}`);
             }
-            catch (error) {
-                message.error(`Create student failed! ${error}`);
-            }
-        })
-    }
+        } catch (error) {
+            let messageError = "create lecturer failed!";
+            error.errorFields?.map((item) => {
+                messageError += "\n" + item.errors;
+            });
+            message.error(messageError);
+        }
+    };
+
 
     const columns = [
         {
