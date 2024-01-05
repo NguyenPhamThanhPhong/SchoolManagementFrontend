@@ -2,7 +2,7 @@ import './NotificationList.scss'
 import { Link } from 'react-router-dom';
 import { Divider } from 'antd';
 import { userPaths } from '../../../routes/AppRoutes';
-function NotificationList(props, { NotificationItems }) {
+function NotificationList(props) {
 
 
 
