@@ -26,7 +26,7 @@ const WFiles = ['Helloworld.pdf', 'Hi.pdf']
 const Sections =
   [
     {
-      SectionTitle: 1,
+      SectionTitle: 'Week 1',
       Content: '<h2>Hello</h2>',
       WFile: WFiles,
     },

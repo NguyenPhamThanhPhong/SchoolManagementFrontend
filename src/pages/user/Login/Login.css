@@ -1,99 +1,91 @@
-.container{
+.container {
     position: absolute;
     height: 100%;
-    background-color: #2F88FF;
+    background-color: #2f88ff;
 }
-.mainLoginForm{
+.mainLoginForm {
     position: absolute;
     right: 0%;
     background-color: white;
     height: 100%;
-    width: 50%;
+    width: 55%;
 }
 
-.LoginPage
-{
+.LoginPage {
     position: absolute;
-    top: 15%;
-    left: 50%;
-    
-    color: #2F88FF;
+    top: 10%;
+    left: 38%;
+    color: #2f88ff;
     text-size-adjust: 15px;
     padding-left: 1%;
     font-size: 65px;
     font-weight: bold;
     font-family: sans-serif;
+    text-align: center;
 }
-.StudentId{
-    position: absolute;
+.StudentId {
+    position: relative;
     height: 7vh;
     width: 55%;
     background-color: #fff;
-    top: 35%;
     left: 40%;
     border-radius: 10px;
-    border: 2px solid #2F88FF;
-    border-color: #2F88FF;
+    border: 2px solid #2f88ff;
+    border-color: #2f88ff;
     color: #000000;
     text-size-adjust: 15px;
     padding-left: 1%;
     font-size: large;
 }
-.StudentId:focus{
-    outline: 2px solid #2F88FF;
+.StudentId:focus {
+    outline: 2px solid #2f88ff;
 }
-.Password{
-    position: absolute;
+.Password {
+    position: relative;
     height: 7vh;
     width: 55%;
     background-color: #fff;
-    top: 45%;
+    margin-top: 3%;
     left: 40%;
     border-radius: 10px;
-    border: 2px solid #2F88FF;
-    border-color: #2F88FF;
+    border: 2px solid #2f88ff;
+    border-color: #2f88ff;
     color: #000000;
     text-size-adjust: 15px;
     padding-left: 1%;
     font-size: large;
 }
-.Password:focus{
-    outline: 2px solid #2F88FF;
+.Password:focus {
+    outline: 2px solid #2f88ff;
 }
 
-input::placeholder{
+input::placeholder {
     color: #757575;
 }
 
-.LoginButton{
-    position: absolute;
+.LoginButton {
+    position: relative;
     height: 7vh;
     width: 55%;
-    background-color: #2F88FF;
-    top: 60%;
+    background-color: #2f88ff;
+    margin-top: 1%;
     left: 40%;
     border-radius: 10px;
-    border: 2px solid #2F88FF;
-    border-color: #2F88FF;
+    border: 2px solid #2f88ff;
+    border-color: #2f88ff;
     color: #ffffff;
     text-size-adjust: 15px;
     padding-left: 1%;
     font-size: large;
 }
-.Checkbox
-{
-    position: absolute;
-    top: 55%;
-    left: 41%;
-    border-radius: 10px;
-    border: 2px solid #2F88FF;
-    border-color: #2F88FF;
+
+.showpassword {
+    position: relative;
+    margin-top: 1%;
+    left: 40%;
     color: #757575;
 }
-.showpassword
-{
-    position: absolute;
-    top: 54%;
-    left: 45%;
-    color: #757575;
+.LoginPlace {
+    margin-top: 40%;
+    margin-left: 10%;
 }
