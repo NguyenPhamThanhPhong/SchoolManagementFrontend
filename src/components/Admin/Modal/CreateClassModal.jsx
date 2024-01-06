@@ -37,12 +37,10 @@ function CreateClassModal({ open, onOk, onCancel }) {
     const handleSubmit = async () => {
         form.validateFields().then(async (values) => {
             const { id, name, subject, semester, lecturer, roomName, program, classType } = values
-            console.log(roomName)
             const schoolClass = new SchoolClassCreateRequest(id, name, JSON.parse(subject), semester, JSON.parse(lecturer), roomName, program, classType, [], schedule);
             console.log(JSON.stringify(schoolClass));
             try {
                 let response = await schoolClassApi.classCreate(schoolClass);
-                console.log(response);
                 if (!response.isError) {
                     schoolClassDispatch(appendSchoolClass(response.data.data));
                     message.success("Create class successfully");
@@ -50,14 +48,14 @@ function CreateClassModal({ open, onOk, onCancel }) {
                     form.resetFields();
                 }
                 else {
-                    console.log(response);
                     message.error(response?.data);
                 }
             }
             catch (error) {
-                console.log(error);
                 message.error(error);
             }
+        }).catch((error) => {
+            message.error(error?.errorFields[0]?.errors[0]);
         })
 
     }

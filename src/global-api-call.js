@@ -1,15 +1,16 @@
 import {
     useUserContext, useFacultyContext, useLecturerContext,
-    useSchoolClassContext, useSemesterContext, useStudentContext, useSubjectContext, setLogin
+    useSchoolClassContext, useSemesterContext, useStudentContext, useSubjectContext,
+    usePostContext
 } from "./data-store";
 
-import { setFaculties, setLecturers, setSchoolClasses, setSemesters, setStudents, setSubjects, setUser } from "./data-store/index";
+import { setFaculties, setLecturers, setSchoolClasses, setSemesters, setStudents, setSubjects, setUser, setLogin, setPosts } from "./data-store/index";
 import {
     FacultyInitialState, SemesterInitialState,
     lecturerIntialState, schoolClassInitialState,
     studentIntialState, SubjectInitialState, UserInitialState
 } from "./data-store";
-import { AdminApi, FacultyApi, lecturerApi, schoolClassApi, SemesterApi, StudentApi, subjectApi } from "./data-api/index";
+import { AdminApi, FacultyApi, lecturerApi, schoolClassApi, SemesterApi, StudentApi, subjectApi, PostApi } from "./data-api/index";
 import { useEffect } from "react";
 
 
@@ -24,6 +25,7 @@ const DataOnlyComponent = () => {
     const [semester, semesterDispatch] = useSemesterContext();
     const [student, studentDispatch] = useStudentContext();
     const [subject, subjectDispatch] = useSubjectContext();
+    const [post, postDispatch] = usePostContext();
 
     let start = 0;
     let end = 1000;
@@ -139,6 +141,21 @@ const DataOnlyComponent = () => {
         }
     }
 
+    async function fetchPosts() {
+        try {
+            let response = await PostApi.postGetManyRange(start, end);
+            console.log(response)
+            if (!response.isError) {
+                postDispatch(setPosts(response?.data?.data));
+            }
+            else
+                console.log(response.data)
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+
 
     async function fetchAdminDatas() {
 
@@ -148,7 +165,8 @@ const DataOnlyComponent = () => {
             fetchSchoolClasses(),
             fetchSemesters(),
             fetchStudents(),
-            fetchsubjects()
+            fetchsubjects(),
+            fetchPosts()
         ])
     }
     async function handleFirstLoadLogic() {

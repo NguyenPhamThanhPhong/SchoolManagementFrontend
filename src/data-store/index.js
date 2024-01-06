@@ -5,6 +5,7 @@ import { LecturerContextProvider } from "./context-lecturers"
 import { SchoolClassContextProvider } from "./context-schoolclass"
 import { StudentContextProvider } from "./context-students"
 import { SubjectContextProvider } from "./context-subject"
+import PostContextProvider from "./context-post"
 import Student from "../pages/Admin/Student/Student"
 
 export * from "./context-faculty";
@@ -14,6 +15,7 @@ export * from "./context-semester";
 export * from "./context-students";
 export * from "./context-subject";
 export * from "./context-user";
+export * from "./context-post";
 
 export * from "./constants"
 export * from "./actions";
@@ -28,7 +30,9 @@ export const DataStoreProvider = ({ children }) => {
                         <LecturerContextProvider>
                             <FacultyContextProvider>
                                 <SemesterContextProvider>
-                                    {children}
+                                    <PostContextProvider>
+                                        {children}
+                                    </PostContextProvider>
                                 </SemesterContextProvider>
                             </FacultyContextProvider>
                         </LecturerContextProvider>

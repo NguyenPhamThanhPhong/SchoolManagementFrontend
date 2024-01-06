@@ -57,7 +57,7 @@ function CreateSemesterModal({ isSemesterModalOpen, setIsSemesterModalOpen, seme
                 <Form.Item
                     label="Name"
                     name="id"
-                    rules={[{ required: true, message: 'Please enter a name!' },
+                    rules={[{ required: true, message: 'Please enter a semester name!' },
                     { validator: validateId }]}
                 >
                     <Input style={{ width: '100%' }} />

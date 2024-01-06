@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-key */
 
 import React, { useEffect, useState } from 'react';
-import { Space, Button, Input, Select, Card } from 'antd';
+import { Space, Button, Input, Select, Card, message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import CreateSubjectModal from '../../../components/Admin/Modal/CreateSubjectModal';
 import ShowSubjectDrawer from '../../../components/Admin/Drawer/ShowSubjectDrawer';
 import SubjectTable from '../../../components/Admin/Table/SubjectTable';
+import DeleteWarningModal from '../../../components/Admin/Modal/DeleteWarningModal';
 
 import {
     useSubjectContext,
@@ -19,8 +20,12 @@ const { Option } = Select;
 const Subject = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
     const [selectedSubject, setSelectedSubject] = useState(null);
 
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
 
     const [subjectState, subjectDispatch] = useSubjectContext();
 
@@ -124,10 +129,12 @@ const Subject = () => {
         setSelectedSubject(subject);
         setIsCreateModalOpen(true);
     }
-
-    const onCloseDrawer = () => {
-        setIsDrawerOpen(false);
-    };
+    const handleDeleteMany = () => {
+        if (selectedRows && selectedRows.length > 0)
+            setIsDeleteModalOpen(true)
+        else
+            message.error("Please select at least one subject")
+    }
 
     return (
         <div>
@@ -135,8 +142,8 @@ const Subject = () => {
                 <div>
                     <h5>Quản lý môn học</h5>
                 </div>
-                <Space style={{ marginBottom: 16 }}>
-                    <Select style={{ width: 150 }} placeholder="Select Name">
+                <Space style={{ marginBottom: 16, width: '100%' }}>
+                    <Select style={{ width: '17vw' }} placeholder="Select Name">
                         <Option value="pre">Prequisite subjects - Previous subjects</Option>
                         <Option value="idName">Subject ID - Subject Name</Option>
                     </Select>
@@ -144,24 +151,37 @@ const Subject = () => {
                         placeholder="Search..."
                         value={subjectSearch}
                         onChange={(e) => { onSearchSubject(e.target.value) }}
-                        style={{ width: 200 }}
+                        style={{ width: '30vw' }}
                         prefix={<SearchOutlined />}
                     />
                     <Button type="primary" onClick={() => { setIsCreateModalOpen(true); setSelectedSubject(null); }}>
-                        Thêm mới
+                        Create
+                    </Button>
+                    <Button danger variant="contained" type="primary" onClick={handleDeleteMany}>
+                        Delete
                     </Button>
                 </Space>
-                <SubjectTable deleteSubject={deleteSubject} handleEdit={handleEdit} subjects={filteredSubjects} showDrawer={showDrawer} />
+                <SubjectTable subjects={filteredSubjects}
+                    handleEdit={handleEdit} showDrawer={showDrawer} deleteSubject={deleteSubject}
+                    selectedRowKeys={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys} setSelectedRows={setSelectedRows} />
             </Card>
+            <DeleteWarningModal visible={isDeleteModalOpen} onCancel={() => { setIsDeleteModalOpen(false) }}>
+                {
+                    selectedRows.map((subject, index) => {
+                        return <p style={{ fontSize: '20px' }} >{index + 1 + ". "} {subject.id + "-" + subject.name}</p>
+                    })
+                }
+            </DeleteWarningModal>
             <CreateSubjectModal
                 deleteSubject={deleteSubject}
                 createSubject={createSubject}
+
                 selectedSubject={selectedSubject}
                 open={isCreateModalOpen}
                 onCancel={() => { setIsCreateModalOpen(false) }}
                 onOk={() => { setIsCreateModalOpen(false) }}
             />
-            <ShowSubjectDrawer open={isDrawerOpen} onClose={onCloseDrawer}
+            <ShowSubjectDrawer open={isDrawerOpen} onClose={() => { setIsDrawerOpen(false) }}
                 selectedSubject={selectedSubject} />
         </div>
     );

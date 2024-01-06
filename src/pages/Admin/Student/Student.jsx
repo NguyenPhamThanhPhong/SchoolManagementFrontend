@@ -5,6 +5,7 @@ import CreateStudentModal from '../../../components/Admin/Modal/CreateStudentMod
 import SendNotiStudentModal from '../../../components/Admin/Modal/SendNotiStudentModal';
 import ShowStudentDrawer from '../../../components/Admin/Drawer/ShowStudentDrawer';
 import StudentTable from '../../../components/Admin/Table/StudentTable';
+import DeleteWarningModal from '../../../components/Admin/Modal/DeleteWarningModal';
 import { useStudentContext, useFacultyContext, setStudents } from '../../../data-store';
 import { StudentApi } from '../../../data-api/index';
 
@@ -15,8 +16,7 @@ const { Option } = Select;
 const Student = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
-    const [selectedStudent, setSelectedStudent] = useState(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
 
     const [studentState, studentDispatch] = useStudentContext();
@@ -57,8 +57,6 @@ const Student = () => {
                 return student.personalInfo?.facultyId?.includes(selectedFaculty) && (name.includes(search) || id.includes(search));
             })
             setFiltredStudents(result);
-
-            // setFiltredStudents(studentState.students.filter((student) => student.name?.includes(searchText) && student.facultyId?.includes(selectedFaculty)));
         }
     }
 
@@ -70,47 +68,6 @@ const Student = () => {
         onSearch();
     }, [selectedFaculty, searchText])
 
-    const handleDetail = (record) => {
-        setSelectedStudent(record);
-        setIsDetailDrawerOpen(true);
-    };
-
-
-
-    const showNotificationModal = () => {
-        setIsOpen(true);
-    };
-
-    const showCreateModal = () => {
-        setIsCreateModalOpen(true);
-    };
-
-    const handleNotificationModalOk = () => {
-        setIsOpen(false);
-    };
-
-    const handleNotificationModalCancel = () => {
-        setIsOpen(false);
-    };
-
-    const handleCreateModalOk = () => {
-        setIsCreateModalOpen(false);
-    };
-
-    const handleCreateModalCancel = () => {
-        setIsCreateModalOpen(false);
-    };
-
-    const handleSendNotification = () => {
-        showNotificationModal();
-    };
-
-    const handleCreate = () => {
-        showCreateModal();
-    };
-    const closeDrawer = () => {
-        setIsDetailDrawerOpen(false);
-    };
 
     return (
         <div>
@@ -136,26 +93,26 @@ const Student = () => {
                         style={{ width: 200 }}
                         prefix={<SearchOutlined />}
                     />
-                    <Button type="primary" onClick={handleSendNotification}>
+                    <Button type="primary" onClick={() => { setIsOpen(true) }}>
                         Gửi thông báo
                     </Button>
-                    <Button type="primary" onClick={handleCreate}>
+                    <Button type="primary" onClick={() => { setIsCreateModalOpen(true) }}>
                         Thêm mới
                     </Button>
                 </Space>
-                <StudentTable handleDetail={handleDetail} students={filtredStudents} />
+                <StudentTable students={filtredStudents} />
             </Card>
+            <DeleteWarningModal />
             <SendNotiStudentModal
                 open={isOpen}
-                onOk={handleNotificationModalOk}
-                onCancel={handleNotificationModalCancel}
+                onOk={() => { setIsOpen(false) }}
+                onCancel={() => { setIsOpen(false) }}
             />
             <CreateStudentModal
                 open={isCreateModalOpen}
-                onOk={handleCreateModalOk}
-                onCancel={handleCreateModalCancel}
+                onOk={() => { setIsCreateModalOpen(false) }}
+                onCancel={() => { setIsCreateModalOpen(false) }}
             />
-            <ShowStudentDrawer onClose={closeDrawer} open={isDetailDrawerOpen} selectedStudent={selectedStudent} />
         </div>
     );
 };

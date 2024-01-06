@@ -9,7 +9,7 @@ import {
 } from '../../../data-store/index';
 
 
-function StudentTable({ handleDetail, students }) {
+function StudentTable({ students }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [studentState, studentDispatch] = useStudentContext();
 
@@ -46,12 +46,7 @@ function StudentTable({ handleDetail, students }) {
         <Table
             columns={[
                 {
-                    title: 'STT',
-                    dataIndex: 'stt',
-                    key: 'stt',
-                },
-                {
-                    title: 'id',
+                    title: 'ID',
                     dataIndex: 'id',
                     key: 'id',
                 },
@@ -61,7 +56,7 @@ function StudentTable({ handleDetail, students }) {
                     key: ['personalInfo', 'name'],
                 },
                 {
-                    title: 'Ngày Sinh',
+                    title: 'Date of birth',
                     dataIndex: ['personalInfo', 'dateOfBirth'],
                     key: ['personalInfo', 'dateOfBirth'],
                 },
@@ -71,7 +66,7 @@ function StudentTable({ handleDetail, students }) {
                     key: 'email',
                 },
                 {
-                    title: 'SDT',
+                    title: 'Phone Numer',
                     dataIndex: ['personalInfo', 'phone'],
                     key: ['personalInfo', 'phone'],
                 },
@@ -111,6 +106,7 @@ function StudentTable({ handleDetail, students }) {
             rowSelection={{
                 type: 'checkbox',
             }}
+            rowKey='id'
         />
     );
 }

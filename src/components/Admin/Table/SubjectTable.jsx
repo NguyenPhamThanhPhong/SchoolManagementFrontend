@@ -1,14 +1,22 @@
-import { Space, Button, Table } from 'antd';
+import { Space, Button, Table, message } from 'antd';
 import { React, useState } from 'react';
 
-const SubjectTable = ({ showDrawer, subjects, deleteSubject, handleEdit }) => {
+const SubjectTable = ({ showDrawer, subjects, deleteSubject, handleEdit,
+    selectedRowKeys, setSelectedRowKeys, setSelectedRows }) => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const pageSize = 5;
     let currentData = subjects.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
+    const onSelectChange = (selectedKeys, selectedRows) => {
+        setSelectedRowKeys(selectedKeys);
+        setSelectedRows(selectedRows);
+    };
 
-
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    }
 
 
     const handlePageChange = (page) => {
@@ -25,41 +33,35 @@ const SubjectTable = ({ showDrawer, subjects, deleteSubject, handleEdit }) => {
                 {
                     title: 'Name',
                     dataIndex: 'name',
-                    key: 'name',
+                    key: 'id',
                 },
                 {
                     title: 'Prequisite Subject',
                     render: (_, record) => (
                         <Space size="middle">
-                            <p>
-                                {record.prequisiteIds?.map((id) => {
-                                    return <p>{id}</p>
-                                })}
-                            </p>
-                            {/* {record.prerequisiteIds.map((id) => {
-                                return <p>{id}</p>
-                            })} */}
+                            {record.prequisiteIds?.map((id) => {
+                                const hasPrequisite = subjects?.some((subject) => subject.id === id);
+                                return <p style={{ color: hasPrequisite ? '' : 'red' }}>{id}</p>;
+                            })}
                         </Space>
                     ),
-                    key: 'prequisiteId',
+                    key: 'id',
                 },
                 {
                     title: 'previousSubjectId',
                     render: (_, record) => (
                         <Space size="middle">
-                            <p>
-                                {record.previousSubjectIds?.map((id) => {
-                                    return <p>{id}</p>
-                                })}
-                            </p>
-
+                            {record.previousSubjectIds?.map((id) => {
+                                const hasPrevious = subjects?.some((subject) => subject.id === id);
+                                return <p style={{ color: hasPrevious ? '' : 'red' }} >{id}</p>
+                            })}
                         </Space>
                     ),
-                    key: 'previousSubjectId',
+                    key: 'id',
                 },
                 {
                     title: 'Action',
-                    key: 'action',
+                    key: 'id',
                     render: (_, record) => (
                         <Space size="middle">
                             <Button type="primary" onClick={() => { handleEdit(record) }}>
@@ -84,7 +86,9 @@ const SubjectTable = ({ showDrawer, subjects, deleteSubject, handleEdit }) => {
             }}
             rowSelection={{
                 type: 'checkbox',
+                ...rowSelection,
             }}
+            rowKey="id"
         />
     );
 };

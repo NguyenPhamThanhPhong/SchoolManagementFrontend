@@ -99,6 +99,16 @@ const classDelete = async (id, prevUrls) => {
     }
 }
 
+const classDeleteMany = async (ids) => {
+    try {
+        const response = await axios.delete(APIUtil.baseURL + `/class-delete-many`, ids, APIUtil.jsonHeader);
+        return { isError: false, data: response };
+    }
+    catch (error) {
+        return { isError: true, data: error };
+    }
+}
+
 
 const schoolClassApi = {
     classCreate,
@@ -110,7 +120,8 @@ const schoolClassApi = {
     classStudentRegistration,
     classUpdateSchedule,
     classAppendSection,
-    classDelete
+    classDelete,
+    classDeleteMany
 }
 
 export { schoolClassApi }

@@ -8,11 +8,21 @@ import {
 import { schoolClassApi } from '../../../data-api';
 
 
-function ClassTable({ showDrawer, schoolClasses }) {
+function ClassTable({ showDrawer, schoolClasses,
+    selectedRowKeys, setSelectedRowKeys, setSelectedRows }) {
     const [currentPage, setCurrentPage] = useState(1);
 
     const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
 
+    const onSelectChange = (selectedKeys, selectedRows) => {
+        setSelectedRowKeys(selectedKeys);
+        setSelectedRows(selectedRows);
+    };
+
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    }
 
 
     const deleteSchoolClass = async (id, prevUrls) => {
@@ -114,7 +124,9 @@ function ClassTable({ showDrawer, schoolClasses }) {
             }}
             rowSelection={{
                 type: 'checkbox',
+                ...rowSelection,
             }}
+            rowKey='id'
         />
     );
 }

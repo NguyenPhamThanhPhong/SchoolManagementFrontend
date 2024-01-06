@@ -61,19 +61,21 @@ const AutoGenerateModal = ({ isAutoGenerateOpen, setIsAutoGenerateOpen, semester
             })
             .catch((errorInfo) => {
                 console.log('Validation failed:', errorInfo);
-                message.error(`Validation failed ${errorInfo}`);
+                message.error(`Validation failed ${errorInfo?.errorFields[0]?.errors[0]}`);
             });
     };
 
     return (
-        <Modal title="Create Faculty" visible={isAutoGenerateOpen} onCancel={() => { setIsAutoGenerateOpen(false) }} footer={[
-            <Button key="cancel" onClick={() => { setIsAutoGenerateOpen(false) }}>
-                Cancel
-            </Button>,
-            <Button key="submit" type="primary" onClick={onFinish}>
-                Auto Generate
-            </Button>,
-        ]}>
+        <Modal title="Create Faculty" visible={isAutoGenerateOpen}
+            onCancel={() => { setIsAutoGenerateOpen(false); form.resetFields() }}
+            footer={[
+                <Button key="cancel" onClick={() => { setIsAutoGenerateOpen(false); form.resetFields() }}>
+                    Cancel
+                </Button>,
+                <Button key="submit" type="primary" onClick={onFinish}>
+                    Auto Generate
+                </Button>,
+            ]}>
             <Form form={form}>
                 <Row gutter={16}>
                     <Col span={12}>
@@ -83,7 +85,11 @@ const AutoGenerateModal = ({ isAutoGenerateOpen, setIsAutoGenerateOpen, semester
                             rules={[
                                 { required: true, message: 'Please input a value' },
                                 { type: 'integer', message: 'Please enter a valid integer' },
-                                { validator: (_, value) => value >= 0 ? Promise.resolve() : Promise.reject('Value must be greater than or equal to 0') },
+                                {
+                                    validator: (_, value) =>
+                                        (value >= 0 && value <= rightValue) ?
+                                            Promise.resolve() : Promise.reject(`End year must be less than or equal to 0 `)
+                                },
                             ]}
                         >
                             <InputNumber value={leftValue} onChange={handleLeftChange} />
@@ -96,7 +102,11 @@ const AutoGenerateModal = ({ isAutoGenerateOpen, setIsAutoGenerateOpen, semester
                             rules={[
                                 { required: true, message: 'Please input a value' },
                                 { type: 'integer', message: 'Please enter a valid integer' },
-                                { validator: (_, value) => value >= 0 ? Promise.resolve() : Promise.reject('Value must be greater than or equal to 0') },
+                                {
+                                    validator: (_, value) =>
+                                        (value >= 0 && value >= leftValue) ?
+                                            Promise.resolve() : Promise.reject(`End year must be greater than or equal to 0`)
+                                },
                             ]}
                         >
                             <InputNumber value={rightValue} onChange={handleRightChange} />

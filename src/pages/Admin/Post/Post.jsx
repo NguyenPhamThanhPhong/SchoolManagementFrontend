@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Space, Table, Button, Input, Card, Pagination, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Space, Table, Button, Input, Card, Pagination, Select, message } from 'antd';
 import { SearchOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { usePostContext, setPosts, appendPost, removePost } from '../../../data-store';
+import { PostApi } from '../../../data-api';
 
 import CreatePostModal from '../../../components/Admin/Modal/CreatePostModal';
 
@@ -11,40 +13,23 @@ const Post = () => {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const showCreateModal = () => {
-        setIsCreateModalOpen(true);
-    };
+    const [postState, setPostState] = usePostContext();
 
-    const handleCreateModalOk = () => {
-        setIsCreateModalOpen(false);
-    };
+    const [filtredPosts, setFiltredPosts] = useState([]);
+    const [selectedPost, setSelectedPost] = useState(null);
 
-    const handleCreateModalCancel = () => {
-        setIsCreateModalOpen(false);
-    };
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
 
-    const handleCreate = () => {
-        showCreateModal();
-    };
 
-    const dataSource = [
-        {
-            key: '1',
-            id: '1',
-            title: 'Tiêu đề 1',
-            content: 'Nội dung 1',
-            date: '01/01/2023',
-            attachment: 'file1.txt',
-        },
-        {
-            key: '2',
-            id: '2',
-            title: 'Tiêu đề 2',
-            content: 'Nội dung 2',
-            date: '02/01/2023',
-            attachment: 'file2.txt',
-        },
-    ];
+    useEffect(() => {
+        setFiltredPosts(postState?.posts);
+    }, [postState?.posts]);
+
+
+
+
+    const dataSource = filtredPosts || [];
 
     const pageSize = 5;
 
@@ -54,14 +39,38 @@ const Post = () => {
         setCurrentPage(page);
     };
 
+    const handleCloseCreate = () => {
+        setIsCreateModalOpen(false);
+        setSelectedPost(null)
+    }
+
+    const handleDelete = async (id, title, urls) => {
+        try {
+            let fileUrls = [];
+            for (let [key, value] of Object.entries(urls)) {
+                fileUrls.push(value);
+            }
+            const response = await PostApi.postDelete(id, fileUrls,);
+            if (!response.isError) {
+                setPostState(removePost(id));
+                message.success(`delete post successfully:${title}`)
+            }
+            else
+                message.error(`delete post failed: ${response?.data}`)
+        }
+        catch (error) {
+            console.log(JSON.stringify(error));
+        }
+    }
+
+    const handleEdit = (record) => {
+        setSelectedPost(record);
+        setIsCreateModalOpen(true)
+    }
+
     const columns = [
         {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
-            title: 'Tiêu đề',
+            title: 'Title',
             dataIndex: 'title',
             key: 'title',
         },
@@ -71,23 +80,31 @@ const Post = () => {
             key: 'content',
         },
         {
-            title: 'Ngày đăng',
-            dataIndex: 'date',
-            key: 'date',
-        },
-        {
             title: 'File đính kèm',
-            dataIndex: 'attachment',
-            key: 'attachment',
+            render: (_, record) => {
+                if (record?.fileUrls === undefined || record?.fileUrls === null || record?.fileUrls.length === 0)
+                    return <div></div>
+                return (
+                    <div>
+                        {
+                            Object.entries(record.fileUrls).map(([key, value]) => (
+                                <div key={key}>
+                                    <a href={value} download={value}>{key}</a>
+                                </div>
+                            ))
+                        }
+                    </div>
+                )
+            },
+            key: 'fileUrls',
         },
         {
             title: 'Action',
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button icon={<PlusOutlined />} />
-                    <Button icon={<EditOutlined />} />
-                    <Button icon={<DeleteOutlined />} />
+                    <Button onClick={() => { handleEdit(record) }} icon={<EditOutlined />} />
+                    <Button onClick={() => { handleDelete(record?.id, record?.title, record?.fileUrls) }} icon={<DeleteOutlined />} />
                 </Space>
             ),
         },
@@ -106,8 +123,7 @@ const Post = () => {
                         style={{ width: 200 }}
                         prefix={<SearchOutlined />}
                     />
-
-                    <Button type="primary" onClick={handleCreate}>
+                    <Button type="primary" onClick={() => { setIsCreateModalOpen(true) }}>
                         Thêm mới
                     </Button>
                 </Space>
@@ -122,14 +138,21 @@ const Post = () => {
                     dataSource={currentData}
                     rowSelection={{
                         type: 'checkbox',
+                        selectedRowKeys,
+                        onChange: (selectedRowKeys, selectedRows) => {
+                            setSelectedRowKeys(selectedRowKeys);
+                            setSelectedRows(selectedRows);
+                        },
                     }}
+                    rowKey='id'
                 />
             </Card>
 
             <CreatePostModal
                 isOpen={isCreateModalOpen}
-                handleOk={handleCreateModalOk}
-                handleCancel={handleCreateModalCancel}
+                selectedPost={selectedPost}
+                handleOk={handleCloseCreate}
+                handleCancel={handleCloseCreate}
             />
         </div>
     );

@@ -109,6 +109,23 @@ class StudentLog {
         }
     }
 }
+class PostCreateRequest {
+    constructor(title, content, facultyTags) {
+        this.title = title;
+        this.content = content;
+        this.facultyTags = facultyTags;
+    }
+}
+class PostUpdateRequest {
+    constructor(id, title, content, facultyTags, prevUrls, Files) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.facultyTags = facultyTags;
+        this.prevUrls = prevUrls;
+        this.Files = Files;
+    }
+}
 // Remove the unused TextFilters constant
 const TextFilters = {
     generateFilter: (parameter) => {
@@ -195,6 +212,8 @@ export {
     TimeStamp,
     SchedulePiece,
     StudentLog,
+    PostCreateRequest,
+    PostUpdateRequest,
     TextFilters,
     DateOfWeek,
     formatDate,

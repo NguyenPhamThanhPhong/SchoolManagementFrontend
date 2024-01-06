@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Space, Button, Input, Select, Card } from 'antd';
+import { Space, Button, Input, Select, Card, message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import ClassTable from '../../../components/Admin/Table/ClassTable';
 import CreateClassModal from '../../../components/Admin/Modal/CreateClassModal';
 import ShowClassDrawer from '../../../components/Admin/Drawer/ShowClassDrawer';
 import { useSchoolClassContext, setSchoolClasses, removeSchoolClass } from '../../../data-store';
 import { schoolClassApi } from '../../../data-api';
+import DeleteWarningModal from '../../../components/Admin/Modal/DeleteWarningModal';
 
 
 const { Search } = Input;
@@ -14,9 +15,13 @@ const { Option } = Select;
 const Class = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
     const [selectedClass, setSelectedClass] = useState(null);
 
     const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
 
     const [filtredClasses, setFiltredClasses] = useState(schoolClassState?.schoolClass);
 
@@ -35,6 +40,13 @@ const Class = () => {
         });
         console.log(result);
         setFiltredClasses(result);
+    }
+
+    const handleDeleteMany = () => {
+        if (selectedRows && selectedRows.length > 0)
+            setIsDeleteModalOpen(true)
+        else
+            message.error("Please select at least one subject")
     }
 
     const fetchSchoolClasses = async (start, end) => {
@@ -60,27 +72,11 @@ const Class = () => {
 
 
 
-
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
-
     const showDrawer = (record) => {
         setSelectedClass(record);
         setIsDrawerOpen(true);
     };
 
-    const closeDrawer = () => {
-        setIsDrawerOpen(false);
-    };
 
     return (
         <div>
@@ -100,14 +96,28 @@ const Class = () => {
                         style={{ width: 200 }}
                         prefix={<SearchOutlined />}
                     />
-                    <Button type="primary" onClick={showModal}>
+
+                    <Button type="primary" onClick={() => { setIsModalOpen(true) }}>
                         Thêm mới
                     </Button>
+                    <Button danger variant="contained" type="primary" onClick={handleDeleteMany}>
+                        Delete
+                    </Button>
                 </Space>
-                <ClassTable showDrawer={showDrawer} schoolClasses={filtredClasses} />
+
+                <ClassTable showDrawer={showDrawer} schoolClasses={filtredClasses}
+                    selectedRowKeys={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys} setSelectedRows={setSelectedRows} />
             </Card>
-            <CreateClassModal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} />
-            <ShowClassDrawer open={isDrawerOpen} onClose={closeDrawer} selectedClass={selectedClass} />
+            <CreateClassModal open={isModalOpen} onOk={() => { setIsModalOpen(false) }} onCancel={() => { setIsModalOpen(false) }} />
+            <ShowClassDrawer open={isDrawerOpen} onClose={() => { setIsDrawerOpen(false) }} selectedClass={selectedClass} />
+            <DeleteWarningModal visible={isDeleteModalOpen}
+                onCancel={() => { setIsDeleteModalOpen(false) }}>
+                {
+                    selectedRows.map((schoolClass, index) => {
+                        return <p style={{ fontSize: '20px' }} >{index + 1 + ". "} {schoolClass.id + "-" + schoolClass.name}</p>
+                    })
+                }
+            </DeleteWarningModal>
         </div>
     );
 };
