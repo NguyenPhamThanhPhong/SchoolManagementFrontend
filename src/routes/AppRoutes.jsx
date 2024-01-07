@@ -3,7 +3,6 @@ import Student from '../pages/Admin/Student/Student';
 import Lecturer from '../pages/Admin/Lecturer/Lecturer';
 import Subject from '../pages/Admin/Subject/Subject';
 import Orther from '../pages/Admin/Other/Orther';
-import Setting from '../pages/Admin/Setting/Setting';
 import Login from '../pages/Admin/Login/Login';
 import Class from '../pages/Admin/Class/Class';
 import Post from '../pages/Admin/Post/Post';
@@ -28,7 +27,6 @@ const publicRoutes = [
     { path: '/admin/class/detail-class/:id', component: DetailClass },
 
     { path: '/admin/orther', component: Orther },
-    { path: '/admin/setting', component: Setting },
     { path: '/admin/post', component: Post },
     { path: '/admin/semester_faculty', component: SemesterFaculty },
     { path: '/admin/user', component: User },

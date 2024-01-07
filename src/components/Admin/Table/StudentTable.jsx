@@ -1,9 +1,26 @@
 import { React, useState } from 'react';
 import { Table, Space, Button } from 'antd';
 import { Link, NavLink } from 'react-router-dom';
+import EditStudentModal from '../Modal/EditStudentModal';
 
 function StudentTable({ handleDetail }) {
     const [currentPage, setCurrentPage] = useState(1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState({});
+
+    const showModal = (record) => {
+        setSelectedStudent(record);
+        setIsModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setSelectedStudent({});
+        setIsModalOpen(false);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
     const dataSource = [
         {
             key: '1',
@@ -86,86 +103,94 @@ function StudentTable({ handleDetail }) {
         setCurrentPage(page);
     };
     return (
-        <Table
-            columns={[
-                {
-                    title: 'STT',
-                    dataIndex: 'stt',
-                    key: 'stt',
-                },
+        <>
+            <Table
+                columns={[
+                    {
+                        title: 'STT',
+                        dataIndex: 'stt',
+                        key: 'stt',
+                    },
 
-                {
-                    title: 'Mssv',
-                    dataIndex: 'mssv',
-                    key: 'mssv',
-                },
-                {
-                    title: 'Name',
-                    dataIndex: 'name',
-                    key: 'name',
-                },
-                {
-                    title: 'Ngày Sinh',
-                    dataIndex: 'ngaySinh',
-                    key: 'ngaySinh',
-                },
-                {
-                    title: 'Email',
-                    dataIndex: 'email',
-                    key: 'email',
-                },
-                {
-                    title: 'SDT',
-                    dataIndex: 'sdt',
-                    key: 'sdt',
-                },
-                {
-                    title: 'Khóa',
-                    dataIndex: 'khoa',
-                    key: 'khoa',
-                },
-                {
-                    title: 'Lớp',
-                    dataIndex: 'lop',
-                    key: 'lop',
-                },
-                {
-                    title: 'Faculty',
-                    dataIndex: 'faculty',
-                    key: 'faculty',
-                },
-                {
-                    title: 'Action',
-                    key: 'action',
-                    render: (_, record) => (
-                        <Space size="middle">
-                            <Button variant="contained" type="primary">
-                                Edit
-                            </Button>
-                            <Button danger variant="contained" type="primary">
-                                Delete
-                            </Button>
-                            <NavLink to={`/admin/student/detail-student/${record.mssv}`}>
-                                <Button variant="contained">Details</Button>
-                            </NavLink>
-                            <Button variant="contained" type="link">
-                                Reset
-                            </Button>
-                        </Space>
-                    ),
-                },
-            ]}
-            dataSource={currentData}
-            pagination={{
-                current: currentPage,
-                total: dataSource.length,
-                pageSize,
-                onChange: handlePageChange,
-            }}
-            rowSelection={{
-                type: 'checkbox',
-            }}
-        />
+                    {
+                        title: 'Mssv',
+                        dataIndex: 'mssv',
+                        key: 'mssv',
+                    },
+                    {
+                        title: 'Name',
+                        dataIndex: 'name',
+                        key: 'name',
+                    },
+                    {
+                        title: 'Ngày Sinh',
+                        dataIndex: 'ngaySinh',
+                        key: 'ngaySinh',
+                    },
+                    {
+                        title: 'Email',
+                        dataIndex: 'email',
+                        key: 'email',
+                    },
+                    {
+                        title: 'SDT',
+                        dataIndex: 'sdt',
+                        key: 'sdt',
+                    },
+                    {
+                        title: 'Khóa',
+                        dataIndex: 'khoa',
+                        key: 'khoa',
+                    },
+                    {
+                        title: 'Lớp',
+                        dataIndex: 'lop',
+                        key: 'lop',
+                    },
+                    {
+                        title: 'Faculty',
+                        dataIndex: 'faculty',
+                        key: 'faculty',
+                    },
+                    {
+                        title: 'Action',
+                        key: 'action',
+                        render: (_, record) => (
+                            <Space size="middle">
+                                <Button type="primary" onClick={() => showModal(record)}>
+                                    Edit
+                                </Button>
+                                <Button danger variant="contained" type="primary">
+                                    Delete
+                                </Button>
+                                <NavLink to={`/admin/student/detail-student/${record.mssv}`}>
+                                    <Button variant="contained">Details</Button>
+                                </NavLink>
+                                <Button variant="contained" type="link">
+                                    Reset
+                                </Button>
+                            </Space>
+                        ),
+                    },
+                ]}
+                dataSource={currentData}
+                pagination={{
+                    current: currentPage,
+                    total: dataSource.length,
+                    pageSize,
+                    onChange: handlePageChange,
+                }}
+                rowSelection={{
+                    type: 'checkbox',
+                }}
+            />
+            <EditStudentModal
+                open={isModalOpen}
+                studentData={selectedStudent}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            />
+        </>
     );
 }
 

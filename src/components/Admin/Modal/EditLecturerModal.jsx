@@ -9,8 +9,32 @@ const getBase64 = (file) =>
         reader.onload = () => resolve(reader.result);
         reader.onerror = (error) => reject(error);
     });
-function CreateStudentModal({ open, onOk, onCancel }) {
+function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
     const [tableData, setTableData] = useState([]);
+
+    const [form] = Form.useForm();
+
+    useEffect(() => {
+        form.setFieldsValue({
+            avatar: lecturerData.avatar,
+            id: lecturerData.id,
+            name: lecturerData.name,
+            username: lecturerData.username,
+            password: lecturerData.password,
+            email: lecturerData.email,
+            dateofbirth: lecturerData.dateofbirth,
+            gender: lecturerData.gender,
+            phone: lecturerData.phone,
+            faculty: lecturerData.faculty,
+            program: lecturerData.program,
+            classes: lecturerData.classes,
+        });
+    }, [lecturerData, form]);
+
+    const handleSave = () => {
+        const studentClass = form.getFieldsValue();
+        console.log(studentClass);
+    };
 
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
@@ -95,9 +119,12 @@ function CreateStudentModal({ open, onOk, onCancel }) {
 
     return (
         <Modal
-            title="Create Student"
+            title="Edit Lecturer"
             open={open}
-            onOk={onOk}
+            onOk={() => {
+                handleSave();
+                onOk();
+            }}
             width={720}
             style={{
                 top: 10,
@@ -107,6 +134,7 @@ function CreateStudentModal({ open, onOk, onCancel }) {
             cancelText="Cancel"
         >
             <Form
+                form={form}
                 labelCol={{
                     span: 4,
                 }}
@@ -121,7 +149,7 @@ function CreateStudentModal({ open, onOk, onCancel }) {
                         onPreview={handlePreview}
                         onChange={handleChange}
                     >
-                        {fileList.length >= 1 ? null : uploadButton}
+                        {fileList.length >= 2 ? null : uploadButton}
                     </Upload>
                 </Form.Item>
                 <Form.Item label="ID" name="id" rules={[{ required: true }]}>
@@ -196,4 +224,4 @@ function CreateStudentModal({ open, onOk, onCancel }) {
     );
 }
 
-export default CreateStudentModal;
+export default EditLecturerModal;

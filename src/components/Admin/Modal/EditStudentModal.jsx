@@ -9,8 +9,32 @@ const getBase64 = (file) =>
         reader.onload = () => resolve(reader.result);
         reader.onerror = (error) => reject(error);
     });
-function CreateStudentModal({ open, onOk, onCancel }) {
+function EditStudentModal({ open, onOk, onCancel, studentData }) {
     const [tableData, setTableData] = useState([]);
+
+    const [form] = Form.useForm();
+
+    useEffect(() => {
+        form.setFieldsValue({
+            avatar: studentData.avatar,
+            id: studentData.id,
+            name: studentData.name,
+            username: studentData.username,
+            password: studentData.password,
+            email: studentData.email,
+            dateofbirth: studentData.dateofbirth,
+            gender: studentData.gender,
+            phone: studentData.phone,
+            faculty: studentData.faculty,
+            program: studentData.program,
+            classes: studentData.classes,
+        });
+    }, [studentData, form]);
+
+    const handleSave = () => {
+        const studentClass = form.getFieldsValue();
+        console.log(studentClass);
+    };
 
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
@@ -95,9 +119,12 @@ function CreateStudentModal({ open, onOk, onCancel }) {
 
     return (
         <Modal
-            title="Create Student"
+            title="Edit Student"
             open={open}
-            onOk={onOk}
+            onOk={() => {
+                handleSave();
+                onOk();
+            }}
             width={720}
             style={{
                 top: 10,
@@ -107,6 +134,7 @@ function CreateStudentModal({ open, onOk, onCancel }) {
             cancelText="Cancel"
         >
             <Form
+                form={form}
                 labelCol={{
                     span: 4,
                 }}
@@ -121,7 +149,7 @@ function CreateStudentModal({ open, onOk, onCancel }) {
                         onPreview={handlePreview}
                         onChange={handleChange}
                     >
-                        {fileList.length >= 1 ? null : uploadButton}
+                        {fileList.length >= 2 ? null : uploadButton}
                     </Upload>
                 </Form.Item>
                 <Form.Item label="ID" name="id" rules={[{ required: true }]}>
@@ -196,4 +224,4 @@ function CreateStudentModal({ open, onOk, onCancel }) {
     );
 }
 
-export default CreateStudentModal;
+export default EditStudentModal;

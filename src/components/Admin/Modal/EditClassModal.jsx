@@ -1,12 +1,44 @@
-import React, { useState } from 'react';
-import { Modal, Form, Input, Select, AutoComplete, TimePicker, Checkbox } from 'antd';
+import React, { useEffect } from 'react';
+import { Modal, Form, Input, Select, AutoComplete, TimePicker } from 'antd';
 const { Option } = Select;
 
-function CreateClassModal({ open, onOk, onCancel }) {
-    const [componentDisabled, setComponentDisabled] = useState(true);
+function EditClassModal({ open, onOk, onCancel, classData }) {
+    const [form] = Form.useForm();
+
+    useEffect(() => {
+        form.setFieldsValue({
+            class_id: classData.class_id,
+            name: classData.name,
+            room: classData.room,
+            program: classData.program,
+            class_type: classData.class_type,
+            subject: classData.subject,
+            semester: classData.semester,
+            lecturer: classData.lecturer,
+            schedule: classData.schedule,
+            timerange: classData.timerange,
+        });
+    }, [classData, form]);
+
+    const handleSave = () => {
+        const dataClass = form.getFieldsValue();
+        console.log(dataClass);
+    };
     return (
-        <Modal title="Add New Class" open={open} onOk={onOk} onCancel={onCancel}>
+        <Modal
+            title="Edit Class"
+            open={open}
+            onOk={() => {
+                handleSave();
+                onOk();
+            }}
+            onCancel={onCancel}
+            destroyOnClose={true}
+            okText="Save"
+            cancelText="Cancel"
+        >
             <Form
+                form={form}
                 labelCol={{
                     span: 4,
                 }}
@@ -14,11 +46,8 @@ function CreateClassModal({ open, onOk, onCancel }) {
                     span: 20,
                 }}
             >
-                <Checkbox checked={componentDisabled} onChange={(e) => setComponentDisabled(e.target.checked)}>
-                    Custom Class ID
-                </Checkbox>
-                <Form.Item label="ID" name="id" rules={[{ required: true }]}>
-                    <Input disabled={componentDisabled} />
+                <Form.Item label="ID" name="class_id" rules={[{ required: true }]}>
+                    <Input disabled />
                 </Form.Item>
                 <Form.Item label="Name" name="name" rules={[{ required: true }]}>
                     <Input />
@@ -87,4 +116,4 @@ function CreateClassModal({ open, onOk, onCancel }) {
     );
 }
 
-export default CreateClassModal;
+export default EditClassModal;

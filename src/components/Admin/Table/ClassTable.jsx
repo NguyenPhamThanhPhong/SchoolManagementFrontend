@@ -1,8 +1,25 @@
 import { React, useState } from 'react';
 import { Table, Button, Space } from 'antd';
 import { Link, NavLink } from 'react-router-dom';
+import EditClassModal from '../Modal/EditClassModal';
 function ClassTable({ showDrawer }) {
     const [currentPage, setCurrentPage] = useState(1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedClass, setSelectedClass] = useState({});
+
+    const showModal = (record) => {
+        setSelectedClass(record);
+        setIsModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setSelectedClass({});
+        setIsModalOpen(false);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
 
     const dataSource = [
         {
@@ -97,7 +114,9 @@ function ClassTable({ showDrawer }) {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button type="primary">Edit</Button>
+                    <Button type="primary" onClick={() => showModal(record)}>
+                        Edit
+                    </Button>
                     <Button type="primary" danger>
                         Delete
                     </Button>
@@ -117,19 +136,22 @@ function ClassTable({ showDrawer }) {
         setCurrentPage(page);
     };
     return (
-        <Table
-            columns={columns}
-            dataSource={currentData}
-            pagination={{
-                current: currentPage,
-                total: dataSource.length,
-                pageSize,
-                onChange: handlePageChange,
-            }}
-            rowSelection={{
-                type: 'checkbox',
-            }}
-        />
+        <>
+            <Table
+                columns={columns}
+                dataSource={currentData}
+                pagination={{
+                    current: currentPage,
+                    total: dataSource.length,
+                    pageSize,
+                    onChange: handlePageChange,
+                }}
+                rowSelection={{
+                    type: 'checkbox',
+                }}
+            />
+            <EditClassModal open={isModalOpen} classData={selectedClass} onOk={handleOk} onCancel={handleCancel} />
+        </>
     );
 }
 

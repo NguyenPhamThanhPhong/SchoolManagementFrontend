@@ -32,7 +32,6 @@ const Sidebar = ({ collapsed, onCollapse }) => {
         { key: '/admin/lecturer', icon: <SolutionOutlined style={{ fontSize: '18px' }} />, label: 'Lecturer' },
         { key: '/admin/post', icon: <ReadOutlined style={{ fontSize: '18px' }} />, label: 'Post' },
         { key: '/admin/user', icon: <TeamOutlined style={{ fontSize: '18px' }} />, label: 'User' },
-        { key: '/admin/setting', icon: <SettingOutlined style={{ fontSize: '18px' }} />, label: 'Setting' },
         { key: '/admin/login', icon: <LogoutOutlined style={{ fontSize: '18px' }} />, label: 'Logout' },
     ];
 
