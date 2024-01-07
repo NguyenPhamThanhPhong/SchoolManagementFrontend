@@ -3,22 +3,33 @@ import { Link } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { userPaths } from '../../../routes/AppRoutes';
 import SearchBox from '../SearchBox/SearchBox';
+import { useState } from 'react';
+
 function ClassList(props, { Semester, ClassItems }) {
 
     const linkTo = props.role === 'lecturer' ? userPaths.lecturerViewClass : userPaths.studentViewClass;
+    let mySemester = "";
+    console.log(!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
+    if (!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
+        mySemester = props.Semester[0];
 
+    const [selectedSemester, setSelectedSemester] = useState(mySemester);
+
+    const handleSelect = (eventKey) => {
+        setSelectedSemester(eventKey);
+    };
     return (
         <>
             <div className='bigContainer'>
                 <SearchBox size="large"></SearchBox>
                 <div className='dropSemester'>
-                    <Dropdown id='dropSemester'>
+                    <Dropdown id='dropSemester' onSelect={handleSelect}>
                         <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            {props.Semester[props.Semester.length - 1]}
+                            {selectedSemester}
                         </Dropdown.Toggle>
                         <Dropdown.Menu >
                             {props.Semester.map((item =>
-                                (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
+                                (<Dropdown.Item eventKey={item}>{item}</Dropdown.Item>)
                             ))}
                         </Dropdown.Menu>
                     </Dropdown>

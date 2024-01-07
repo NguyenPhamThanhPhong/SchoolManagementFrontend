@@ -54,8 +54,9 @@ function ScoreBoard(props) {
         <>
             <Table
                 columns={columns}
-
+                pagination={false}
                 dataSource={data}
+                style={{ marginBottom: '3%' }}
             />
         </>
 

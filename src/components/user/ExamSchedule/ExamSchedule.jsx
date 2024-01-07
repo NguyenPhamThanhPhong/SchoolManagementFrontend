@@ -2,8 +2,12 @@ import { Table, } from 'antd';
 import React from 'react';
 import './ExamSchedule.scss'
 import { Button } from 'antd'
+import { useState } from 'react';
+
 import Dropdown from 'react-bootstrap/Dropdown';
-function ExamSchedule(props, { Semester }) {
+function ExamSchedule(props) {
+
+
     const columns = [
         {
             title: 'No.',
@@ -41,18 +45,28 @@ function ExamSchedule(props, { Semester }) {
             key: 'note',
         },
     ];
+    let mySemester = "";
+    console.log(!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
+    if (!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
+        mySemester = props.Semester[0];
+
+    const [selectedSemester, setSelectedSemester] = useState(mySemester);
+
+    const handleSelect = (eventKey) => {
+        setSelectedSemester(eventKey);
+    };
     const data = props.ExamData;
     return (
         <>
             <div className='MainContainErExamSchedule'>
                 <div className='dropSemester_1'>
-                    <Dropdown id='dropSemester_1'>
+                    <Dropdown id='dropSemester_1' onSelect={handleSelect}>
                         <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            {props.Semester[props.Semester.length - 1]}
+                            {selectedSemester}
                         </Dropdown.Toggle>
                         <Dropdown.Menu >
                             {props.Semester.map((item =>
-                                (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
+                                (<Dropdown.Item eventKey={item}>{item}</Dropdown.Item>)
                             ))}
                         </Dropdown.Menu>
                     </Dropdown>
