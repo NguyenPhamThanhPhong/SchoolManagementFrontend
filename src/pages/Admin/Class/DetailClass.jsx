@@ -1,28 +1,28 @@
-import { Card, Table, Divider, Space, Typography, List, Breadcrumb, Descriptions, Badge, Tabs } from 'antd';
-import { React, useState } from 'react';
+import React, { useState } from 'react';
+import {
+    Card,
+    Table,
+    Divider,
+    Space,
+    Typography,
+    List,
+    Breadcrumb,
+    Descriptions,
+    Badge,
+    Tabs,
+    Button,
+    Input,
+} from 'antd';
+import { EditOutlined } from '@ant-design/icons';
+import StudentListTable from '../../../components/Admin/Table/StudentListTable';
+import ExamListTable from '../../../components/Admin/Table/ExamListTable';
 
 const Column = Table.Column;
 const Title = Typography.Title;
 
 function DetailClass() {
-    const [examTableVisible, setExamTableVisible] = useState(false);
-    const [documentVisible, setDocumentVisible] = useState(false);
+    const [editing, setEditing] = useState(false);
 
-    const toggleShowDocument = () => {
-        setDocumentVisible(!documentVisible);
-    };
-    const toggleExamTable = () => {
-        setExamTableVisible(!examTableVisible);
-    };
-    const classListData = [
-        { id: 1, name: 'Student 1', progress: 80, midterm: 75, practice: 90, final: 85, GPA: 85 },
-        { id: 2, name: 'Student 2', progress: 70, midterm: 80, practice: 85, final: 78, GPA: 78 },
-    ];
-
-    const examListData = [
-        { name: 'Exam 1', date: '2023-01-01', room: 'Room A', duration: '2 hours', notes: 'Notes for Exam 1' },
-        { name: 'Exam 2', date: '2023-02-01', room: 'Room B', duration: '3 hours', notes: 'Notes for Exam 2' },
-    ];
     const items = [
         {
             key: '1',
@@ -70,6 +70,22 @@ function DetailClass() {
             children: '............................',
         },
     ];
+    const [editedDescriptions, setEditedDescriptions] = useState([...items]);
+
+    const handleEdit = () => {
+        setEditing(true);
+    };
+
+    const handleSave = () => {
+        setEditing(false);
+        console.log('Saved:', editedDescriptions);
+    };
+
+    const handleCancel = () => {
+        setEditing(false);
+        setEditedDescriptions([...items]);
+    };
+
     const onChange = (key) => {
         console.log(key);
     };
@@ -77,30 +93,12 @@ function DetailClass() {
         {
             key: '1',
             label: 'List Student',
-            children: (
-                <Table dataSource={classListData} pagination={false}>
-                    <Column title="ID" dataIndex="id" key="id" />
-                    <Column title="Name" dataIndex="name" key="name" />
-                    <Column title="Progress" dataIndex="progress" key="progress" />
-                    <Column title="Midterm" dataIndex="midterm" key="midterm" />
-                    <Column title="Practice" dataIndex="practice" key="practice" />
-                    <Column title="Final" dataIndex="final" key="final" />
-                    <Column title="GPA" dataIndex="GPA" key="GPA" />
-                </Table>
-            ),
+            children: <StudentListTable />,
         },
         {
             key: '2',
             label: 'Exam Table',
-            children: (
-                <Table dataSource={examListData} pagination={false}>
-                    <Column title="Name" dataIndex="name" key="name" />
-                    <Column title="Date" dataIndex="date" key="date" />
-                    <Column title="Room" dataIndex="room" key="room" />
-                    <Column title="Duration" dataIndex="duration" key="duration" />
-                    <Column title="Notes" dataIndex="notes" key="notes" />
-                </Table>
-            ),
+            children: <ExamListTable />,
         },
         {
             key: '3',
@@ -121,6 +119,34 @@ function DetailClass() {
             ),
         },
     ];
+
+    const renderDescriptions = () => {
+        if (editing) {
+            return (
+                <Descriptions bordered>
+                    {editedDescriptions.map((item) => (
+                        <Descriptions.Item key={item.key} label={item.label}>
+                            <Input
+                                value={item.children}
+                                onChange={(e) => {
+                                    const updatedDescriptions = editedDescriptions.map((d) => {
+                                        if (d.key === item.key) {
+                                            return { ...d, children: e.target.value };
+                                        }
+                                        return d;
+                                    });
+                                    setEditedDescriptions(updatedDescriptions);
+                                }}
+                            />
+                        </Descriptions.Item>
+                    ))}
+                </Descriptions>
+            );
+        }
+
+        return <Descriptions bordered items={items} />;
+    };
+
     return (
         <div>
             <Card>
@@ -139,7 +165,21 @@ function DetailClass() {
                     ]}
                 />
                 <Divider style={{ color: 'blue', fontSize: '16px' }}>Chi tiết lớp</Divider>
-                <Descriptions items={items} />
+                <Space>
+                    {editing ? (
+                        <>
+                            <Button type="primary" onClick={handleSave}>
+                                Save
+                            </Button>
+                            <Button onClick={handleCancel}>Cancel</Button>
+                        </>
+                    ) : (
+                        <Button icon={<EditOutlined />} onClick={handleEdit}>
+                            Edit
+                        </Button>
+                    )}
+                </Space>
+                {renderDescriptions()}
             </Card>
             <Tabs
                 defaultActiveKey="1"
