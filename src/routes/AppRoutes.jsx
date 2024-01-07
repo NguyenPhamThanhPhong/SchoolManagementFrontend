@@ -29,7 +29,7 @@ import ClassMaterialPageLecturerView from '../pages/user/ClassMaterial/Lectuer/C
 import MyPage from '../pages/y-temp-page/my-page';
 import MyTempComponent from '../pages/y-temp-page/my-temp-page';
 
-import LoginUser from '../pages/user/Login/Login';
+import LoginUser from '../pages/user/Login/LoginUser';
 
 const paths = {
     admin_student: '/admin/student',
@@ -62,6 +62,9 @@ const publicRoutes = [
 
 const userPaths =
 {
+    studentLogin: '/',
+    lecutrerLogin: '/lecturer/login',
+
     home: '/user-home',
     notification: '/user-home/notification/:id',
     user_infor: '/student-user-info',
@@ -92,7 +95,8 @@ const userRoutes = [
 
 const privateRoutes = [
     { path: '/admin/login', component: Login, layout: null },
-    { path: '/user/login', component: LoginUser, layout: null },
+    { path: userPaths.studentLogin, component: LoginUser, layout: null },
+    { path: userPaths.lecutrerLogin, component: LoginUser, layout: null },
 ];
 
 const myTestPages = [
