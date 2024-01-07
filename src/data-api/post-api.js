@@ -51,9 +51,13 @@ const postDelete = async (id, urls = null) => {
     }
 }
 
-const postDeleteMany = async (ids) => {
+const postDeleteMany = async (ids, prevUrls) => {
     try {
-        const response = await axios.delete(APIUtil.baseURL + `/post-delete-many`, ids, APIUtil.jsonHeader);
+        let request = {
+            ids: ids,
+            prevUrls: prevUrls
+        }
+        const response = await axios.delete(APIUtil.baseURL + `/post-delete-many`, { data: request, headers: APIUtil.jsonHeader });
         return { isError: false, data: response };
     }
     catch (error) {

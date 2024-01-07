@@ -53,6 +53,15 @@ const deleteSemester = async (id) => {
         return { isError: true, data: error };
     }
 }
+const deleteSemesterMany = async (ids) => {
+    try {
+        const response = await axios.delete(APIUtil.baseURL + `/semester-delete-many`, { data: ids, headers: APIUtil.jsonHeader })
+        return { isError: false, data: response };
+    }
+    catch (error) {
+        return { isError: true, data: error };
+    }
+}
 
 const SemesterApi = {
     getAll,
@@ -60,7 +69,8 @@ const SemesterApi = {
     createSemester,
     autoGenerateSemester,
     updateSemester,
-    deleteSemester
+    deleteSemester,
+    deleteSemesterMany
 }
 
 export { SemesterApi };

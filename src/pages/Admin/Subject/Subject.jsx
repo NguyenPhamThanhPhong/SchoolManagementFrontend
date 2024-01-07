@@ -129,11 +129,28 @@ const Subject = () => {
         setSelectedSubject(subject);
         setIsCreateModalOpen(true);
     }
-    const handleDeleteMany = () => {
+    const handleDeleteModalOpen = () => {
         if (selectedRows && selectedRows.length > 0)
             setIsDeleteModalOpen(true)
         else
             message.error("Please select at least one subject")
+    }
+    const handleDeleteMany = async () => {
+        try {
+            let response = await subjectApi.subjectDeleteMany(selectedRowKeys);
+            if (!response.isError) {
+                subjectDispatch(setSubjects(subjectState.subjects.filter((subject) => !selectedRowKeys.includes(subject.id))));
+                message.success("Delete successfully");
+                setSelectedRowKeys([]);
+                setSelectedRows([]);
+            }
+            else
+                message.error("Delete failed");
+        }
+        catch (error) {
+            console.log(error);
+        }
+        setIsDeleteModalOpen(false);
     }
 
     return (
@@ -157,7 +174,7 @@ const Subject = () => {
                     <Button type="primary" onClick={() => { setIsCreateModalOpen(true); setSelectedSubject(null); }}>
                         Create
                     </Button>
-                    <Button danger variant="contained" type="primary" onClick={handleDeleteMany}>
+                    <Button danger variant="contained" type="primary" onClick={handleDeleteModalOpen}>
                         Delete
                     </Button>
                 </Space>
@@ -165,7 +182,7 @@ const Subject = () => {
                     handleEdit={handleEdit} showDrawer={showDrawer} deleteSubject={deleteSubject}
                     selectedRowKeys={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys} setSelectedRows={setSelectedRows} />
             </Card>
-            <DeleteWarningModal visible={isDeleteModalOpen} onCancel={() => { setIsDeleteModalOpen(false) }}>
+            <DeleteWarningModal visible={isDeleteModalOpen} onOk={handleDeleteMany} onCancel={() => { setIsDeleteModalOpen(false) }}>
                 {
                     selectedRows.map((subject, index) => {
                         return <p style={{ fontSize: '20px' }} >{index + 1 + ". "} {subject.id + "-" + subject.name}</p>

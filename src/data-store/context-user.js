@@ -31,7 +31,16 @@ const initialState = {
     isloggedIn: false,
     role: null,
     adminAccounts: [],
+    lecturers: [],
 }
+
+/*
+note student first load:
+    subjects
+    faculties
+    lecturerInfos
+    schoolClasses (get from ids)
+*/
 
 
 

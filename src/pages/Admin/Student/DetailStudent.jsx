@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Card,
     Table,
@@ -12,93 +12,112 @@ import {
     Tabs,
     Avatar,
     Input,
+    message
 } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined, EditOutlined } from '@ant-design/icons';
 import StudentScoreListTable from '../../../components/Admin/Table/StudentScoreListTable';
 import StudentExamListTable from '../../../components/Admin/Table/StudentExamListTable';
+import { useStudentContext, setCurrentStudent } from '../../../data-store';
+import { StudentApi } from '../../../data-api';
 
-const PasswordItem = () => {
-    const [showPassword, setShowPassword] = useState(false);
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
 
-    return (
-        <Space>
-            {showPassword ? (
-                <EyeInvisibleOutlined onClick={togglePasswordVisibility} />
-            ) : (
-                <EyeOutlined onClick={togglePasswordVisibility} />
-            )}
-            <span>{showPassword ? 'password' : '*********'}</span>
-        </Space>
-    );
-};
-const items = [
-    {
-        key: '1',
-        label: 'Họ và tên',
-        children: 'Nguyen Hoang Long',
-    },
-    {
-        key: '2',
-        label: 'MSSV',
-        children: '2122034556',
-    },
-    {
-        key: '3',
-        label: 'Password',
-        children: <PasswordItem />,
-    },
-    {
-        key: '4',
-        label: 'Bậc đào tạo',
-        children: 'Đại học',
-    },
-    {
-        key: '5',
-        label: 'Ngày sinh:',
-        children: '2019-04-24 18:00:00',
-    },
-    {
-        key: '6',
-        label: 'Lớp sinh hoạt',
-        children: <Badge status="processing" text="Running" />,
-    },
-    {
-        key: '7',
-        label: 'Program',
-        children: 'CLC',
-    },
-    {
-        key: '8',
-        label: 'Giới tính',
-        children: 'Nam',
-    },
-    {
-        key: '9',
-        label: 'Khoa',
-        children: '............................',
-    },
-];
+
+function GenerateItems(id, username, password, email, personalInfo,) {
+    return [
+        {
+            key: '1',
+            label: 'Full name',
+            children: personalInfo?.name,
+        },
+        {
+            key: '2',
+            label: 'MSSV',
+            children: id,
+        },
+        {
+            key: '3',
+            label: 'Username',
+            children: username,
+        },
+        {
+            key: '4',
+            label: 'Bậc đào tạo',
+            children: personalInfo?.program,
+        },
+        {
+            key: '5',
+            label: 'Ngày sinh:',
+            children: personalInfo?.dateofBirth,
+        },
+        {
+            key: '6',
+            label: 'Faculty',
+            children: personalInfo?.facultyId,
+        },
+        {
+            key: '7',
+            label: 'Program',
+            children: personalInfo?.program,
+        },
+        {
+            key: '8',
+            label: 'Giới tính',
+            children: personalInfo?.gender,
+        },
+        {
+            key: '9',
+            label: 'Phone',
+            children: personalInfo?.phone,
+        },
+    ]
+}
+
 
 function DetailStudent() {
+    const [initialItems, setInitialItems] = useState([]);
+    const [editedDescriptions, setEditedDescriptions] = useState([...initialItems]);
     const [editing, setEditing] = useState(false);
-    const [editedDescriptions, setEditedDescriptions] = useState([...items]);
+
+    const [studentState, studentDispatch] = useStudentContext();
+
+
+    useEffect(() => {
+        if (studentState?.currentStudent !== null && studentState?.currentStudent !== undefined) {
+            const { id, username, password, email, personalInfo, } = studentState?.currentStudent;
+            setInitialItems(GenerateItems(id, username, password, email, personalInfo));
+        }
+    }, [studentState?.currentStudent]);
+    useEffect(() => {
+        setEditedDescriptions([...initialItems]);
+    }, [initialItems])
+
 
     const handleEdit = () => {
         setEditing(true);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         setEditing(false);
-        console.log('Saved:', editedDescriptions);
+        try {
+
+            const response = await StudentApi.studentUpdateInstance()
+            if (!response.isError) {
+                studentDispatch(setCurrentStudent(response.data.data));
+                message.success("Cập nhật thông tin thành công");
+            }
+            else {
+                message.error("Cập nhật thông tin thất bại");
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
     };
 
     const handleCancel = () => {
         setEditing(false);
-        setEditedDescriptions([...items]);
+        setEditedDescriptions([...initialItems]);
     };
     const onPanelChange = (value, mode) => {
         console.log(value.format('YYYY-MM-DD'), mode);
@@ -107,21 +126,11 @@ function DetailStudent() {
         console.log(key);
     };
 
-    const columns = [
-        { title: 'ID', dataIndex: 'id', key: 'ID' },
-        { title: 'Name', dataIndex: 'name', key: 'name' },
-        { title: 'Progress', dataIndex: 'progress', key: 'progress' },
-        { title: 'Midterm', dataIndex: 'midtearn', key: 'midtearn' },
-        { title: 'Practice', dataIndex: 'practice', key: 'practice' },
-        { title: 'Final', dataIndex: 'final', key: 'final' },
-        { title: 'GPA', dataIndex: 'GPA', key: 'GPA' },
-    ];
-
     const itemtab = [
         {
             key: '1',
             label: 'Bảng điểm',
-            children: <StudentScoreListTable />,
+            children: <StudentScoreListTable creditLogs={studentState?.currentStudent?.creditLogs} />,
         },
         {
             key: '2',
@@ -158,25 +167,11 @@ function DetailStudent() {
             );
         }
 
-        return <Descriptions bordered items={items} />;
+        return <Descriptions bordered items={editedDescriptions} />;
     };
     return (
         <div>
             <Card>
-                {/* <Breadcrumb
-                    items={[
-                        {
-                            title: (
-                                <a href="/student" className="breadcrumb-link">
-                                    Student
-                                </a>
-                            ),
-                        },
-                        {
-                            title: <span className="breadcrumb-link">Detail Student</span>,
-                        },
-                    ]}
-                /> */}
                 <Divider style={{ color: 'blue', fontSize: '16px' }}>Thông tin sinh viên</Divider>
                 <Space
                     style={{ width: '100%', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}
@@ -184,9 +179,8 @@ function DetailStudent() {
                     <Avatar
                         size={240}
                         bordered={true}
-                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                        src={studentState?.currentStudent?.personalInfo?.avatarUrl}
                     />
-
                     <Space>
                         {editing ? (
                             <>
@@ -216,3 +210,25 @@ function DetailStudent() {
 }
 
 export default DetailStudent;
+
+
+// const PasswordItem = () => {
+//     const [showPassword, setShowPassword] = useState(false);
+
+//     const [studentState, studentDispatch] = useStudentContext();
+
+//     const togglePasswordVisibility = () => {
+//         setShowPassword(!showPassword);
+//     };
+
+//     return (
+//         <Space>
+//             {showPassword ? (
+//                 <EyeInvisibleOutlined onClick={togglePasswordVisibility} />
+//             ) : (
+//                 <EyeOutlined onClick={togglePasswordVisibility} />
+//             )}
+//             <span>{showPassword ? 'password' : '*********'}</span>
+//         </Space>
+//     );
+// };

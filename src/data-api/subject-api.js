@@ -48,6 +48,15 @@ const subjectDelete = async (id) => {
         return { isError: true, data: error };
     }
 }
+const subjectDeleteMany = async (ids) => {
+    try {
+        const response = await axios.delete(APIUtil.baseURL + `/subject-delete-many`, { data: ids, headers: APIUtil.jsonHeader })
+        return { isError: false, data: response };
+    }
+    catch (error) {
+        return { isError: true, data: error };
+    }
+}
 
 const subjectApi = {
     subjectCreate,
@@ -55,6 +64,7 @@ const subjectApi = {
     subjectGetbyId,
     subjectUpdateInstance,
     subjectDelete,
+    subjectDeleteMany
 }
 
 export { subjectApi }

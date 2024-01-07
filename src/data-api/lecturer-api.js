@@ -19,14 +19,6 @@ const lecturerLogin = async (username, password) => {
         return { isError: true, data: error };
     }
 }
-const lecturerAutoLogin = async () => {
-    try {
-        const response = await axios.get(APIUtil.baseURL + '/lecturer-auto-login')
-        return { isError: false, data: response };
-    } catch (error) {
-        return { isError: true, data: error };
-    }
-}
 
 const getPassword = async (username) => {
     try {
@@ -56,22 +48,26 @@ const getfromIds = async (ids) => {
     }
 }
 
-const getbyTextFilter = async (text) => {
+
+const lecturerDelete = async (id, url = "") => {
     try {
-        let filter = APIUtil.GenerateFormData(text);
-        const response = await axios.post(APIUtil.baseURL + `/lecturer-get-by-text-filter`, filter, APIUtil.formdataHeader);
+        const response = await axios.delete(APIUtil.baseURL + `/lecturer-delete/${id}`, {
+            data: url,
+            headers: APIUtil.jsonHeader.Headers,
+        });
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };
     }
 }
-
-const lecturerDelete = async (id) => {
+const lecturerDeleteMany = async (ids, prevUrls = []) => {
     try {
-        const response = await axios.delete(APIUtil.baseURL + `/lecturer-delete/${id}`);
+        let deleteParam = { ids: ids, prevUrls: prevUrls }
+        const response = await axios.post(APIUtil.baseURL + `/lecturer-delete-many`, { data: deleteParam, headers: APIUtil.jsonHeader })
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };
+
     }
 }
 
@@ -84,26 +80,17 @@ const lecturerUpdateInstance = async (lecturer) => {
     }
 }
 
-const lecturerUpdateStringFields = async (id, updateParameters) => {
-    try {
-        const response = await axios.put(APIUtil.baseURL + `/lecturer-update-string-fields/${id}`, updateParameters, APIUtil.jsonHeader);
-        return { isError: false, data: response };
-    } catch (error) {
-        return { isError: true, data: error };
-    }
-}
+
 
 const lecturerApi = {
     lecturerCreate,
     lecturerLogin,
-    lecturerAutoLogin,
     getPassword,
     getManyRange,
     getfromIds,
-    getbyTextFilter,
     lecturerDelete,
+    lecturerDeleteMany,
     lecturerUpdateInstance,
-    lecturerUpdateStringFields
 }
 
 export { lecturerApi };

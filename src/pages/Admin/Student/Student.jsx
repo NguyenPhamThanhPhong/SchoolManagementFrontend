@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Space, Button, Input, Select, Card } from 'antd';
+import { Space, Button, Input, Select, Card, message } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import CreateStudentModal from '../../../components/Admin/Modal/CreateStudentModal';
 import SendNotiStudentModal from '../../../components/Admin/Modal/SendNotiStudentModal';
@@ -22,7 +22,12 @@ const Student = () => {
     const [studentState, studentDispatch] = useStudentContext();
     const [facultyState, facultyDispatch] = useFacultyContext();
 
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
+
     const [selectedFaculty, setSelectedFaculty] = useState(null);
+
+
     const [searchText, setSearchText] = useState("");
     const [filtredStudents, setFiltredStudents] = useState(studentState?.students);
 
@@ -68,7 +73,31 @@ const Student = () => {
         onSearch();
     }, [selectedFaculty, searchText])
 
+    const handleDeleteModalOpen = () => {
+        if (selectedRows && selectedRows.length > 0)
+            setIsDeleteModalOpen(true)
+        else
+            message.error("Please select at least one subject")
+    }
 
+    const handleDeleteMany = async () => {
+        try {
+            let response = await StudentApi.studentDeleteMany(selectedRowKeys);
+            if (!response.isError) {
+                studentDispatch(setStudents(studentState.students.filter((student) => !selectedRowKeys.includes(student.id))));
+                message.success("Delete successfully");
+                setSelectedRowKeys([]);
+                setSelectedRows([]);
+            }
+            else {
+                message.error("Delete failed");
+            }
+        }
+        catch (error) {
+            message.error("Delete failed");
+        }
+        setIsDeleteModalOpen(false);
+    }
     return (
         <div>
             <Card>
@@ -99,10 +128,20 @@ const Student = () => {
                     <Button type="primary" onClick={() => { setIsCreateModalOpen(true) }}>
                         Thêm mới
                     </Button>
+                    <Button danger variant="contained" type="primary" onClick={handleDeleteModalOpen}>
+                        Delete
+                    </Button>
                 </Space>
-                <StudentTable students={filtredStudents} />
+                <StudentTable students={filtredStudents}
+                    selectedRowKeys={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys} setSelectedRows={setSelectedRows} />
             </Card>
-            <DeleteWarningModal />
+            <DeleteWarningModal visible={isDeleteModalOpen} onOk={handleDeleteMany} onCancel={() => { setIsDeleteModalOpen(false) }}>
+                {
+                    selectedRows.map((subject, index) => {
+                        return <p style={{ fontSize: '20px' }} >{index + 1 + ". "} {subject.id + "-" + subject.name}</p>
+                    })
+                }
+            </DeleteWarningModal>
             <SendNotiStudentModal
                 open={isOpen}
                 onOk={() => { setIsOpen(false) }}
@@ -113,6 +152,7 @@ const Student = () => {
                 onOk={() => { setIsCreateModalOpen(false) }}
                 onCancel={() => { setIsCreateModalOpen(false) }}
             />
+
         </div>
     );
 };

@@ -99,9 +99,9 @@ const classDelete = async (id, prevUrls) => {
     }
 }
 
-const classDeleteMany = async (ids) => {
+const classDeleteMany = async (ids = []) => {
     try {
-        const response = await axios.delete(APIUtil.baseURL + `/class-delete-many`, ids, APIUtil.jsonHeader);
+        const response = await axios.delete(APIUtil.baseURL + `/class-delete-many`, { data: ids, headers: APIUtil.jsonHeader });
         return { isError: false, data: response };
     }
     catch (error) {

@@ -55,13 +55,23 @@ const deleteFaculty = async (id) => {
     }
 }
 
+const deleteMany = async (ids) => {
+    try {
+        const response = await axios.delete(APIUtil.baseURL + `/faculty-delete-many`, { data: { ids: ids }, headers: APIUtil.jsonHeader })
+        return { isError: false, data: response };
+    } catch (error) {
+        return { isError: true, data: error };
+    }
+}
+
 const FacultyApi = {
     getAll,
     getOne,
     createFaculty,
     autoGenerateFaculty,
     updateFaculty,
-    deleteFaculty
+    deleteFaculty,
+    deleteMany
 }
 
 export { FacultyApi };

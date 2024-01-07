@@ -39,15 +39,7 @@ const studentGetPassword = async (username) => {
     }
 }
 
-const studentGetFromFilter = async (filterStringObject) => {
-    try {
-        let myformdata = APIUtil.GenerateFormData(filterStringObject);
-        const response = await axios.post(APIUtil.baseURL + '/student-get-by-text-filter', myformdata, APIUtil.formdataHeader);
-        return { isError: false, data: response };
-    } catch (error) {
-        return { isError: true, data: error };
-    }
-}
+
 
 const studentGetFromIds = async (ids) => {
     try {
@@ -76,24 +68,32 @@ const studentGetManyRange = async (start, end) => {
     }
 }
 
-const studentDelete = async (id) => {
+const studentDelete = async (id, url = "") => {
     try {
-        const response = await axios.delete(APIUtil.baseURL + `/student-delete/${id}`);
+        const response = await axios.delete(APIUtil.baseURL + `/student-delete/${id}`, {
+            data: url,
+            headers: APIUtil.jsonHeader.Headers,
+        });
         return { isError: false, data: response };
-    } catch (error) {
+    }
+    catch (error) {
+        return { isError: true, data: error };
+    }
+}
+
+const studentDeleteMany = async (ids, prevUrls = []) => {
+    try {
+        let deleteParam = { ids: ids, prevUrls: prevUrls }
+
+        const response = await axios.delete(APIUtil.baseURL + `/student-delete-many`, { data: deleteParam, headers: APIUtil.jsonHeader })
+        return { isError: false, data: response };
+    }
+    catch (error) {
         return { isError: true, data: error };
     }
 
 }
 
-const studentUpdateStringFields = async (id, updateParameters) => {
-    try {
-        const response = await axios.put(APIUtil.baseURL + `/student-update-string-fields/${id}`, updateParameters, APIUtil.jsonHeader);
-        return { isError: false, data: response };
-    } catch (error) {
-        return { isError: true, data: error };
-    }
-}
 
 const studentUpdateInstance = async (student) => {
     try {
@@ -111,12 +111,11 @@ const StudentApi = {
     studentLogin,
     studentAutoLogin,
     studentGetPassword,
-    studentGetFromFilter,
     studentGetFromIds,
     studentGetbyId,
     studentGetManyRange,
     studentDelete,
-    studentUpdateStringFields,
+    studentDeleteMany,
     studentUpdateInstance
 }
 

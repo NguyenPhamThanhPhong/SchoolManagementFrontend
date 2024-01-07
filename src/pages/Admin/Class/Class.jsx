@@ -42,11 +42,28 @@ const Class = () => {
         setFiltredClasses(result);
     }
 
-    const handleDeleteMany = () => {
+    const handleDeleteModalOpen = () => {
         if (selectedRows && selectedRows.length > 0)
             setIsDeleteModalOpen(true)
         else
             message.error("Please select at least one subject")
+    }
+    const handleDeleteMany = async () => {
+        try {
+            let response = await schoolClassApi.classDeleteMany(selectedRowKeys);
+            if (!response.isError) {
+                schoolClassDispatch(setSchoolClasses(schoolClassState.schoolClasses.filter((schoolClass) => !selectedRowKeys.includes(schoolClass.id))));
+                message.success("Delete successfully");
+                setSelectedRowKeys([]);
+                setSelectedRows([]);
+            }
+            else
+                message.error("Delete failed");
+        }
+        catch (error) {
+            console.log(error);
+        }
+        setIsDeleteModalOpen(false);
     }
 
     const fetchSchoolClasses = async (start, end) => {
@@ -100,7 +117,7 @@ const Class = () => {
                     <Button type="primary" onClick={() => { setIsModalOpen(true) }}>
                         Thêm mới
                     </Button>
-                    <Button danger variant="contained" type="primary" onClick={handleDeleteMany}>
+                    <Button danger variant="contained" type="primary" onClick={handleDeleteModalOpen}>
                         Delete
                     </Button>
                 </Space>
@@ -110,7 +127,7 @@ const Class = () => {
             </Card>
             <CreateClassModal open={isModalOpen} onOk={() => { setIsModalOpen(false) }} onCancel={() => { setIsModalOpen(false) }} />
             <ShowClassDrawer open={isDrawerOpen} onClose={() => { setIsDrawerOpen(false) }} selectedClass={selectedClass} />
-            <DeleteWarningModal visible={isDeleteModalOpen}
+            <DeleteWarningModal visible={isDeleteModalOpen} onOk={handleDeleteMany}
                 onCancel={() => { setIsDeleteModalOpen(false) }}>
                 {
                     selectedRows.map((schoolClass, index) => {

@@ -16,16 +16,16 @@ function validateStartEnd(start, end) {
 }
 
 
-const baseURL = 'https://localhost:5051'
+const baseURL = 'https://192.168.1.7:5051'
 
 const jsonHeader = {
     Headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
     }
 }
 const formdataHeader = {
     Headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
     }
 }
 const APIUtil = {

@@ -17,21 +17,13 @@ function CreateStudentModal({ open, onOk, onCancel }) {
 
     const [unselectedClasses, setUnselectedClasses] = useState(schoolClassState?.schoolClasses);
 
-    const validateId = async (rule, value, callback) => {
+    const validateId = (rule, value, callback) => {
         if (studentState.students.some((student) => student.id === value)) {
             callback(`Student ID: ${value} already exist`);
         } else {
             callback();
         }
     }
-    const handleIdChange = (value) => {
-        form.setFieldValue({
-            id: value,
-            username: value,
-            email: value + "@gm.uit.edu.vn",
-        })
-    }
-
     const validateUsername = async (rule, value, callback) => {
         if (studentState?.students.some((student) => student.username === value)) {
             callback(`Username: ${value} already exist`);
@@ -39,6 +31,17 @@ function CreateStudentModal({ open, onOk, onCancel }) {
             callback();
         }
     }
+
+    const handleIdChange = () => {
+        const value = form.getFieldValue("id");
+        form.setFieldsValue({
+            id: value,
+            username: value,
+            email: value + "@gm.uit.edu.vn",
+        })
+        form.validateFields()
+    }
+
 
     useEffect(() => {
         setTableData([]);
@@ -124,7 +127,7 @@ function CreateStudentModal({ open, onOk, onCancel }) {
                     rules={[{ required: true, message: 'Please enter an ID!' },
                     { validator: validateId }]}
                 >
-                    <Input onChange={(e) => { form.setFieldValue(handleIdChange(e.target.value)) }} style={{ width: '100%' }} />
+                    <Input onChange={handleIdChange} style={{ width: '100%' }} />
                 </Form.Item>
                 <Form.Item label="Name" name="name" rules={[{ required: true }]}>
                     <Input />

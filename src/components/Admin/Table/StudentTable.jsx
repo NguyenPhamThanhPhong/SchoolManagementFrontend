@@ -9,7 +9,7 @@ import {
 } from '../../../data-store/index';
 
 
-function StudentTable({ students }) {
+function StudentTable({ students, selectedRowKeys, setSelectedRowKeys, setSelectedRows }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [studentState, studentDispatch] = useStudentContext();
 
@@ -25,6 +25,16 @@ function StudentTable({ students }) {
         catch (error) {
             console.log('Failed to fetch: ', error);
         }
+    }
+
+    const onSelectChange = (selectedKeys, selectedRows) => {
+        setSelectedRowKeys(selectedKeys);
+        setSelectedRows(selectedRows);
+    };
+
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
     }
 
 
@@ -105,6 +115,7 @@ function StudentTable({ students }) {
             }}
             rowSelection={{
                 type: 'checkbox',
+                ...rowSelection
             }}
             rowKey='id'
         />
