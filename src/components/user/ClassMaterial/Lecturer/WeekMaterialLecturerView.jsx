@@ -6,7 +6,7 @@ import parse from 'html-react-parser';
 function WeekMaterialLecturerView(props, { Sections }) {
 
     return (
-        <>
+        <div className='WeekMaterialLecturerviewContain'>
             <div className='WeekMaterialLecturerview'>
                 {props.Sections.map((item =>
                     <div>
@@ -21,9 +21,9 @@ function WeekMaterialLecturerView(props, { Sections }) {
                 ))}
                 <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }} >
                 </Divider>
-                <Button type="link" href={userPaths.lecutrerAddFile}>+ Add new section</Button>
+                <Button type="link" href={userPaths.lecutrerAddFile} style={{ marginBottom: '3%' }}>+ Add new section</Button>
             </div>
 
-        </>)
+        </div>)
 }
 export default WeekMaterialLecturerView;
