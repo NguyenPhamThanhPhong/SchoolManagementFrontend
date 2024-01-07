@@ -1,9 +1,9 @@
 import { Table, } from 'antd';
 import React from 'react';
-import { Button } from 'antd'
+import { Button, FloatButton } from 'antd'
 import SearchBox from '../SearchBox/SearchBox';
 
-function RegisteredSubjectBoard() {
+function RegisteredSubjectBoard(props) {
 
     const columns = [
         {
@@ -42,30 +42,7 @@ function RegisteredSubjectBoard() {
             key: 'class_period',
         },
     ];
-    const data = [
-        {
-            key: 1,
-            No_: 'Subject name 1',
-            subject_id: '',
-            subject_name: '',
-            date_start: '',
-            date_end: '',
-            lecturer_name: '',
-            class_period: '',
-            children: [
-                {
-                    key: 2,
-                    No_: '1',
-                    subject_id: 'OOP.1',
-                    subject_name: 'OOP',
-                    date_start: '10',
-                    date_end: '10',
-                    lecturer_name: '10',
-                    class_period: '10',
-                }
-            ]
-        }
-    ]
+
 
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
@@ -79,7 +56,7 @@ function RegisteredSubjectBoard() {
         },
     };
     return (
-        <>
+        <div className='TableContain'>
             <SearchBox></SearchBox>
             <br></br>
             <br></br>
@@ -91,11 +68,24 @@ function RegisteredSubjectBoard() {
                     ...rowSelection,
                 }}
                 pagination={{ position: ['none'], }}
-                dataSource={data}
+                dataSource={props.data}
+                scroll={{
+                    y: 300,
+                }}
             />
             <br></br>
-            <Button type='primary' style={{ float: 'right' }} danger>Confirm</Button>
-        </>
+            <FloatButton
+                shape="square"
+                description='Comfirm'
+                type="primary"
+                style={{
+                    right: '5%',
+                    bottom: '2%',
+                    width: '150px',
+                }}
+
+            ></FloatButton>
+        </div>
 
     );
 }

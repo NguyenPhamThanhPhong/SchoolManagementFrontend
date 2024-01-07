@@ -1,6 +1,6 @@
 import './InputScore.scss'
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Button, Form, Input, Table } from 'antd';
+import { Button, Form, Input, Table, FloatButton } from 'antd';
 
 
 const EditableContext = React.createContext(null);
@@ -163,7 +163,7 @@ const InputScore = (props) => {
         };
     });
     return (
-        <div>
+        <div className='TableContain'>
             <Table
                 components={components}
                 rowClassName={() => 'editable-row'}
@@ -171,8 +171,21 @@ const InputScore = (props) => {
                 dataSource={dataSource}
                 columns={columns}
                 pagination={{ position: ['none'], }}
+                scroll={{
+                    y: '60vh',
+                }}
             />
-            <Button className='SaveScore' >Save</Button>
+            <FloatButton
+                shape="square"
+                type="primary"
+                description="Save"
+                style={{
+                    right: 10,
+                    bottom: 20,
+                    width: '140px',
+                }}
+
+            />
         </div>
     );
 };

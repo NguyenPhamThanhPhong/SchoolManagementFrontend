@@ -13,7 +13,10 @@ const ScoreData = [
     No_: 1,
     name: 'Tran Van A',
     student_id: '32',
-    progress_score: '8'
+    progress_score: 8,
+    midterm_score: 9,
+    practice_score: 9,
+    finalterm_score: 9,
   },
   {
     key: '1',

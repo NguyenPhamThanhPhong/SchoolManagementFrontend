@@ -1,8 +1,8 @@
-import { Button, Table, message } from 'antd';
+import { FloatButton, Table, message } from 'antd';
 import React from 'react';
 import SearchBox from '../SearchBox/SearchBox';
 
-function RegisterSubjectBoard() {
+function RegisterSubjectBoard(props) {
 
     const columns = [
         {
@@ -41,32 +41,8 @@ function RegisterSubjectBoard() {
             key: 'class_period',
         },
     ];
-    const data = [
-        {
-            key: 1,
-            No_: 'Subject name',
-            subjectId: '',
-            subject_name: '',
-            date_start: '',
-            date_end: '',
-            lecturer_name: '',
-            class_period: '',
-            children: [
-                {
-                    key: 2,
-                    No_: '1',
-                    subjectId: 'OOP.1',
-                    subject_name: 'OOP',
-                    date_start: '10',
-                    date_end: '10',
-                    lecturer_name: '10',
-                    class_period: '10',
-                },
 
-            ]
-        }
-    ]
-
+    //
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
             console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -79,8 +55,12 @@ function RegisterSubjectBoard() {
             console.log(selected, selectedRows, changeRows);
         },
     };
+
+    //
+
+    const data = props.data;
     return (
-        <>
+        <div className='TableContain'>
             <SearchBox></SearchBox>
             <br></br>
             <br></br>
@@ -93,10 +73,23 @@ function RegisterSubjectBoard() {
                 }}
                 pagination={{ position: ['none'], }}
                 dataSource={data}
+                scroll={{
+                    y: 300,
+                }}
             />
             <br></br>
-            <Button type='primary' style={{ float: 'right' }}>Confirm</Button>
-        </>
+            <FloatButton
+                shape="square"
+                description='Comfirm'
+                type="primary"
+                style={{
+                    right: '5%',
+                    bottom: '2%',
+                    width: '150px',
+                }}
+
+            />
+        </div>
 
     );
 }
