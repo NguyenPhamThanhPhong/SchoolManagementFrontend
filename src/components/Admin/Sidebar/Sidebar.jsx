@@ -10,7 +10,7 @@ import {
     SolutionOutlined,
     ReadOutlined,
     TeamOutlined,
-    SettingOutlined,
+    AppstoreAddOutlined,
     LogoutOutlined,
 } from '@ant-design/icons';
 
@@ -25,6 +25,11 @@ const Sidebar = ({ collapsed, onCollapse }) => {
             key: '/admin/semester_faculty',
             icon: <WindowsOutlined style={{ fontSize: '18px' }} />,
             label: 'Semester_faculty',
+        },
+        {
+            key: '/admin/registration',
+            icon: <AppstoreAddOutlined style={{ fontSize: '18px' }} />,
+            label: 'Registration',
         },
         { key: '/admin/subject', icon: <BookFilled style={{ fontSize: '18px' }} />, label: 'Subject' },
         { key: '/admin/class', icon: <PartitionOutlined style={{ fontSize: '18px' }} />, label: 'Class' },

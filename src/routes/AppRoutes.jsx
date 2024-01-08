@@ -11,6 +11,7 @@ import User from '../pages/Admin/User/User';
 import DetailClass from '../pages/Admin/Class/DetailClass';
 import DetailStudent from '../pages/Admin/Student/DetailStudent';
 import DetailLecturer from '../pages/Admin/Lecturer/DetailLecturer';
+import Registration from '../pages/Admin/Registration/Registration';
 
 const publicRoutes = [
     { path: '/admin/', component: Home },
@@ -29,6 +30,7 @@ const publicRoutes = [
     { path: '/admin/orther', component: Orther },
     { path: '/admin/post', component: Post },
     { path: '/admin/semester_faculty', component: SemesterFaculty },
+    { path: '/admin/registration', component: Registration },
     { path: '/admin/user', component: User },
 ];
 
