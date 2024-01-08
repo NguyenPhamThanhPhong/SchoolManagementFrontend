@@ -33,7 +33,6 @@ const Login = () => {
                 if (!response.isError) {
                     console.log(response.data.status)
                     if (response.data.status === 200) {
-                        navigate('/admin')
 
                         const expires = new Date();
                         expires.setTime(expires.getTime() + 2 * 24 * 60 * 60 * 1000);
@@ -46,6 +45,8 @@ const Login = () => {
                             adminAccounts: []
                         }
                         userDispatch(setLogin(loginData));
+                        navigate('/admin')
+
                     }
                 }
                 else {

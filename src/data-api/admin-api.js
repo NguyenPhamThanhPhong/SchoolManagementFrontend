@@ -56,12 +56,9 @@ const getAutoLogin = async () => {
             });
             return { isError: false, data: response.data };
         } else {
-            // Handle token expiration
             return { isError: true, data: 'Token expired' };
         }
     } catch (error) {
-        // Handle errors appropriately
-        console.log(JSON.stringify(error))
         return { isError: true, data: error };
     }
 };

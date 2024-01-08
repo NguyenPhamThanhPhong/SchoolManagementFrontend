@@ -5,49 +5,45 @@ function ScoreBoard(props) {
     const columns = [
         {
             title: 'No.',
-            dataIndex: 'No_',
-            key: 'No_'
+            dataIndex: 'id',
+            key: 'index',
         },
         {
             title: 'Subject Id',
-            dataIndex: 'subject_id',
-            key: 'subject_id',
+            dataIndex: 'subjectId',
+            key: 'index',
         },
         {
             title: 'Subject name',
-            dataIndex: 'subject_name',
-            key: 'subject_name',
+            dataIndex: 'subjectName',
+            key: 'index',
         },
         {
             title: 'Progress score',
-            dataIndex: 'progress_score',
-            key: 'progress_score',
+            dataIndex: 'progress',
+            key: 'index',
         },
         {
             title: 'Midterm score',
-            dataIndex: 'midterm_score',
-            key: 'midterm_score',
+            dataIndex: 'midterm',
+            key: 'index',
         },
         {
             title: 'Practice score',
-            dataIndex: 'practice_score',
-            key: 'practice_score',
+            dataIndex: 'practice',
+            key: 'index',
         },
         {
             title: 'Finalterm score',
-            dataIndex: 'finalterm_score',
-            key: 'finalterm_score',
+            dataIndex: 'final',
+            key: 'index',
         },
         {
             title: 'average score',
-            dataIndex: 'average_score',
-            key: 'average_score',
+            dataIndex: 'average',
+            key: 'index',
         },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-        }
+
     ];
     const data = props.StudentScoreData;
     return (

@@ -4,7 +4,9 @@ import { Divider } from 'antd';
 import { userPaths } from '../../../routes/AppRoutes';
 function NotificationList(props) {
 
-
+    const truncateString = (str, maxLength) => {
+        return str.length > maxLength ? str.slice(0, maxLength - 1) + '...' : str;
+    };
 
     return (
         <>
@@ -12,10 +14,10 @@ function NotificationList(props) {
                 <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }}>{props.NotiType}</Divider>
                 <ul className="list-group">
                     {props.NotificationItems.map((item =>
-                    (<li className="list-group" key={item.NotificationId}>
-                        <Link to={userPaths.notification} className="NotificationitemContainer" style={{ textDecoration: 'none' }}>
-                            <div className='firstLine'>{item.NotificationId}</div>
-                            <div className='secondLine'>{item.Time}</div>
+                    (<li className="list-group" key={item.id}>
+                        <Link to={`/user-home/notification/${item.id}`} className="NotificationitemContainer" style={{ textDecoration: 'none' }}>
+                            <div className='firstLine'>{item.id}</div>
+                            <div className='secondLine'>{truncateString(item.content, 100)}</div>
                         </Link>
                     </li>)
                     ))}

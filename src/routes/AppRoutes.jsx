@@ -62,7 +62,7 @@ const publicRoutes = [
 
 const userPaths =
 {
-    studentLogin: '/',
+    studentLogin: '/student/login',
     lecutrerLogin: '/lecturer/login',
 
     home: '/user-home',
@@ -72,7 +72,7 @@ const userPaths =
     classes: '/classes',
     lecturerViewClass: '/classes/lecturer',
     lecutrerAddFile: '/classes/lecturer/add',
-    studentViewClass: '/classes/student',
+    studentViewClass: '/classes/student/:id',
     studentRegister: '/student-register-subject'
 }
 

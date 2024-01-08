@@ -2,60 +2,69 @@ import { Table, } from 'antd';
 import React from 'react';
 import './ExamSchedule.scss'
 import { Button } from 'antd'
+import { useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
-function ExamSchedule(props, { Semester }) {
+function ExamSchedule(props) {
     const columns = [
         {
             title: 'No.',
-            dataIndex: 'No_',
-            key: 'No_'
+            dataIndex: 'index',
+            key: 'index',
         },
         {
             title: 'Subject Id',
-            dataIndex: 'subject_id',
-            key: 'subject_id',
+            dataIndex: 'subjectId',
+            key: 'index',
         },
         {
             title: 'Class id',
-            dataIndex: 'class_id',
-            key: 'class_id',
+            dataIndex: 'classId',
+            key: 'index',
         },
         {
             title: 'Exam date',
-            dataIndex: 'exam_date',
-            key: 'exam_date',
+            dataIndex: 'examDate',
+            key: 'index',
         },
         {
             title: 'Room',
             dataIndex: 'room',
-            key: 'room',
+            key: 'index',
         },
         {
             title: 'Exam form',
-            dataIndex: 'exam_form',
-            key: 'exam_form',
+            dataIndex: 'duration',
+            key: 'index',
         },
         {
-            title: 'Note',
-            dataIndex: 'note',
-            key: 'note',
+            title: 'Exam form',
+            dataIndex: 'examName',
+            key: 'index',
         },
     ];
+
     const data = props.ExamData;
+    const semesters = props.semesters?.map((item => item?.id));
+
+    const [selectedSemester, setSelectedSemester] = useState(semesters[0] || '');
+
     return (
         <>
             <div className='MainContainErExamSchedule'>
                 <div className='dropSemester_1'>
-                    <Dropdown id='dropSemester_1'>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            {props.Semester[props.Semester.length - 1]}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu >
-                            {props.Semester.map((item =>
-                                (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
-                            ))}
-                        </Dropdown.Menu>
-                    </Dropdown>
+                    {
+                        semesters?.length > 0 && (
+                            <Dropdown id='dropSemester_1'>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    {selectedSemester}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu >
+                                    {semesters?.map((item =>
+                                        (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
+                                    ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        )}
 
                 </div>
                 <div className='ExamScheduleBoardM'>

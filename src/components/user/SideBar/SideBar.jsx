@@ -46,9 +46,14 @@ const Sidebar = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            const sidebarItem = sidebarRef.current.querySelector('.sidebar__menu__item');
-            indicatorRef.current.style.height = `${sidebarItem.clientHeight}px`;
-            setStepHeight(sidebarItem.clientHeight);
+            const sidebarElement = sidebarRef.current;
+            if (sidebarElement) {
+                const sidebarItem = sidebarElement.querySelector('.sidebar__menu__item');
+                if (sidebarItem) {
+                    indicatorRef.current.style.height = `${sidebarItem.clientHeight}px`;
+                    setStepHeight(sidebarItem.clientHeight);
+                }
+            }
         }, 50);
     }, []);
 

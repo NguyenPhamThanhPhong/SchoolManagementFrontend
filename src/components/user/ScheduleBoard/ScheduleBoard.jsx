@@ -11,52 +11,71 @@ import { message } from 'antd';
 
 
 
+
 function ScheduleBoard(props) {
-    const events = props.ScheduleEvents;
+    const events = props.ScheduleEvents || [];
+    const semesterList = props.semesters || [];
 
-    let mySemester = "";
-    console.log(!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
-    if (!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
-        mySemester = props.Semester[0];
+    console.log(events)
 
-    const [selectedSemester, setSelectedSemester] = useState(mySemester);
+    let items = props.semesters || [
+        {
+            "id": "HK I 2023-2024",
+            "startTime": "01/01/0001",
+            "endTime": "01/01/0001",
+            "classIds": []
+        },
+        {
+            "id": "HK II 2021-2022",
+            "startTime": "01/01/0001",
+            "endTime": "01/01/0001",
+            "classIds": [
+                "SE.trời xanh mây trắng",
+                "SE.new new"
+            ]
+        },]
+    const [selectedSemester, setSelectedSemester] = useState(items[0]?.id);
 
     const handleSelect = (eventKey) => {
         setSelectedSemester(eventKey);
+        props?.onSemesterChange(eventKey);
     };
+
 
     function renderEventContent(eventInfo) {
         return (
             <>
                 <b style={{ fontSize: '15px' }}>{eventInfo.timeText}</b>
                 <br></br>
-                <h style={{ fontSize: '18px' }}>{eventInfo.event.extendedProps.classID}</h>
+                <h style={{ fontSize: '18px' }}>{eventInfo.event.extendedProps.id}</h>
                 <br></br>
-                <i>{eventInfo.event.extendedProps.dateStart} - {eventInfo.event.extendedProps.dateEnd}</i>
+                <i>{eventInfo.event.extendedProps.beginTime} - {eventInfo.event.extendedProps.finalTime}</i>
             </>
-        )
+        );
     }
 
     return (
-        <div className='MainContainErSchedule'>
+        <div className='MainContainerSchedule'>
             <div className='dropSemester_1'>
-
-                <Dropdown id='dropSemester_1' onSelect={handleSelect}>
-
-                    <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        {selectedSemester}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu >
-                        {props.Semester.map((item =>
-                            (<Dropdown.Item eventKey={item}>{item}</Dropdown.Item>)
-                        ))}
-                    </Dropdown.Menu>
-                </Dropdown>
-
+                {/* Check if semesters are available before rendering the dropdown */}
+                {semesterList.length > 0 && (
+                    <Dropdown id='dropSemester_1' onSelect={handleSelect}>
+                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                            {selectedSemester}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            {items.map((item) => (
+                                <Dropdown.Item key={item?.id} eventKey={item?.id}>
+                                    {item?.id || "place holder"}
+                                </Dropdown.Item>
+                            ))}
+                        </Dropdown.Menu>
+                    </Dropdown>
+                )}
             </div>
             <div className='ScheduleBoardM'>
                 <div>
-                    <ScheduleHeader></ScheduleHeader>
+                    <ScheduleHeader />
                     <FullCalendar
                         plugins={[timeGridPlugin]}
                         initialView='timeGridWeek'
@@ -73,8 +92,8 @@ function ScheduleBoard(props) {
                     />
                 </div>
             </div>
-
         </div>
-    )
+    );
 }
+
 export default ScheduleBoard;

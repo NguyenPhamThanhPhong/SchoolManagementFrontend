@@ -9,7 +9,9 @@ function App() {
         <Router>
             <div className="App">
                 <DataOnlyComponent />
+
                 <Routes>
+
                     {publicRoutes.map((route, index) => {
                         const Page = route.component;
                         let _Layout = Layout;

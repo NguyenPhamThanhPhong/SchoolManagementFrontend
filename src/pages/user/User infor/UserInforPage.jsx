@@ -2,7 +2,13 @@
 import UserInformation from "../../../components/user/Userinfor/Userinformation";
 import User from "../../Admin/User/User";
 
+import { useEffect, useState } from 'react';
+import { useUserContext } from "../../../data-store";
+
 function UserInforPage() {
+
+  const [userState, userDispatch] = useUserContext();
+
 
   let creditLogs = {
     "semester II 2020-2021":
@@ -45,31 +51,29 @@ function UserInforPage() {
   }
 
   function generateChildren(row) {
-    let scores = [9, 9, 9, 9, 9]
-
+    let scores = row?.scores;
     let myScoreItem = {
-      key: '-1',
-      subject_id: row?.id,
-      subject_name: row?.name,
-      status: row?.status,
+      index: row?.id,
+      subjectId: row?.id,
+      subjectName: row?.name,
     }
 
     for (var i = 0; i < scores.length; i++) {
       switch (i) {
         case 0:
-          myScoreItem.progress_score = scores[i];
+          myScoreItem.progress = scores[i];
           break;
         case 1:
-          myScoreItem.midterm_score = scores[i];
+          myScoreItem.midterm = scores[i];
           break;
         case 2:
-          myScoreItem.practice_score = scores[i];
+          myScoreItem.practice = scores[i];
           break;
         case 3:
-          myScoreItem.finalterm_score = scores[i];
+          myScoreItem.final = scores[i];
           break;
         case 4:
-          myScoreItem.average_score = scores[i];
+          myScoreItem.average = scores[i];
           break;
         default:
           break;
@@ -78,48 +82,61 @@ function UserInforPage() {
     return myScoreItem;
   }
 
-  let datas = []
+  function generateData() {
+    let datas = []
 
-  for (let [semester, rows] of Object.entries(creditLogs)) {
-    console.log(JSON.stringify(rows))
-    let myRows = rows?.map(row => generateChildren(row))
-    console.log(JSON.stringify(myRows))
-    datas.push({
-      key: semester,
-      No_: semester,
-      children: myRows
-    });
+    for (let [semester, rows] of Object.entries(creditLogs)) {
+      let myRows = rows?.map(row => generateChildren(row))
+      datas.push({
+        id: semester,
+        children: myRows
+      });
+    }
+    return datas
   }
 
-  const StudentScoreData = datas
-
-  const UserInformationItem =
-  {
-    Avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-    Full_name: 'Nguyen Van A',
-    Phone_number: '0123456789',
-    DateOfBirth: '01/01/2003',
-    Gender: 'Male',
-    Student_ID: '123456',
-    //Email: 'student@gmail.com',
-    Program: 'CLC',
-    Faculty: 'SE',
-
+  function mapProfile(userProfile) {
+    if (userProfile !== undefined && userProfile !== null) {
+      return {
+        avatarUrl: userProfile?.personalInfo?.avatarUrl,
+        name: userProfile?.personalInfo?.name,
+        phone: userProfile?.personalInfo?.phone,
+        dateofbirth: userProfile?.personalInfo?.dateofbirth,
+        gender: userProfile?.personalInfo?.gender,
+        id: userProfile?.id,
+        email: userProfile?.email,
+        Program: userProfile?.personalInfo?.program,
+        Faculty: userProfile?.personalInfo?.facultyId,
+      }
+    }
+    else
+      return {
+        avatarUrl: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+        name: 'Nguyen Van A',
+        phone: '0123456789',
+        dateofbirth: '01/01/2003',
+        gender: 'Male',
+        id: '123456',
+        email: 'student@gmail.com',
+        Program: 'CLC',
+        Faculty: 'SE',
+      }
   }
+
 
   return (
     <>
       <div className="mainUserInfor">
         <UserInformation
-          Avatar={UserInformationItem.Avatar}
-          Full_name={UserInformationItem.Full_name}
-          Student_ID={UserInformationItem.Student_ID}
-          DateOfBirth={UserInformationItem.DateOfBirth}
-          Gender={UserInformationItem.Gender}
-          Phone_number={UserInformationItem.Phone_number}
-          Program={UserInformationItem.Program}
-          Faculty={UserInformationItem.Faculty}
-          StudentScoreData={StudentScoreData}
+          Avatar={mapProfile(userState?.user)?.avatarUrl}
+          Full_name={mapProfile(userState?.user)?.name}
+          Student_ID={mapProfile(userState?.user)?.id}
+          DateOfBirth={mapProfile(userState?.user)?.dateofbirth}
+          Gender={mapProfile(userState?.user)?.gender}
+          Phone_number={mapProfile(userState?.user)?.phone}
+          Program={mapProfile(userState?.user)?.Program}
+          Faculty={mapProfile(userState?.user)?.Faculty}
+          StudentScoreData={generateData()}
         />
       </div>
     </>

@@ -1,61 +1,55 @@
 import './Home.css'
 import NotificationList from "../../../components/user/NotificationList/NotificationList";
 import { Tabs } from 'antd';
+import { usePostContext, useUserContext } from '../../../data-store';
+import { useState, useEffect } from 'react';
 
 const onChange = (key) => {
   console.log(key);
 };
-let NotificationItems = [
-  {
-    NotificationId: "asdfjaklsdjflkjwejaljrqwejlkrjqjwe",
-    Time: "Time1"
-  },
-  {
-    NotificationId: "Noti2",
-    Time: "Time2"
-  },
-  {
-    NotificationId: "Noti3",
-    Time: "Time3"
-  },
-  {
-    NotificationId: "Noti4",
-    Time: "Time4"
-  },
-  {
-    NotificationId: "Noti5",
-    Time: 'Time5'
-  },
-  {
-    NotificationId: "Noti5",
-    Time: 'Time5'
-  },
-  {
-    NotificationId: "Noti5",
-    Time: 'Time5'
-  },
-]
+
 //
-const items = [
-  {
-    key: '1',
-    label: 'Faculty notification',
-    children: <NotificationList NotiType={'Faculty notification'} NotificationItems={NotificationItems}></NotificationList>,
-  },
-  {
-    key: '2',
-    label: 'General notification',
-    children:
-      <NotificationList NotiType={'General notification'} NotificationItems={NotificationItems}>
-      </NotificationList>,
-  },
-  {
-    key: '3',
-    label: 'Your notification',
-    children: <NotificationList NotiType={'Your notification'} NotificationItems={NotificationItems}></NotificationList>,
-  },
-];
+
 function Home() {
+
+  const [postState, postActions] = usePostContext();
+  const [userState, userDispatch] = useUserContext();
+
+  const [facultyPost, setFacultyPost] = useState([]);
+  const [generalPost, setGeneralPost] = useState([]);
+  const [yourPost, setYourPost] = useState([]);
+
+
+  useEffect(() => {
+    if (postState?.posts !== undefined && postState?.posts !== null && userState?.user !== undefined && userState?.user !== null) {
+      let facultyId = userState?.user?.personalInfo?.facultyId;
+      setFacultyPost(postState?.posts?.filter(item => item.facultyTags.includes(facultyId)));
+      setGeneralPost(postState?.posts);
+      setYourPost(postState?.posts);
+    }
+  }, [postState?.posts]);
+
+
+  const items = [
+    {
+      key: '1',
+      label: 'Faculty notification',
+      children: <NotificationList NotiType={'General notification'} NotificationItems={generalPost}></NotificationList>,
+    },
+    {
+      key: '2',
+      label: 'General notification',
+      children:
+        <NotificationList NotiType={'Faculty notification'} NotificationItems={facultyPost}>
+        </NotificationList>,
+    },
+    {
+      key: '3',
+      label: 'Your notification',
+      children: <NotificationList NotiType={'Your notification'} NotificationItems={yourPost}></NotificationList>,
+    },
+  ];
+
   return (
     <>
       <div className="homeMain">

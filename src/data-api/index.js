@@ -6,6 +6,7 @@ export * from './semester-api'
 export * from './student-api'
 export * from './subject-api'
 export * from './post-api'
+export * from './registration-api'
 
 export * from './class-template'
 export * from './api-utils'

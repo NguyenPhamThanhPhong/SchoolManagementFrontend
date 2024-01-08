@@ -11,7 +11,7 @@ export const setLogin = (payload) => ({
     payload
 });
 
-export const setLogout = (payload) => ({
+export const setLogout = (payload = null) => ({
     type: types.SET_LOGOUT,
     payload
 });

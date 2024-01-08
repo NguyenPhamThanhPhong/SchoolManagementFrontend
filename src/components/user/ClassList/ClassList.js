@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { userPaths } from '../../../routes/AppRoutes';
 import SearchBox from '../SearchBox/SearchBox';
-function ClassList(props, { Semester, ClassItems }) {
+import { message } from 'antd';
+function ClassList(props) {
 
-    const linkTo = props.role === 'lecturer' ? userPaths.lecturerViewClass : userPaths.studentViewClass;
+    const linkTo = props.role === 'lecturer' ? userPaths.lecturerViewClass.replace(":id", "") : userPaths.studentViewClass.replace(":id", "")
+
 
     return (
         <>
@@ -26,7 +28,7 @@ function ClassList(props, { Semester, ClassItems }) {
                 <ul className="list-group">
                     {props.ClassItems.map((item =>
                     (<li className="list-group" key={item.ClassId}>
-                        <Link to={linkTo} className="classitemContainer" style={{ textDecoration: 'none' }}>
+                        <Link to={linkTo + item?.ClassId} className="classitemContainer" style={{ textDecoration: 'none' }}>
                             <div className='firstLine'>{item.SubjectName} - {item.ClassId}</div>
                             <div className='secondLine'>{item.LecturerName}</div>
                         </Link>
