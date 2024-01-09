@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Checkbox, Card } from 'antd';
+import { Form, Input, Button, Checkbox, Card, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef } from 'react';
 import { useUserContext, setLogin } from '../../../data-store';
@@ -15,10 +15,13 @@ const Login = () => {
 
     const [userState, userDispatch] = useUserContext();
 
-    const handleTest = () => {
-        console.log(username);
-        console.log(password)
-    }
+    const [userType, setUserType] = useState('admin');
+
+    const handleUserTypeChange = (value) => {
+        setUserType(value);
+        const redirectPath = `/${value}/login`;
+        window.location.href = redirectPath;
+    };
 
     const navigate = useNavigate();
 
@@ -85,18 +88,25 @@ const Login = () => {
                     <Form.Item name="remember" valuePropName="checked">
                         <Checkbox>Remember me</Checkbox>
                     </Form.Item>
-                    <FormItem>
-                        <Button type="primary" htmlType="submit" onClick={handleTest}>
-                            click to test
-                        </Button>
-                    </FormItem>
 
                     <Form.Item>
                         <Button onClick={handleLoginClick} type="primary" htmlType="submit">
                             Log in
                         </Button>
                     </Form.Item>
+
                 </Form>
+                <Form.Item
+                    label="Swith to"
+                    name="userType"
+                    rules={[{ required: true, message: 'Please select a user type!' }]}
+                >
+                    <Select value={userType} defaultValue="admin" onChange={handleUserTypeChange}>
+                        <Select.Option value="admin">Admin</Select.Option>
+                        <Select.Option value="student">Student</Select.Option>
+                        <Select.Option value="lecturer">Lecturer</Select.Option>
+                    </Select>
+                </Form.Item>
             </Card>
         </div>
     );

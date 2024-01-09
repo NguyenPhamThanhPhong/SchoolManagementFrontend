@@ -162,7 +162,7 @@ function CreateClassModal({ open, onOk, onCancel }) {
                 </Form.Item>
 
 
-                <Form.Item label="Schedule" name="schedule">
+                {/* <Form.Item label="Schedule" name="schedule">
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <Select allowClear>
                             {Array.from({ length: 7 }, (_, i) => (
@@ -177,7 +177,20 @@ function CreateClassModal({ open, onOk, onCancel }) {
                             onChange={(e) => { setTimeRange(e.target.value) }}
                         />
                     </div>
+                </Form.Item> */}
+
+                <Form.Item label="Schedule" name="schedule">
+                    <Select allowClear>
+                        <Option value="schedule1">1</Option>
+                        <Option value="schedule2">2</Option>
+                        <Option value="schedule3">3</Option>
+                    </Select>
                 </Form.Item>
+
+                <Form.Item label="Time Range" name="timerange">
+                    <TimePicker.RangePicker style={{ width: '100%' }} format="HH:mm" />
+                </Form.Item>
+
             </Form>
         </Modal>
     );

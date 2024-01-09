@@ -2,6 +2,7 @@ import { React, useState, useEffect } from 'react';
 import { Table, Space, Button } from 'antd';
 import { Link, NavLink } from 'react-router-dom';
 import { StudentApi } from '../../../data-api/index';
+import EditStudentModal from '../Modal/EditStudentModal';
 import {
     useStudentContext,
     setStudents, setCurrentStudent,
@@ -11,6 +12,24 @@ import {
 
 function StudentTable({ students, selectedRowKeys, setSelectedRowKeys, setSelectedRows }) {
     const [currentPage, setCurrentPage] = useState(1);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState({});
+
+    const showModal = (record) => {
+        setSelectedStudent(record);
+        setIsModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setSelectedStudent({});
+        setIsModalOpen(false);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
     const [studentState, studentDispatch] = useStudentContext();
 
     const deleteStudent = async (id) => {
@@ -53,72 +72,80 @@ function StudentTable({ students, selectedRowKeys, setSelectedRowKeys, setSelect
         setCurrentPage(page);
     };
     return (
-        <Table
-            columns={[
-                {
-                    title: 'ID',
-                    dataIndex: 'id',
-                    key: 'id',
-                },
-                {
-                    title: 'Name',
-                    dataIndex: ['personalInfo', 'name'],
-                    key: ['personalInfo', 'name'],
-                },
-                {
-                    title: 'Date of birth',
-                    dataIndex: ['personalInfo', 'dateOfBirth'],
-                    key: ['personalInfo', 'dateOfBirth'],
-                },
-                {
-                    title: 'Email',
-                    dataIndex: 'email',
-                    key: 'email',
-                },
-                {
-                    title: 'Phone Numer',
-                    dataIndex: ['personalInfo', 'phone'],
-                    key: ['personalInfo', 'phone'],
-                },
-                {
-                    title: 'Faculty',
-                    dataIndex: ['personalInfo', 'facultyId'],
-                    key: ['personalInfo', 'facultyId'],
-                },
-                {
-                    title: 'Action',
-                    key: 'action',
-                    render: (_, record) => (
-                        <Space size="middle">
-                            <Button variant="contained" type="primary">
-                                Edit
-                            </Button>
-                            <Button onClick={() => { deleteStudent(record.id) }} danger variant="contained" type="primary">
-                                Delete
-                            </Button>
-                            <NavLink to={`/admin/student/detail-student/${record.id}`}>
-                                <Button onClick={() => { handleStudentDetail(record) }} variant="contained">Details</Button>
-                            </NavLink>
-                            <Button variant="contained" type="link">
-                                Reset
-                            </Button>
-                        </Space>
-                    ),
-                },
-            ]}
-            dataSource={currentData}
-            pagination={{
-                current: currentPage,
-                total: dataSource.length,
-                pageSize,
-                onChange: handlePageChange,
-            }}
-            rowSelection={{
-                type: 'checkbox',
-                ...rowSelection
-            }}
-            rowKey='id'
-        />
+        <>
+            <Table
+                columns={[
+                    {
+                        title: 'ID',
+                        dataIndex: 'id',
+                        key: 'id',
+                    },
+                    {
+                        title: 'Name',
+                        dataIndex: ['personalInfo', 'name'],
+                        key: ['personalInfo', 'name'],
+                    },
+                    {
+                        title: 'Date of birth',
+                        dataIndex: ['personalInfo', 'dateOfBirth'],
+                        key: ['personalInfo', 'dateOfBirth'],
+                    },
+                    {
+                        title: 'Email',
+                        dataIndex: 'email',
+                        key: 'email',
+                    },
+                    {
+                        title: 'Phone Numer',
+                        dataIndex: ['personalInfo', 'phone'],
+                        key: ['personalInfo', 'phone'],
+                    },
+                    {
+                        title: 'Faculty',
+                        dataIndex: ['personalInfo', 'facultyId'],
+                        key: ['personalInfo', 'facultyId'],
+                    },
+                    {
+                        title: 'Action',
+                        key: 'action',
+                        render: (_, record) => (
+                            <Space size="middle">
+                                <Button type="primary" onClick={() => showModal(record)}>
+                                    Edit
+                                </Button>
+                                <Button onClick={() => { deleteStudent(record.id) }} danger variant="contained" type="primary">
+                                    Delete
+                                </Button>
+                                <NavLink to={`/admin/student/detail-student/${record.id}`}>
+                                    <Button onClick={() => { handleStudentDetail(record) }} variant="contained">Details</Button>
+                                </NavLink>
+                                <Button variant="contained" type="link">
+                                    Reset
+                                </Button>
+                            </Space>
+                        ),
+                    },
+                ]}
+                dataSource={currentData}
+                pagination={{
+                    current: currentPage,
+                    total: dataSource.length,
+                    pageSize,
+                    onChange: handlePageChange,
+                }}
+                rowSelection={{
+                    type: 'checkbox',
+                    ...rowSelection
+                }}
+                rowKey='id'
+            />
+            <EditStudentModal
+                open={isModalOpen}
+                studentData={selectedStudent}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            />
+        </>
     );
 }
 
