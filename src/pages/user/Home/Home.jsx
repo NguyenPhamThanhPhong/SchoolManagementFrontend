@@ -3,6 +3,8 @@ import NotificationList from "../../../components/user/NotificationList/Notifica
 import { Tabs } from 'antd';
 import { usePostContext, useUserContext } from '../../../data-store';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { executeLogout } from '../../../data-store';
 
 const onChange = (key) => {
   console.log(key);
@@ -18,6 +20,8 @@ function Home() {
   const [facultyPost, setFacultyPost] = useState([]);
   const [generalPost, setGeneralPost] = useState([]);
   const [yourPost, setYourPost] = useState([]);
+
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -53,6 +57,9 @@ function Home() {
   return (
     <>
       <div className="homeMain">
+        <button onClick={executeLogout([useState, userDispatch], 'admin', navigate)} style={{ width: '100%', zIndex: '100' }}>
+          logout here
+        </button>
         <Tabs className='TabsPosition' defaultActiveKey="1" items={items} onChange={onChange} />
       </div>
     </>

@@ -16,13 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { userPaths } from "./routes/AppRoutes";
 
-function removeCookie(key) {
-    const expires = new Date();
-    expires.setTime(expires.getTime() - 1); // Set expiration to the past
 
-    // Set the cookie with the same key and an expired date
-    document.cookie = `${key}=;expires=${expires.toUTCString()};path=/`;
-}
 
 const DataOnlyComponent = () => {
 
