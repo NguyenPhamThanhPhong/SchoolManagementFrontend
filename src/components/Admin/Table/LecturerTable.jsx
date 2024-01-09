@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, Space, Button, message } from 'antd';
 import { Link, NavLink } from 'react-router-dom';
+import EditLecturerModal from '../Modal/EditLecturerModal';
 
 const temp = [
     {
@@ -45,6 +46,23 @@ const temp = [
 ];
 
 function LecturerTable({ handleDetail, lecturers, handleDelete }) {
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedLecturer, setSelectedLecturer] = useState({});
+
+    const showModal = (record) => {
+        setSelectedLecturer(record);
+        setIsModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setSelectedLecturer({});
+        setIsModalOpen(false);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
 
     let display = lecturers || temp;
 
@@ -94,7 +112,7 @@ function LecturerTable({ handleDetail, lecturers, handleDelete }) {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button variant="contained" type="primary">
+                    <Button type="primary" onClick={() => showModal(record)}>
                         Edit
                     </Button>
                     <Button danger variant="contained" type="primary" onClick={async () => { await handleDelete(record) }}>
@@ -113,16 +131,23 @@ function LecturerTable({ handleDetail, lecturers, handleDelete }) {
 
 
     return (
-        <Table
-            columns={columns}
-            dataSource={display.map((item) => ({
-                ...item,
-                key: item.key,
-            }))}
-            rowSelection={{
-                type: 'checkbox',
-            }}
-        />
+        <>
+            <Table
+                columns={columns}
+                dataSource={display.map((item) => ({
+                    ...item,
+                    key: item.key,
+                }))}
+                rowSelection={{
+                    type: 'checkbox',
+                }}
+            />
+            <EditLecturerModal
+                open={isModalOpen}
+                lecturerData={selectedLecturer}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            /></>
     );
 }
 
