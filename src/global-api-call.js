@@ -181,10 +181,13 @@ const DataOnlyComponent = () => {
         if (isSuccess) {
             if (user?.role === "admin")
                 navigate("/admin")
-            else
+            else {
+                console.log('navigating home')
                 navigate("/user-home")
+            }
         }
         else {
+            console.log('not logged in')
             if (validLoginPath.includes(pathname)) {
                 handleLogout()
                 return;
@@ -193,33 +196,21 @@ const DataOnlyComponent = () => {
                 navigate("/admin/login")
             else if (pathname.toLowerCase().startsWith("/user-home") || pathname === "/")
                 navigate("/student/login")
-            handleLogout();
         }
     }
     function handleLogout() {
         userDispatch(setLogout());
     }
 
-    // function setLogoutState() {
-    //     console.log('removing token')
-    //     removeCookie("token");
-    //     facultyDispatch(FacultyInitialState);
-    //     lecturerDispatch(lecturerIntialState);
-    //     schoolClassDispatch(schoolClassInitialState);
-    //     semesterDispatch(SemesterInitialState);
-    //     studentDispatch(studentIntialState);
-    //     subjectDispatch(SubjectInitialState);
-    //     postDispatch(PostInitialState);
-    // }
 
     useEffect(() => {
-        if (user?.isloggedIn)
-            fetchAdminDatas();
+
     }, [user?.isloggedIn])
 
 
     useEffect(() => {
         handleFirstLoadLogic();
+        fetchAdminDatas();
     }, [])
 
     return null;

@@ -21,7 +21,7 @@ export * from "./context-post";
 export * from "./constants"
 export * from "./actions";
 
-function removeCookie(key) {
+export function removeCookie(key) {
     const expires = new Date();
     expires.setTime(expires.getTime() - 1); // Set expiration to the past
 
