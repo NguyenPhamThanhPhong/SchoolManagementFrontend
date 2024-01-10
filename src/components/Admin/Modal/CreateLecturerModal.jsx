@@ -104,47 +104,61 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
         }
     };
     const handleRemoveClass = (value) => {
-        message.info("Remove class " + JSON.stringify(value));
-        const selectedClassData = tableData.find((item) => item?.id === value);
-        if (selectedClassData) {
-            setUnselectedClasses((prevData) => [...prevData, selectedClassData]);
-            setTableData((prevData) => prevData.filter((item) => item?.id !== value));
+        const selectedClassData = tableData.find((item) => item?.id === value?.id);
+
+        if (selectedClassData !== undefined && selectedClassData !== null) {
+            if (!unselectedClasses.some((item) => item?.id === value?.id))
+                setUnselectedClasses((prevData) => [value, ...prevData]);
+            setTableData((prevData) => prevData.filter((item) => item?.id !== value.id));
         }
     }
     const handleSubmit = async () => {
-        try {
-            await form.validateFields();
-            const values = form.getFieldsValue();
-            const { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = values;
-            const classIds = tableData.map((item) => item.id);
-            const formattedDateOfBirth = formatDate(dateofbirth);
-            const personalInformation = new PersonalInfo(isValidDate(formattedDateOfBirth) ? formattedDateOfBirth : null, name, gender, phone, faculty, program);
-            const lecturer = new SchoolMemberCreateRequest(id, username, password, email, "lecturer", personalInformation, classIds);
+        form.validateFields()
+            .then(async (values) => {
 
-            try {
-                const response = await lecturerApi.lecturerCreate(lecturer);
-                console.log(response);
+                const { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = form.getFieldsValue();
+                const classIds = tableData.map((item) => item.id);
+                const formattedDateOfBirth = formatDate(dateofbirth);
+                const personalInformation = new PersonalInfo(isValidDate(formattedDateOfBirth) ? formattedDateOfBirth : null, name, gender, phone, faculty, program);
+                const lecturer = new SchoolMemberCreateRequest(id, username, password, email, "lecturer", personalInformation, classIds);
 
-                if (!response.isError) {
-                    lecturerDispatch(appendLecturer(response.data.data));
-                    message.success(`Create lecturer successfully! ${lecturer.id}`);
-                    form.resetFields();
-                    onOk();
-                } else {
-                    message.error(`Create lecturer failed! ${response.data}`);
-                    message.error(`${JSON.stringify(lecturer)}`);
+                const formData = new FormData();
+                const requestBody = JSON.stringify(lecturer);
+                formData.append('RequestBody', requestBody);
+                message.info("handling request");
+                if (fileList !== undefined && fileList !== null && fileList.length > 0) {
+                    let file = fileList[0];
+                    console.log(JSON.stringify(file.originFileObj));
+                    formData.append('File', file.originFileObj);
                 }
-            } catch (error) {
-                message.error(`Create lecturer failed! ${error}`);
-            }
-        } catch (error) {
-            let messageError = "create lecturer failed!";
-            error.errorFields?.map((item) => {
-                messageError += "\n" + item.errors;
+                try {
+                    const response = await lecturerApi.lecturerCreate(formData);
+                    if (!response.isError) {
+                        lecturerDispatch(appendLecturer(response.data.data));
+                        message.success(`Create lecturer successfully! ${lecturer.id}`);
+                        form.resetFields();
+                        onOk();
+                    } else {
+                        message.error(`Create lecturer failed! ${response.data}`);
+                        message.error(`${JSON.stringify(lecturer)}`);
+                    }
+                } catch (error) {
+                    message.error(`Create lecturer failed! ${error}`);
+                }
+            })
+            .catch((error) => {
+                let messageError = "Create lecturer failed!";
+                error.errorFields?.map((item) => {
+                    messageError += "\n" + item.errors;
+                });
+                message.error(messageError);
             });
-            message.error(messageError);
-        }
     };
+    const handleExitForm = () => {
+        form.resetFields();
+        onCancel();
+    }
+
 
 
     const columns = [
@@ -170,7 +184,7 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
         {
             title: 'Action',
             render: (text, record) => (
-                <Button danger >
+                <Button onClick={() => { handleRemoveClass(record) }} danger >
                     Remove
                 </Button>
             ),
@@ -184,12 +198,12 @@ function CreateLecturerModal({ open, onOk, onCancel }) {
         <Modal
             title="Create Lecturer"
             open={open}
-            onOk={onOk}
+            onOk={handleSubmit}
             width={720}
             style={{
                 top: 10,
             }}
-            onCancel={onCancel}
+            onCancel={handleExitForm}
             okText="Save"
             cancelText="Cancel"
         >

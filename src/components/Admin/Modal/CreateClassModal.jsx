@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Modal, Form, Input, Select, AutoComplete, TimePicker, Checkbox, message } from 'antd';
 import { useSchoolClassContext, useSubjectContext, useLecturerContext, useSemesterContext } from '../../../data-store';
 import { appendSchoolClass } from '../../../data-store';
-import { SchoolClassCreateRequest, DateOfWeek, schoolClassApi } from '../../../data-api';
+import { SchoolClassCreateRequest, DateOfWeek, schoolClassApi, convertTimeRange } from '../../../data-api';
 
 
 const { Option } = Select;
 
 function CreateClassModal({ open, onOk, onCancel }) {
 
+    const defaultFormat = 'DD/MM/YYYY'
+    const dateFormat = 'DD/MM/YYYY'
     let [form] = Form.useForm();
 
     const [componentDisabled, setComponentDisabled] = useState(true);
@@ -37,7 +39,14 @@ function CreateClassModal({ open, onOk, onCancel }) {
     const handleSubmit = async () => {
         form.validateFields().then(async (values) => {
             const { id, name, subject, semester, lecturer, roomName, program, classType } = values
-            const schoolClass = new SchoolClassCreateRequest(id, name, JSON.parse(subject), semester, JSON.parse(lecturer), roomName, program, classType, [], schedule);
+            const { schedule, timerange } = values
+            const { startTime, endTime } = convertTimeRange(timerange);
+            const schedulePiece = {
+                dateofweek: schedule,
+                startTime: startTime,
+                endTime: endTime
+            }
+            const schoolClass = new SchoolClassCreateRequest(id, name, JSON.parse(subject), semester, JSON.parse(lecturer), roomName, program, classType, [], schedulePiece);
             console.log(JSON.stringify(schoolClass));
             try {
                 let response = await schoolClassApi.classCreate(schoolClass);
@@ -57,10 +66,6 @@ function CreateClassModal({ open, onOk, onCancel }) {
         }).catch((error) => {
             message.error(error?.errorFields[0]?.errors[0]);
         })
-
-    }
-
-    const handleSelectSubject = (value) => {
     }
 
     const handleIdGenerate = () => {
@@ -161,29 +166,13 @@ function CreateClassModal({ open, onOk, onCancel }) {
                     <Input />
                 </Form.Item>
 
-
-                {/* <Form.Item label="Schedule" name="schedule">
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                        <Select allowClear>
-                            {Array.from({ length: 7 }, (_, i) => (
-                                <Option key={i} value={i}>
-                                    {DateOfWeek.GetDateOfWeek(i)}
-                                </Option>
-                            ))}
-                        </Select>
-                        <TimePicker.RangePicker
-                            format="HH:mm"
-                            value={timeRange}
-                            onChange={(e) => { setTimeRange(e.target.value) }}
-                        />
-                    </div>
-                </Form.Item> */}
-
                 <Form.Item label="Schedule" name="schedule">
                     <Select allowClear>
-                        <Option value="schedule1">1</Option>
-                        <Option value="schedule2">2</Option>
-                        <Option value="schedule3">3</Option>
+                        {Array.from({ length: 7 }, (_, i) => (
+                            <Option key={i} value={i}>
+                                {DateOfWeek.GetDateOfWeek(i)}
+                            </Option>
+                        ))}
                     </Select>
                 </Form.Item>
 

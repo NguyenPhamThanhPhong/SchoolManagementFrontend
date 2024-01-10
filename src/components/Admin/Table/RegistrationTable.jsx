@@ -1,11 +1,79 @@
-import React, { useState } from 'react';
-import { Table, Button, List, DatePicker, Drawer, Form, Input, Row, Col, Select, Space, Divider } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, Button, List, DatePicker, Drawer, Form, Input, Row, Col, Select, Space, Divider, message } from 'antd';
+import moment from 'moment';
+import { registrationApi } from '../../../data-api';
+
+
 const { Option } = Select;
-const RegistrationTable = () => {
+const RegistrationTable = ({ registrations, semesters, schoolClasses, allRegistrations, setAllRegistrations }) => {
+    const dateFormat = 'DD/MM/YYYY';
+    const [form] = Form.useForm();
     const [currentPage, setCurrentPage] = useState(1);
     const [open, setOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
+
+
     const [tableData, setTableData] = useState([]);
+    const [unselectedClasses, setUnselectedClasses] = useState(schoolClasses || []);
+
+    useEffect(() => {
+        if (selectedRecord) {
+            let classData = schoolClasses.filter((item) => !selectedRecord.classIds.includes(item));
+            setTableData(classData);
+            setUnselectedClasses(schoolClasses.filter((item) => selectedRecord.classIds.includes(item)));
+            form.setFieldsValue({
+                name: selectedRecord.name,
+                startTime: moment(selectedRecord?.startTime, dateFormat),
+                endTime: moment(selectedRecord?.endTime, dateFormat),
+                semester: selectedRecord.semesterId,
+            });
+        }
+    }, [selectedRecord])
+
+    const handleUpdate = async () => {
+        form.validateFields().then(async (values) => {
+            const { name, startTime, endTime, semester } = values;
+            const registration = {
+                id: selectedRecord.id,
+                name: name,
+                startTime: startTime.format(dateFormat),
+                endTime: endTime.format(dateFormat),
+                semesterId: semester,
+                classIds: tableData.map((item) => item.id),
+            };
+            try {
+                let response = await registrationApi.update(registration);
+                if (!response.isError) {
+                    let registrationIndex = allRegistrations.findIndex((item) => item.id === registration.id);
+                    if (registrationIndex !== -1) {
+                        allRegistrations[registrationIndex] = registration;
+                        setAllRegistrations([...allRegistrations]);
+                        message.success("Update registration successfully");
+                    }
+                } else {
+                    message.error(response.message);
+                }
+            } catch (err) {
+                message.error(err.message);
+            }
+        }).catch((err) => {
+            message.error(err.message);
+        });
+    }
+
+    const handleDelete = async (record) => {
+        try {
+            let response = await registrationApi.deleteInstance(record.id);
+            if (!response.isError) {
+                setAllRegistrations(allRegistrations.filter((item) => item.id !== record.id));
+                message.success("Delete registration successfully");
+            } else {
+                message.error(response.message);
+            }
+        } catch (err) {
+            message.error(err.message);
+        }
+    }
 
     const showDrawer = (record) => {
         setOpen(true);
@@ -17,22 +85,9 @@ const RegistrationTable = () => {
         setSelectedRecord(null);
     };
 
-    const dataSource = [
-        { stt: 1, name: 'Học kì 1 2022 - 2023', start: '1/1/2022', end: '30/06/2022' },
-        { stt: 2, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 3, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 4, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 5, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 6, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 7, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 8, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 9, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 10, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 11, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 12, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 13, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 14, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
-        { stt: 15, name: 'Học kì 2 2022 - 2023', start: '1/7/2022', end: '31/12/2022' },
+    let updatedRegistrations = registrations?.map((registration, index) => ({ stt: index + 1, key: index, ...registration }));
+    const dataSource = updatedRegistrations || [
+        { stt: 1, name: 'Học kì 1 2022 - 2023', startTime: '1/1/2022', end: '30/06/2022' },
     ];
 
     const pageSize = 10;
@@ -45,32 +100,27 @@ const RegistrationTable = () => {
         {
             title: 'Stt',
             dataIndex: 'stt',
-            key: 'stt',
+            key: 'id',
         },
         {
             title: 'Name',
             dataIndex: 'name',
-            key: 'name',
+            key: 'id',
         },
         {
-            title: 'Start',
-            dataIndex: 'start',
-            key: 'start',
+            title: 'startTime',
+            dataIndex: 'startTime',
+            key: 'id',
         },
         {
             title: 'End',
-            dataIndex: 'end',
-            key: 'end',
+            dataIndex: 'endTime',
+            key: 'id',
         },
         {
             title: 'Semester',
-            dataIndex: 'semester',
-            key: 'semester',
-        },
-        {
-            title: 'Class',
-            dataIndex: 'class',
-            key: 'class',
+            dataIndex: 'semesterId',
+            key: 'id',
         },
         {
             title: 'Action',
@@ -80,7 +130,7 @@ const RegistrationTable = () => {
                     <Button type="primary" onClick={() => showDrawer(record)}>
                         Detail
                     </Button>
-                    <Button type="primary" danger>
+                    <Button onClick={() => { handleDelete(record) }} type="primary" danger>
                         Delete
                     </Button>
                 </Space>
@@ -88,50 +138,21 @@ const RegistrationTable = () => {
         },
     ];
 
-    const classesData = [
-        {
-            key: '1',
-            class_id: '1',
-            name: 'SE001.O11.PMCL',
-            room: '101',
-            program: 'John Doe',
-            class_type: '30',
-            subject_id: '90',
-        },
-        {
-            key: '2',
-            class_id: '2',
-            name: 'SE001.O12.PMCL',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
-        },
-        {
-            key: '3',
-            class_id: '3',
-            name: 'SE001.O13.PMCL',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
-        },
-    ];
-
-    const data = [
-        {
-            key: '1',
-            id: '1',
-            class_name: 'Huong dt',
-            subject: 'Class 1',
-        },
-        {
-            key: '2',
-            id: '2',
-            class_name: 'lap trinh',
-            subject: 'Class 2',
-        },
-    ];
+    const handleClassChange = (value) => {
+        const selectedClassData = unselectedClasses?.find((item) => item.id === value);
+        // Update the tableData with the selected class information without removing existing data
+        if (selectedClassData) {
+            setTableData((prevData) => [...prevData, selectedClassData]);
+            setUnselectedClasses(unselectedClasses.filter((item) => item.id !== value));
+        }
+    };
+    const handleClassRemove = (value) => {
+        if (value) {
+            setTableData(tableData.filter((item) => item.id !== value.id));
+            if (!unselectedClasses.includes(value))
+                setUnselectedClasses((prevData) => [...prevData, value]);
+        }
+    }
 
     const columns = [
         {
@@ -141,25 +162,24 @@ const RegistrationTable = () => {
         },
         {
             title: 'Class Name',
-            dataIndex: 'class_name',
-            key: 'class_name',
+            dataIndex: 'name',
+            key: 'id',
         },
         {
             title: 'Subject',
-            dataIndex: 'subject',
-            key: 'subject',
+            dataIndex: ['subject', 'id'],
+            key: 'id',
         },
-    ];
-
-    const handleClassChange = (value) => {
-        // Find the selected class in dataSource
-        const selectedClassData = data.find((item) => item.subject === value);
-
-        // Update the tableData with the selected class information without removing existing data
-        if (selectedClassData) {
-            setTableData((prevData) => [...prevData, selectedClassData]);
+        {
+            tilte: 'Action',
+            key: 'action',
+            render: (_, record) => (
+                <Button onClick={() => { handleClassRemove(record) }} type="primary" danger>
+                    Delete
+                </Button>
+            ),
         }
-    };
+    ];
     return (
         <>
             <Table
@@ -185,66 +205,56 @@ const RegistrationTable = () => {
                 extra={
                     <Space>
                         <Button onClick={onClose}>Cancel</Button>
-                        <Button onClick={onClose} type="primary">
+                        <Button onClick={handleUpdate} type="primary">
                             Save
                         </Button>
                     </Space>
                 }
             >
-                <Form layout="vertical">
+                <Form form={form} layout="vertical">
                     <Form.Item
                         label="Name"
                         name="name"
-                        style={{
-                            width: '100%',
-                        }}
+                        style={{ width: '100%', }}
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Start Date" name="start">
-                        <DatePicker
-                            style={{
-                                width: '100%',
-                            }}
-                        />
+                    <Form.Item label="startTime Date" name="startTime">
+                        <DatePicker format={'DD-MM-YYYY'} style={{ width: '100%', }} />
                     </Form.Item>
-                    <Form.Item label="End Date" name="end">
-                        <DatePicker
-                            style={{
-                                width: '100%',
-                            }}
+                    <Form.Item label="End Date" name="endTime">
+                        <DatePicker format={'DD-MM-YYYY'}
+                            style={{ width: '100%', }}
                         />
                     </Form.Item>
                     <Form.Item label="Semester" name="semester">
                         <Select allowClear>
-                            <Option value="semester1">semester1</Option>
-                            <Option value="semester2">semester2</Option>
-                            <Option value="semester3">semester3</Option>
+                            {
+                                semesters.map((semester) => {
+                                    return <Option value={semester.id}>{semester.id}</Option>
+                                })
+                            }
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Classes" name="classes">
+                    <Form.Item
+                        label="Classes"
+                        name="selectedClass"
+                        style={{ width: '100%' }}
+                    >
                         <Select allowClear onChange={handleClassChange}>
-                            <Option value="Class 1">Class 1</Option>
-                            <Option value="Class 2">Class 2</Option>
-                            <Option value="Class 3">Class 3</Option>
+                            {
+                                unselectedClasses?.map((schoolClass) => (
+                                    <Option key={schoolClass.id} value={schoolClass.id}>
+                                        {schoolClass.id}
+                                    </Option>
+                                ))
+                            }
                         </Select>
                     </Form.Item>
                     <Table dataSource={tableData} columns={columns} pagination={false} />
                 </Form>
-                <Divider>Danh sách lớp</Divider>
-                <List
-                    dataSource={classesData}
-                    renderItem={(item, index) => (
-                        <List.Item>
-                            <List.Item.Meta
-                                key={index}
-                                title={<a href="/admin/class/detail">{item.name}</a>}
-                                description={`Room: ${item.room}`}
-                            />
-                        </List.Item>
-                    )}
-                />
+
             </Drawer>
         </>
     );

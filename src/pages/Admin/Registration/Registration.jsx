@@ -1,38 +1,111 @@
-import React, { useState } from 'react';
-import { Card, Button, Input, DatePicker, Form, Space, Select, Modal, Table } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Button, Input, DatePicker, Form, Space, Select, Modal, Table, message } from 'antd';
 import RegistrationTable from '../../../components/Admin/Table/RegistrationTable';
 import { SearchOutlined } from '@ant-design/icons';
+import { useSemesterContext, useSchoolClassContext } from '../../../data-store';
+import { registrationApi } from '../../../data-api';
+import moment from 'moment';
 const { Search } = Input;
 const { Option } = Select;
+
+
+
+
 function Registration() {
+    const dateFormat = 'DD/MM/YYYY';
+    const [form] = Form.useForm(); // Form hook
     const [isModalOpen, setIsModalOpen] = useState(false);
+
     const [tableData, setTableData] = useState([]);
 
-    const showModalRegistration = () => {
-        setIsModalOpen(true);
-    };
+    const [semesterState, semesterDispatch] = useSemesterContext();
+    const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
 
-    const handleOk = () => {
-        setIsModalOpen(false);
+    const [unselectedClasses, setUnselectedClasses] = useState([]);
+
+    const [registrations, setRegistrations] = useState([]);
+    const [filteredRegistrations, setFilteredRegistrations] = useState([]);
+
+    const fetchRegistrations = async () => {
+        try {
+            let response = await registrationApi.getAll();
+            if (!response.isError) {
+                setRegistrations(response.data?.data);
+                setFilteredRegistrations(response.data?.data);
+            }
+            else {
+                message.error("Get registration failed");
+            }
+        }
+        catch (err) {
+            message.error("Get registration failed");
+        }
+    }
+    useEffect(() => {
+        fetchRegistrations();
+        console.log(registrations);
+    }, []);
+
+
+    const handleOk = (myForm) => {
+        myForm.validateFields().then((values) => {
+            const { name, start, end, semester } = myForm.getFieldsValue();
+            const registration = {
+                name: name,
+                startTime: start.format(dateFormat),
+                endTime: end.format(dateFormat),
+                semesterId: semester,
+            };
+            message.info(JSON.stringify(registration));
+            try {
+                let response = registrationApi.create(registration)
+                if (!response.isError) {
+                    setRegistrations([response.data?.data, ...registrations]);
+                    message.success("Create registration successfully");
+                    form.resetFields();
+                    setIsModalOpen(false);
+                }
+                else {
+                    message.error("Network error");
+                }
+            }
+            catch (err) {
+                message.error("Create registration failed");
+            }
+        }).catch((err) => {
+            message.error(err.errorFields[0].errors[0]);
+        });
+
     };
 
     const handleCancel = () => {
         setIsModalOpen(false);
+        form.resetFields();
     };
-    const dataSource = [
-        {
-            key: '1',
-            id: '1',
-            class_name: 'Huong dt',
-            subject: 'Class 1',
-        },
-        {
-            key: '2',
-            id: '2',
-            class_name: 'lap trinh',
-            subject: 'Class 2',
-        },
-    ];
+
+    useEffect(() => {
+        if (schoolClassState?.schoolClasses !== undefined && schoolClassState?.schoolClasses !== null) {
+            setUnselectedClasses(schoolClassState?.schoolClasses);
+            setTableData([])
+        };
+    }, [schoolClassState?.schoolClasses])
+
+
+    const handleClassChange = (value) => {
+        const selectedClassData = unselectedClasses?.find((item) => item.id === value);
+        // Update the tableData with the selected class information without removing existing data
+        if (selectedClassData) {
+            setTableData((prevData) => [...prevData, selectedClassData]);
+            setUnselectedClasses(unselectedClasses.filter((item) => item.id !== value));
+        }
+    };
+    const handleClassRemove = (value) => {
+        if (value) {
+            setTableData(tableData.filter((item) => item.id !== value.id));
+            if (!unselectedClasses.includes(value))
+                setUnselectedClasses((prevData) => [...prevData, value]);
+        }
+    }
 
     const columns = [
         {
@@ -42,25 +115,25 @@ function Registration() {
         },
         {
             title: 'Class Name',
-            dataIndex: 'class_name',
-            key: 'class_name',
+            dataIndex: 'name',
+            key: 'id',
         },
         {
             title: 'Subject',
-            dataIndex: 'subject',
-            key: 'subject',
+            dataIndex: ['subject', 'id'],
+            key: 'id',
         },
+        {
+            tilte: 'Action',
+            key: 'action',
+            render: (_, record) => (
+                <Button onClick={() => { handleClassRemove(record) }} type="primary" danger>
+                    Remove
+                </Button>
+            ),
+        }
     ];
 
-    const handleClassChange = (value) => {
-        // Find the selected class in dataSource
-        const selectedClassData = dataSource.find((item) => item.subject === value);
-
-        // Update the tableData with the selected class information without removing existing data
-        if (selectedClassData) {
-            setTableData((prevData) => [...prevData, selectedClassData]);
-        }
-    };
     return (
         <div style={{ display: 'flex', gap: '16px' }}>
             <Card title="Registration" style={{ flex: 1, width: '50%' }}>
@@ -75,53 +148,86 @@ function Registration() {
                         style={{ width: 200 }}
                         prefix={<SearchOutlined />}
                     />
-                    <Button type="primary" onClick={showModalRegistration}>
+                    <Button type="primary" onClick={() => { setIsModalOpen(true); }}>
                         Create
                     </Button>
                     <Button type="primary">Auto Create</Button>
                 </Space>
-                <RegistrationTable />
-                <Modal
-                    title="Create Registration"
-                    width={720}
-                    open={isModalOpen}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                >
-                    <Space direction="vertical" size={16} style={{ display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ width: '20%' }}>Name:</label>
-                            <Input style={{ width: '80%' }} />
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ width: '20%' }}>Start:</label>
-                            <DatePicker style={{ width: '80%' }} />
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ width: '20%' }}>End:</label>
-                            <DatePicker style={{ width: '80%' }} />
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ width: '20%' }}>Semester:</label>
-                            <Select style={{ width: '80%' }} allowClear>
-                                <Option value="semester1">semester1</Option>
-                                <Option value="semester2">semester2</Option>
-                                <Option value="semester3">semester3</Option>
-                            </Select>
-                        </div>
+                <RegistrationTable semesters={semesterState?.semesters || []} allRegistrations={registrations || []} setAllRegistrations={setRegistrations}
+                    schoolClasses={schoolClassState?.schoolClasses || []}
+                    registrations={filteredRegistrations} />
 
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <label style={{ width: '20%' }}>Classes:</label>
-                            <Select style={{ width: '80%' }} allowClear onChange={handleClassChange}>
-                                <Option value="Class 1">Class 1</Option>
-                                <Option value="Class 2">Class 2</Option>
-                                <Option value="Class 3">Class 3</Option>
+            </Card>
+            <Modal
+                title="Create Registration"
+                width={720}
+                visible={isModalOpen}
+                onOk={() => { handleOk(form) }}
+                onCancel={handleCancel}
+            >
+                <Form form={form} labelCol={{ span: 5 }} wrapperCol={{ span: 20 }}>
+                    <Space direction="vertical"  >
+                        <Form.Item
+                            style={{ width: '620px' }}
+                            label="Name"
+                            name="name"
+                            rules={[{ required: true, message: 'Please enter a name' }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            label="Start"
+                            name="start"
+                            rules={[{ required: true, message: 'Please select a start date' }]}
+                            style={{ width: '620px' }}
+                            initialValue={new moment()}
+                        >
+                            <DatePicker format={'DD-MM-YYYY'} />
+                        </Form.Item>
+                        <Form.Item
+                            label="End"
+                            name="end"
+                            rules={[{ required: true, message: 'Please select an end date' }]}
+                            style={{ width: '620px' }}
+                            initialValue={new moment()}
+                        >
+                            <DatePicker format={'DD-MM-YYYY'} />
+                        </Form.Item>
+                        <Form.Item
+                            label="Semester"
+                            name="semester"
+                            rules={[{ required: true, message: 'Please select a semester' }]}
+                            style={{ width: '620px' }}
+                        >
+                            <Select mode="single" showSearch optionFilterProp="children" allowClear>
+                                {
+                                    semesterState?.semesters?.map((semester) => (
+                                        <Option key={semester.id} value={semester.id}>
+                                            {semester.id}
+                                        </Option>
+                                    ))
+                                }
                             </Select>
-                        </div>
+                        </Form.Item>
+                        <Form.Item
+                            label="Classes"
+                            name="selectedClass"
+                            style={{ width: '620px' }}
+                        >
+                            <Select allowClear onChange={handleClassChange}>
+                                {
+                                    unselectedClasses?.map((schoolClass) => (
+                                        <Option key={schoolClass.id} value={schoolClass.id}>
+                                            {schoolClass.id}
+                                        </Option>
+                                    ))
+                                }
+                            </Select>
+                        </Form.Item>
                         <Table dataSource={tableData} columns={columns} pagination={false} />
                     </Space>
-                </Modal>
-            </Card>
+                </Form>
+            </Modal>
         </div>
     );
 }

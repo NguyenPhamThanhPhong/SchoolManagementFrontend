@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, List, DatePicker, Drawer, Form, Input, Row, Col, Select, Space, Divider } from 'antd';
+import { Table, Button, List, DatePicker, Drawer, Form, Input, Row, Col, Select, Space, Divider, message } from 'antd';
+import { SemesterApi, Semester, formatDate } from '../../../data-api';
+import { useSemesterContext, useSchoolClassContext, setSemesters } from '../../../data-store';
+import moment from 'moment';
+
 const { Option } = Select;
 
+
+
 function SemesterTable(props) {
+    const dateFormat = 'DD/MM/YYYY';
+    const [form] = Form.useForm();
     const [currentPage, setCurrentPage] = useState(1);
 
     const [open, setOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
+
+    const [semesterState, semesterDispatch] = useSemesterContext();
+    const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
 
     const showDrawer = (record) => {
         setOpen(true);
@@ -17,6 +28,60 @@ function SemesterTable(props) {
         setOpen(false);
         setSelectedRecord(null);
     };
+
+    const handleUpdate = async (semester) => {
+        try {
+            const response = await SemesterApi.updateSemester(semester)
+            if (!response.isError) {
+                const updatedSemester = semester;
+                const { semesters } = semesterState;
+                const index = semesters.findIndex((semester) => semester.id === updatedSemester.id);
+                if (index !== -1) {
+                    semesters[index] = updatedSemester;
+                    semesterDispatch(setSemesters([...semesters]));
+                    message.success('update semester successfully');
+                    return true;
+                }
+            }
+            else {
+                message.error(response.message);
+            }
+        }
+        catch (error) {
+            console.log(error);
+            message.error('failed to update semester')
+        }
+        return false;
+    }
+    const handleSave = async () => {
+        try {
+            let { name, startTime, endTime } = form.getFieldsValue();
+            const semester = {
+                id: name,
+                name: name,
+                startTime: startTime.format(dateFormat) === "Invalid date" ? '' : startTime.format(dateFormat),
+                endTime: endTime.format(dateFormat) === "Invalid date" ? '' : endTime.format(dateFormat),
+            }
+            console.log(semester);
+            let isUpdated = await handleUpdate(semester);
+            if (isUpdated)
+                onClose();
+        }
+        catch (error) {
+            message.error('failed to save semester')
+        }
+    }
+
+
+    useEffect(() => {
+        if (selectedRecord !== null && selectedRecord !== undefined) {
+            form.setFieldsValue({
+                name: selectedRecord?.id || '',
+                startTime: moment(selectedRecord?.startTime, dateFormat) || '',
+                endTime: moment(selectedRecord?.endTime, dateFormat) || '',
+            });
+        }
+    }, [selectedRecord]);
 
     const { handleDelete, handleEdit } = props;
 
@@ -30,6 +95,18 @@ function SemesterTable(props) {
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
+    let filteredClasses = schoolClassState.schoolClasses?.filter((schoolClass) => schoolClass.semesterId === selectedRecord?.id) || [];
+
+    let classesData = filteredClasses.map((schoolClass, index) => {
+        return {
+            id: schoolClass?.id,
+            name: schoolClass?.name,
+            room: schoolClass?.roomName,
+            lecturerId: schoolClass?.lecturer?.id === undefined ? '' : schoolClass?.lecturer?.id,
+            lecturer: schoolClass?.lecturer?.name || '',
+        }
+    });
 
     const semesterColumns = [
         {
@@ -67,35 +144,6 @@ function SemesterTable(props) {
             ),
         },
     ];
-    const classesData = [
-        {
-            key: '1',
-            class_id: '1',
-            name: 'SE001.O11.PMCL',
-            room: '101',
-            program: 'John Doe',
-            class_type: '30',
-            subject_id: '90',
-        },
-        {
-            key: '2',
-            class_id: '2',
-            name: 'SE001.O12.PMCL',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
-        },
-        {
-            key: '3',
-            class_id: '3',
-            name: 'SE001.O13.PMCL',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
-        },
-    ];
 
     return (
         <>
@@ -122,13 +170,13 @@ function SemesterTable(props) {
                 extra={
                     <Space>
                         <Button onClick={onClose}>Cancel</Button>
-                        <Button onClick={onClose} type="primary">
+                        <Button onClick={handleSave} type="primary">
                             Save
                         </Button>
                     </Space>
                 }
             >
-                <Form layout="vertical">
+                <Form form={form} layout="vertical">
                     <Form.Item
                         label="Name"
                         name="name"
@@ -138,15 +186,15 @@ function SemesterTable(props) {
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item label="Start Date" name="start">
-                        <DatePicker
+                    <Form.Item label="Start Date" name="startTime">
+                        <DatePicker format={dateFormat}
                             style={{
                                 width: '100%',
                             }}
                         />
                     </Form.Item>
-                    <Form.Item label="End Date" name="end">
-                        <DatePicker
+                    <Form.Item label="End Date" name="endTime">
+                        <DatePicker format={dateFormat}
                             style={{
                                 width: '100%',
                             }}
@@ -160,7 +208,14 @@ function SemesterTable(props) {
                         <List.Item>
                             <List.Item.Meta
                                 key={index}
-                                title={<a href="/admin/class/detail">{item.name}</a>}
+                                title={
+                                    <div>
+                                        <span><a href={`/admin/class/detail-class/${item.id}`}>{item.name}</a></span>
+                                        <span> -  </span>
+                                        <span>{item.lecturer + ' ' + item.lecturerId}</span>
+                                        {/* && item.lecturerId && (<a href={`/admin/lecturer/detail-lecturer/${lecturerId}`}></a>) */}
+                                    </div>
+                                }
                                 description={`Room: ${item.room}`}
                             />
                         </List.Item>

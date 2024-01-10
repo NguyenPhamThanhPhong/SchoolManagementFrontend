@@ -30,7 +30,7 @@ export function removeCookie(key) {
 }
 
 export const executeLogout = ([userstate, userDispatch], role, navigate) => {
-    removeCookie("access_token")
+    removeCookie("token");
     userDispatch(setLogout())
     if (role.toLowerCase() === 'admin')
         navigate("/admin/login");

@@ -63,11 +63,12 @@ function ClassTable({ showDrawer, schoolClasses,
             for (let item of record.sections)
                 for (const [key, value] of Object.entries(item))
                     prevUrls.push(value)
-            deleteSchoolClass(record.id, prevUrls)
+            deleteSchoolClass(record?.id, prevUrls)
         }
     }
 
     const dataSource = schoolClasses || [];
+    console.log(dataSource);
 
     const columns = [
         {
@@ -117,7 +118,7 @@ function ClassTable({ showDrawer, schoolClasses,
                     <Button onClick={() => { handleDeleteClick(record) }} type="primary" danger>
                         Delete
                     </Button>
-                    <NavLink to={`/admin/class/detail-class/${record.id}`}>
+                    <NavLink to={`/admin/class/detail-class/${record?.id}`}>
                         <Button type="default">Details</Button>
                     </NavLink>
                 </Space>

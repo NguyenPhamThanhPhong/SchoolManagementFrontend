@@ -121,9 +121,6 @@ function LecturerTable({ handleDetail, lecturers, handleDelete }) {
                     <NavLink to={`/admin/lecturer/detail-lecturer/${record.mssv}`}>
                         <Button variant="contained">Details</Button>
                     </NavLink>
-                    {/* <Button variant="contained" type="link">
-                        Reset
-                    </Button> */}
                 </Space>
             ),
         },

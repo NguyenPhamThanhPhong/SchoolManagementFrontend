@@ -33,6 +33,7 @@ const CreatePostModal = ({ isOpen, handleOk, handleCancel, selectedPost }) => {
         if (values.files)
             if (values.files?.fileList !== undefined && values.files?.fileList !== null && values.files?.fileList.length > 0)
                 values.files.fileList.forEach((file) => {
+                    console.log(JSON.stringify(file));
                     formData.append('Files', file.originFileObj);
                 });
         try {

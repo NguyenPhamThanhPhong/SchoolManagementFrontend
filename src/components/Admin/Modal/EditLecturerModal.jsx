@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Select, AutoComplete, Table, DatePicker, Upload } from 'antd';
+import { Modal, Form, Input, Select, AutoComplete, Button, Table, DatePicker, message, Upload } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { useLecturerContext, useFacultyContext, useSchoolClassContext, appendLecturer } from '../../../data-store';
+import { lecturerApi } from '../../../data-api';
+import { SchoolMemberCreateRequest, PersonalInfo, formatDate, isValidDate } from '../../../data-api';
+import moment from 'moment';
 const { Option } = Select;
+
+const dateFormat = 'DD/MM/YYYY';
+
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -9,32 +16,9 @@ const getBase64 = (file) =>
         reader.onload = () => resolve(reader.result);
         reader.onerror = (error) => reject(error);
     });
+
 function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
-    const [tableData, setTableData] = useState([]);
-
     const [form] = Form.useForm();
-
-    useEffect(() => {
-        form.setFieldsValue({
-            avatar: lecturerData.avatar,
-            id: lecturerData.id,
-            name: lecturerData.name,
-            username: lecturerData.username,
-            password: lecturerData.password,
-            email: lecturerData.email,
-            dateofbirth: lecturerData.dateofbirth,
-            gender: lecturerData.gender,
-            phone: lecturerData.phone,
-            faculty: lecturerData.faculty,
-            program: lecturerData.program,
-            classes: lecturerData.classes,
-        });
-    }, [lecturerData, form]);
-
-    const handleSave = () => {
-        const studentClass = form.getFieldsValue();
-        console.log(studentClass);
-    };
 
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
@@ -53,6 +37,15 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
     const handleChange = ({ fileList }) => {
         const latestFile = fileList[fileList.length - 1];
         setFileList(latestFile ? [latestFile] : []);
+
+        if (latestFile && latestFile.originFileObj) {
+            // If a file is selected, set the previewImage using your custom URL
+            const customURL = 'YOUR_CUSTOM_URL'; // Replace 'YOUR_CUSTOM_URL' with your actual URL
+            setPreviewImage(customURL);
+        } else {
+            // If no file is selected, reset the previewImage
+            setPreviewImage('');
+        }
     };
 
     const uploadButton = (
@@ -74,20 +67,129 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
         </button>
     );
 
-    const dataSource = [
-        {
-            key: '1',
-            id: '1',
-            class_name: 'Huong dt',
-            subject: 'Class 1',
-        },
-        {
-            key: '2',
-            id: '2',
-            class_name: 'lap trinh',
-            subject: 'Class 2',
-        },
-    ];
+    const [tableData, setTableData] = useState([]);
+    const [lecturerState, lecturerDispatch] = useLecturerContext();
+    const [facultyState, facultyDispatch] = useFacultyContext();
+    const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
+
+
+    const [unselectedClasses, setUnselectedClasses] = useState(schoolClassState?.schoolClasses);
+
+    let lecturers = lecturerState?.lecturers;
+
+    useEffect(() => {
+        form.setFieldsValue({
+            avatar: lecturerData.avatar,
+            id: lecturerData.id,
+            name: lecturerData?.personalInfo?.name,
+            username: lecturerData.username,
+            password: lecturerData.password,
+            email: lecturerData.email,
+            dateofbirth: moment(lecturerData?.personalInfo?.dateOfBirth, dateFormat),
+            gender: lecturerData?.personalInfo?.gender,
+            phone: lecturerData?.personalInfo?.phone,
+            faculty: lecturerData?.personalInfo?.facultyId,
+            program: lecturerData?.personalInfo?.program,
+        });
+        setPreviewImage(lecturerData?.personalInfo?.avatarUrl);
+    }, [lecturerData, form]);
+
+    const validateId = (rule, value, callback) => {
+        if (lecturers.some((lecturer) => lecturer.id === value)) {
+            callback(`lecturer "${value}" already exist`);
+        } else {
+            callback();
+        }
+    };
+    const validateUsername = (rule, value, callback) => {
+        if (lecturerState.lecturers.some((lecturer) => lecturer.username === value)) {
+            callback(`Username: ${value} already exist`);
+        } else {
+            callback();
+        }
+    }
+
+    useEffect(() => {
+        setTableData([]);
+        setUnselectedClasses(schoolClassState?.schoolClasses);
+    }, [schoolClassState?.schoolClasses]);
+
+    const handleIdChange = () => {
+        const value = form.getFieldValue("id");
+        form.setFieldsValue({
+            id: value,
+            username: value,
+            email: value + "@gm.uit.edu.vn",
+        })
+
+    }
+
+    const handleClassChange = (value) => {
+        const selectedClassData = unselectedClasses.find((item) => item?.id === value);
+
+        if (selectedClassData) {
+            setTableData((prevData) => [...prevData, selectedClassData]);
+            setUnselectedClasses((prevData) => prevData.filter((item) => item?.id !== value));
+        }
+    };
+    const handleRemoveClass = (value) => {
+        const selectedClassData = tableData.find((item) => item?.id === value?.id);
+
+        if (selectedClassData !== undefined && selectedClassData !== null) {
+            if (!unselectedClasses.some((item) => item?.id === value?.id))
+                setUnselectedClasses((prevData) => [value, ...prevData]);
+            setTableData((prevData) => prevData.filter((item) => item?.id !== value.id));
+        }
+    }
+    const handleSubmit = async () => {
+        form.validateFields()
+            .then(async (values) => {
+
+                const { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = form.getFieldsValue();
+                const classIds = tableData.map((item) => item.id);
+                const formattedDateOfBirth = formatDate(dateofbirth);
+                const personalInformation = new PersonalInfo(isValidDate(formattedDateOfBirth) ? formattedDateOfBirth : null, name, gender, phone, faculty, program);
+                const lecturer = new SchoolMemberCreateRequest(id, username, password, email, "lecturer", personalInformation, classIds);
+
+                const formData = new FormData();
+                const requestBody = JSON.stringify(lecturer);
+                formData.append('RequestBody', requestBody);
+                message.info("handling request");
+                if (fileList !== undefined && fileList !== null && fileList.length > 0) {
+                    let file = fileList[0];
+                    console.log(JSON.stringify(file.originFileObj));
+                    formData.append('File', file.originFileObj);
+                }
+                try {
+                    const response = await lecturerApi.lecturerCreate(formData);
+
+                    if (!response.isError) {
+                        lecturerDispatch(appendLecturer(response.data.data));
+                        message.success(`Create lecturer successfully! ${lecturer.id}`);
+                        form.resetFields();
+                        onOk();
+                    } else {
+                        message.error(`Create lecturer failed! ${response.data}`);
+                        message.error(`${JSON.stringify(lecturer)}`);
+                    }
+                } catch (error) {
+                    message.error(`Create lecturer failed! ${error}`);
+                }
+            })
+            .catch((error) => {
+                let messageError = "Create lecturer failed!";
+                error.errorFields?.map((item) => {
+                    messageError += "\n" + item.errors;
+                });
+                message.error(messageError);
+            });
+    };
+    const handleExitForm = () => {
+        form.resetFields();
+        onCancel();
+    }
+
+
 
     const columns = [
         {
@@ -97,51 +199,45 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
         },
         {
             title: 'Class Name',
-            dataIndex: 'class_name',
-            key: 'class_name',
+            dataIndex: 'name',
+            key: 'name',
         },
         {
             title: 'Subject',
-            dataIndex: 'subject',
-            key: 'subject',
+            render: (text, record) => (
+                <p>
+                    {record.subject?.id + "-" + record.subject?.name}
+                </p>
+            ),
+            key: ['subject', 'id'],
         },
+        {
+            title: 'Action',
+            render: (text, record) => (
+                <Button onClick={() => { handleRemoveClass(record) }} danger >
+                    Remove
+                </Button>
+            ),
+            key: 'action',
+        }
     ];
 
-    const handleClassChange = (value) => {
-        // Find the selected class in dataSource
-        const selectedClassData = dataSource.find((item) => item.subject === value);
 
-        // Update the tableData with the selected class information without removing existing data
-        if (selectedClassData) {
-            setTableData((prevData) => [...prevData, selectedClassData]);
-        }
-    };
 
     return (
         <Modal
-            title="Edit Lecturer"
+            title="Create Lecturer"
             open={open}
-            onOk={() => {
-                handleSave();
-                onOk();
-            }}
+            onOk={handleSubmit}
             width={720}
             style={{
                 top: 10,
             }}
-            onCancel={onCancel}
+            onCancel={handleExitForm}
             okText="Save"
             cancelText="Cancel"
         >
-            <Form
-                form={form}
-                labelCol={{
-                    span: 4,
-                }}
-                wrapperCol={{
-                    span: 20,
-                }}
-            >
+            <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 20 }}>
                 <Form.Item label="Avatar" name="avatar">
                     <Upload
                         listType="picture-circle"
@@ -149,16 +245,18 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
                         onPreview={handlePreview}
                         onChange={handleChange}
                     >
-                        {fileList.length >= 2 ? null : uploadButton}
+                        {fileList.length >= 1 ? null : uploadButton}
+
                     </Upload>
                 </Form.Item>
-                <Form.Item label="ID" name="id" rules={[{ required: true }]}>
-                    <Input />
+
+                <Form.Item label="ID" name="id" rules={[{ required: true, message: "please enter id" }, { validator: validateId }]}>
+                    <Input onChange={handleIdChange} />
                 </Form.Item>
-                <Form.Item label="Name" name="name" rules={[{ required: true }]}>
-                    <Input />
+                <Form.Item label="Name" name="name" rules={[{ required: true, message: "please enter name" }]}>
+                    <Input onChange={handleIdChange} />
                 </Form.Item>
-                <Form.Item label="Username" name="username">
+                <Form.Item label="Username" name="username" rules={[{ required: true, message: "please enter name" }, { validator: validateUsername }]}>
                     <Input />
                 </Form.Item>
                 <Form.Item label="Password" name="password">
@@ -167,14 +265,14 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
                 <Form.Item label="Email" name="email">
                     <Input />
                 </Form.Item>
-                <Form.Item label="Dateofbirth" name="dateofbirth">
-                    <DatePicker />
+                <Form.Item label="Dateofbirth" name="dateofbirth" >
+                    <DatePicker format="DD/MM/YYYY" />
                 </Form.Item>
                 <Form.Item label="Gender" name="gender">
                     <Select allowClear>
-                        <Option value="nam">Nam</Option>
-                        <Option value="nu">Nu</Option>
-                        <Option value="orther">Orther</Option>
+                        <Option value="nam">Male</Option>
+                        <Option value="nu">Female</Option>
+                        <Option value="orther">Other</Option>
                     </Select>
                 </Form.Item>
                 <Form.Item label="Phone" name="phone">
@@ -183,17 +281,14 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
                 <Form.Item label="Faculty" name="faculty">
                     <AutoComplete
                         placeholder="Faculty"
-                        options={[
-                            {
-                                value: 'Faculty 1',
-                            },
-                            {
-                                value: 'Faculty 2',
-                            },
-                            {
-                                value: 'Faculty 3',
-                            },
-                        ]}
+                        options={
+                            facultyState?.faculties?.map((item) => {
+                                return {
+                                    value: item.id,
+                                    label: item.name,
+                                };
+                            })
+                        }
                     />
                 </Form.Item>
                 <Form.Item label="Program" name="program">
@@ -204,12 +299,15 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
                 </Form.Item>
                 <Form.Item label="Classes" name="classes">
                     <Select allowClear onChange={handleClassChange}>
-                        <Option value="Class 1">Class 1</Option>
-                        <Option value="Class 2">Class 2</Option>
-                        <Option value="Class 3">Class 3</Option>
+                        {
+                            unselectedClasses?.map((item) => {
+                                return <Option value={item.id}>{item.id + " - " + item.name}</Option>
+                            })
+                        }
                     </Select>
                 </Form.Item>
                 <Table dataSource={tableData} columns={columns} pagination={false} />
+
             </Form>
             <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
                 <img
@@ -225,3 +323,5 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
 }
 
 export default EditLecturerModal;
+
+

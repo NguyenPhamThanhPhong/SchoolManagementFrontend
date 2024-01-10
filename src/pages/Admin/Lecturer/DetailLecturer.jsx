@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Card,
     Table,
@@ -15,6 +15,8 @@ import {
 } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined, EditOutlined } from '@ant-design/icons';
 import LecturerExamListTable from '../../../components/Admin/Table/LecturerExamListTable';
+import { useLecturerContext } from '../../../data-store';
+import { useParams } from 'react-router-dom';
 
 const scoreListData = [
     {
@@ -54,53 +56,7 @@ const PasswordItem = () => {
         </Space>
     );
 };
-const items = [
-    {
-        key: '1',
-        label: 'Họ và tên',
-        children: 'Nguyen Hoang Long',
-    },
-    {
-        key: '2',
-        label: 'MSSV',
-        children: '2122034556',
-    },
-    {
-        key: '3',
-        label: 'Password',
-        children: <PasswordItem />,
-    },
-    {
-        key: '4',
-        label: 'Bậc đào tạo',
-        children: 'Đại học',
-    },
-    {
-        key: '5',
-        label: 'Ngày sinh:',
-        children: '2019-04-24 18:00:00',
-    },
-    {
-        key: '6',
-        label: 'Lớp sinh hoạt',
-        children: <Badge status="processing" text="Running" />,
-    },
-    {
-        key: '7',
-        label: 'Program',
-        children: 'CLC',
-    },
-    {
-        key: '8',
-        label: 'Giới tính',
-        children: 'Nam',
-    },
-    {
-        key: '9',
-        label: 'Khoa',
-        children: '............................',
-    },
-];
+
 
 const columns = [
     { title: 'ID', dataIndex: 'ID', key: 'ID' },
@@ -115,6 +71,69 @@ const columns = [
 function DetailLecturer() {
     const [editing, setEditing] = useState(false);
     const [editedDescriptions, setEditedDescriptions] = useState([...items]);
+
+    const [selectedLecturer, setSelectedLecturer] = useState({});
+    const [lecturerState, lecturerDispatch] = useLecturerContext();
+
+    const { id } = useParams();
+
+    const items = [
+        {
+            key: '1',
+            label: 'Họ và tên',
+            children: selectedLecturer?.userInfo?.name,
+        },
+        {
+            key: '2',
+            label: 'MSSV',
+            children: selectedLecturer?.id,
+        },
+        {
+            key: '3',
+            label: 'Password',
+            children: selectedLecturer?.password,
+        },
+        {
+            key: '4',
+            label: 'Program',
+            children: selectedLecturer?.program,
+        },
+        {
+            key: '5',
+            label: 'Date of birth:',
+            children: '2019-04-24 18:00:00',
+        },
+        {
+            key: '6',
+            label: 'Lớp sinh hoạt',
+            children: <Badge status="processing" text="Running" />,
+        },
+        {
+            key: '7',
+            label: 'Program',
+            children: 'CLC',
+        },
+        {
+            key: '8',
+            label: 'Giới tính',
+            children: 'Nam',
+        },
+        {
+            key: '9',
+            label: 'Khoa',
+            children: '............................',
+        },
+    ];
+
+    useEffect(() => {
+        try {
+            const lecturer = lecturerState.lecturers.find((item) => item.id === id);
+            setSelectedLecturer(lecturer);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }, [])
 
     const handleEdit = () => {
         setEditing(true);

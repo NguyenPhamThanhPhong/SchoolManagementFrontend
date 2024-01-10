@@ -54,11 +54,14 @@ const classUpdateInstance = async (schoolClass) => {
     }
 }
 
-const classStudentRegistration = async (id, action, studentLog) => {
+const classStudentRegistration = async (id, option, studentId) => {
     try {
+        console.log(id, option, studentId);
+        let schoolClassRegistrationRequest = { id: id, option: option, studentId: studentId };
+        console.log(JSON.stringify(schoolClassRegistrationRequest));
         const response = await axios.post(
-            APIUtil.baseURL + `/class-student-registration/${id}/${action}`,
-            studentLog, APIUtil.jsonHeader);
+            APIUtil.baseURL + `/class-student-registration`,
+            schoolClassRegistrationRequest, APIUtil.jsonHeader);
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };

@@ -150,6 +150,32 @@ const TextFilters = {
     }
 };
 
+function convertTimeRange(timeRange) {
+    if (!Array.isArray(timeRange) || timeRange.length !== 2) {
+        console.error('Invalid time range format. Expected an array with two elements.');
+        return { startTime: '00:00:00', endTime: '00:00:00' }; // Default values
+    }
+
+    const [startTime, endTime] = timeRange.map((isoString) => {
+        const dateObject = new Date(isoString);
+        const hours = dateObject.getHours().toString().padStart(2, '0');
+        const minutes = dateObject.getMinutes().toString().padStart(2, '0');
+        const seconds = dateObject.getSeconds().toString().padStart(2, '0');
+
+        return `${hours}:${minutes}:${seconds}`;
+    });
+
+    return { startTime, endTime };
+}
+
+// Example usage
+const timeRange = ["2024-01-09T14:45:49.704Z", "2024-01-09T17:49:56.697Z"];
+const { startTime, endTime } = convertTimeRange(timeRange);
+
+console.log("Start Time:", startTime);
+console.log("End Time:", endTime);
+
+
 
 const UpdateAction = {
     set: 0,
@@ -218,5 +244,6 @@ export {
     DateOfWeek,
     formatDate,
     isValidDate,
+    convertTimeRange,
     UpdateAction
 }

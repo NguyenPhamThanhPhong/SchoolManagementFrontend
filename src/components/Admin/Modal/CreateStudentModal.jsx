@@ -121,15 +121,23 @@ function CreateStudentModal({ open, onOk, onCancel }) {
 
     const handleSubmit = async () => {
         form.validateFields().then(async (values) => {
-            let { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = values;
+            let { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = form.getFieldsValue();
             console.log(faculty)
             let classIds = tableData.map((item) => item.id);
             dateofbirth = formatDate(dateofbirth);
             let personalInformation = new PersonalInfo(dateofbirth, name, gender, phone, faculty, program);
             let student = new SchoolMemberCreateRequest(id, username, password, email, "student", personalInformation, classIds);
-            console.log(student);
+
+            const formData = new FormData();
+            const requestBody = JSON.stringify(student);
+            formData.append('RequestBody', requestBody);
+            message.info("handling request");
+            if (fileList !== undefined && fileList !== null && fileList.length > 0) {
+                let file = fileList[0];
+                formData.append('File', file.originFileObj);
+            }
             try {
-                let response = await StudentApi.studentCreate(student);
+                let response = await StudentApi.studentCreate(formData);
                 if (!response.isError) {
                     studentDispatch(appendStudent(response.data.data));
                     message.success(`Create student successfully! ${student.id}`);
@@ -144,7 +152,13 @@ function CreateStudentModal({ open, onOk, onCancel }) {
             catch (error) {
                 message.error(`Create student failed! ${error}`);
             }
-        })
+        }).catch((error) => {
+            let messageError = "Create lecturer failed!";
+            error.errorFields?.map((item) => {
+                messageError += "\n" + item.errors;
+            });
+            message.error(messageError);
+        });
     }
 
 
@@ -161,7 +175,7 @@ function CreateStudentModal({ open, onOk, onCancel }) {
         <Modal
             title="Create Student"
             open={open}
-            onOk={onOk}
+            onOk={handleSubmit}
             width={720}
             style={{
                 top: 10,

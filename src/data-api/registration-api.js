@@ -3,6 +3,7 @@ import APIUtil from './api-utils';
 
 const create = async (registration) => {
     try {
+        console.log(JSON.stringify(registration));
         const response = await axios.post(APIUtil.baseURL + '/registration-create', registration, APIUtil.formdataHeader);
         return { isError: false, data: response };
     } catch (error) {
@@ -12,7 +13,7 @@ const create = async (registration) => {
 
 const update = async (registration) => {
     try {
-        const response = await axios.post(APIUtil.baseURL + '/registration-update', registration, APIUtil.formdataHeader);
+        const response = await axios.post(APIUtil.baseURL + '/registration-update-instance', registration, APIUtil.formdataHeader);
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };

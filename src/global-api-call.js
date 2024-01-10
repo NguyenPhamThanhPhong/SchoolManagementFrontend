@@ -134,7 +134,7 @@ const DataOnlyComponent = () => {
                 let response = await AdminApi.getAutoLogin();
                 if (!response.isError) {
                     userDispatch(setLogin({ user: response.data, isloggedIn: true, role: response.data?.role }));
-                    return true;
+                    return { isloggedIn: true, role: response.data?.role };
                 }
                 else
                     console.log(response.data)
@@ -142,7 +142,7 @@ const DataOnlyComponent = () => {
             catch (error) {
                 console.log(error)
             }
-            return false;
+            return { isloggedIn: false, role: null };
         }
     }
 
@@ -177,11 +177,11 @@ const DataOnlyComponent = () => {
     const pathname = window.location.pathname;
 
     async function handleFirstLoadLogic() {
-        let isSuccess = await fetchAutoLogin();
-        if (isSuccess) {
-            if (user?.role === "admin")
+        let state = await fetchAutoLogin();
+        if (state?.isloggedIn) {
+            if (state?.role === "admin")
                 navigate("/admin")
-            else {
+            else if (state?.role === "student" || state?.role === "lecturer") {
                 console.log('navigating home')
                 navigate("/user-home")
             }
@@ -196,6 +196,7 @@ const DataOnlyComponent = () => {
                 navigate("/admin/login")
             else if (pathname.toLowerCase().startsWith("/user-home") || pathname === "/")
                 navigate("/student/login")
+
         }
     }
     function handleLogout() {

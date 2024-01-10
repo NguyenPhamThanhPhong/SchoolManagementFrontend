@@ -1,13 +1,23 @@
 import { React, useEffect, useState } from 'react';
-import { Table, Button, List, DatePicker, Drawer, Form, Input, Row, Col, Select, Space, Divider } from 'antd';
+import { Table, Button, List, Drawer, Form, Input, Space, Divider, message } from 'antd';
+
+import { FacultyApi, Faculty } from '../../../data-api';
+import { useFacultyContext, setFaculties } from '../../../data-store';
+import { useSubjectContext } from '../../../data-store';
 
 function FacultyTable(props) {
+
+    const [form] = Form.useForm();
+
     const [currentPage, setCurrentPage] = useState(1);
 
     const { handleDelete, handleEdit } = props;
 
     const [open, setOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
+
+    const [facultyState, facultyDispatch] = useFacultyContext();
+    const [subjectState, subjectDispatch] = useSubjectContext();
 
     const showDrawer = (record) => {
         setOpen(true);
@@ -19,10 +29,72 @@ function FacultyTable(props) {
         setSelectedRecord(null);
     };
 
+    useEffect(() => {
+        if (selectedRecord !== null && selectedRecord !== undefined) {
+            form.setFieldsValue({
+                id: selectedRecord.id,
+                name: selectedRecord.name,
+                description: selectedRecord.description
+            })
+        }
+    }, [selectedRecord])
+
+
+    const handleUpdate = async (faculty) => {
+        try {
+            const response = await FacultyApi.updateFaculty(faculty)
+            if (!response.isError) {
+                const updatedFaculty = faculty;
+                const { faculties } = facultyState;
+                const index = faculties.findIndex((faculty) => faculty.id === updatedFaculty.id);
+                if (index !== -1) {
+                    faculties[index] = updatedFaculty;
+                    facultyDispatch(setFaculties([...faculties]));
+                    message.success('update faculty successfully');
+                    return true;
+                }
+            }
+            else {
+                message.error(response.message);
+            }
+        }
+        catch (error) {
+            console.log(error);
+            message.error('failed to update faculty')
+        }
+    }
+
+    const handleSave = async () => {
+        try {
+            let { id, name, description } = form.getFieldsValue();
+            const faculty = {
+                id: id,
+                name: name,
+                description: description,
+            }
+            console.log(faculty);
+            let isUpdated = await handleUpdate(faculty);
+            if (isUpdated)
+                onClose();
+        }
+        catch (error) {
+            message.error('failed to save faculty')
+        }
+    }
+
+
+    let filteredClasses = subjectState.subjects.filter((subject) => subject.facultyId === selectedRecord?.id);
+
+    let classesData = filteredClasses.map((schoolClass, index) => {
+        return {
+            id: schoolClass?.id,
+            name: schoolClass?.name,
+        }
+    });
+
 
     let dataSource = props.faculties || [];
-    dataSource = dataSource.map((item, index) => ({ ...item, stt: index + 1 }));
-
+    dataSource = dataSource.map((item, index) => ({ ...item, stt: index + 1, key: index + 1 }));
 
     const pageSize = 10;
     const currentData = dataSource.slice((currentPage - 1) * pageSize, currentPage * pageSize);
@@ -49,7 +121,7 @@ function FacultyTable(props) {
         {
             title: 'Action',
             key: 'action',
-            render: (record) => (
+            render: (_, record) => (
                 <Space size="middle">
                     <Button type="primary" onClick={() => showDrawer(record)}>
                         Detail
@@ -59,35 +131,6 @@ function FacultyTable(props) {
                     </Button>
                 </Space>
             ),
-        },
-    ];
-    const classesData = [
-        {
-            key: '1',
-            class_id: '1',
-            name: 'SE001.O11.PMCL',
-            room: '101',
-            program: 'John Doe',
-            class_type: '30',
-            subject_id: '90',
-        },
-        {
-            key: '2',
-            class_id: '2',
-            name: 'SE001.O12.PMCL',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
-        },
-        {
-            key: '3',
-            class_id: '3',
-            name: 'SE001.O13.PMCL',
-            room: '102',
-            program: 'Jane Smith',
-            class_type: '25',
-            subject_id: '120',
         },
     ];
     return (
@@ -103,7 +146,7 @@ function FacultyTable(props) {
                 }}
             />
             <Drawer
-                title="Faculty Detail"
+                title="Semester Detail"
                 width={480}
                 onClose={onClose}
                 open={open}
@@ -115,13 +158,23 @@ function FacultyTable(props) {
                 extra={
                     <Space>
                         <Button onClick={onClose}>Cancel</Button>
-                        <Button onClick={onClose} type="primary">
+                        <Button onClick={handleSave} type="primary">
                             Save
                         </Button>
                     </Space>
                 }
             >
-                <Form layout="vertical">
+                <Form form={form} layout="vertical">
+                    <Form.Item
+                        label="ID"
+                        name="id"
+                        style={{
+                            width: '100%',
+                        }}
+                    >
+                        <Input />
+                    </Form.Item>
+
                     <Form.Item
                         label="Name"
                         name="name"
@@ -131,10 +184,9 @@ function FacultyTable(props) {
                     >
                         <Input />
                     </Form.Item>
-
                     <Form.Item
-                        label="Description"
-                        name="desc"
+                        label="Name"
+                        name="description"
                         style={{
                             width: '100%',
                         }}
@@ -149,7 +201,11 @@ function FacultyTable(props) {
                         <List.Item>
                             <List.Item.Meta
                                 key={index}
-                                title={<a href="/admin/class/detail">{item.name}</a>}
+                                title={
+                                    <div>
+                                        <span><a href={`/admin/class/detail-class/${item.id}`}>{item.id + ' - ' + item?.name}</a></span>
+                                    </div>
+                                }
                                 description={`Room: ${item.room}`}
                             />
                         </List.Item>

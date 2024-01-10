@@ -1,10 +1,9 @@
 import axios from 'axios';
 import APIUtil from './api-utils';
 
-const studentCreate = async (userData) => {
+const studentCreate = async (schoolMemberCreateRequest) => {
     try {
-
-        const response = await axios.post(APIUtil.baseURL + '/student-create', userData, APIUtil.jsonHeader);
+        const response = await axios.post(APIUtil.baseURL + '/student-create', schoolMemberCreateRequest, APIUtil.jsonHeader);
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };

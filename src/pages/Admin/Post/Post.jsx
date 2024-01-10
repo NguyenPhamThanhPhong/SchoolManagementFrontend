@@ -50,6 +50,7 @@ const Post = () => {
             for (let [key, value] of Object.entries(urls)) {
                 fileUrls.push(value);
             }
+
             const response = await PostApi.postDelete(id, fileUrls,);
             if (!response.isError) {
                 setPostState(removePost(id));
@@ -59,7 +60,7 @@ const Post = () => {
                 message.error(`delete post failed: ${response?.data}`)
         }
         catch (error) {
-            console.log(JSON.stringify(error));
+            console.log(error);
         }
     }
 

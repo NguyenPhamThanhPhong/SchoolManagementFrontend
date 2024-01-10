@@ -1,22 +1,36 @@
 import React, { useEffect } from 'react';
 import { Modal, Form, Input, Select, AutoComplete, TimePicker } from 'antd';
+
+import { useSubjectContext, useSemesterContext, useLecturerContext } from '../../../data-store';
+import { DateOfWeek, convertTimeRange } from '../../../data-api/index';
+import moment from 'moment';
+
 const { Option } = Select;
 
 function EditClassModal({ open, onOk, onCancel, classData }) {
     const [form] = Form.useForm();
 
+    const [SubjectState, SubjectDispatch] = useSubjectContext();
+    const [semesterState, semesterDispatch] = useSemesterContext();
+
+    console.log(classData);
+    const [LecturerState, LecturerDispatch] = useLecturerContext();
+
+
     useEffect(() => {
+        let defaultStartTime = moment(classData.schedule?.startTime, 'HH:mm:ss');
+        let defaultEndTime = moment(classData.schedule?.endTime, 'HH:mm:ss');
         form.setFieldsValue({
-            class_id: classData.class_id,
-            name: classData.name,
-            room: classData.room,
-            program: classData.program,
-            class_type: classData.class_type,
-            subject: classData.subject,
-            semester: classData.semester,
-            lecturer: classData.lecturer,
-            schedule: classData.schedule,
-            timerange: classData.timerange,
+            id: classData?.id,
+            name: classData?.name,
+            roomName: classData?.roomName,
+            program: classData?.program,
+            classType: classData?.classType,
+            subject: JSON.stringify({ id: classData?.subject?.id, name: classData?.subject?.name }),
+            semester: classData?.semesterId,
+            lecturer: JSON.stringify({ id: classData?.lecturer?.id, name: classData?.lecturer?.name }),
+            schedule: classData?.schedule?.dateofweek,
+            timerange: [defaultStartTime, defaultEndTime],
         });
     }, [classData, form]);
 
@@ -46,65 +60,61 @@ function EditClassModal({ open, onOk, onCancel, classData }) {
                     span: 20,
                 }}
             >
-                <Form.Item label="ID" name="class_id" rules={[{ required: true }]}>
+                <Form.Item label="ID" name="id" rules={[{ required: true }]}>
                     <Input disabled />
                 </Form.Item>
                 <Form.Item label="Name" name="name" rules={[{ required: true }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item label="Room" name="room">
+                <Form.Item label="roomName" name="roomName">
                     <Input />
                 </Form.Item>
-                <Form.Item label="Program" name="program">
+                <Form.Item label="program" name="program">
                     <Input />
                 </Form.Item>
-                <Form.Item label="Class Type" name="class_type">
+                <Form.Item label="Class Type" name="classType">
                     <Input />
                 </Form.Item>
-                <Form.Item label="Subject" name="subject">
-                    <AutoComplete
-                        placeholder="Subject"
-                        options={[
-                            {
-                                value: 'Subject 1',
-                            },
-                            {
-                                value: 'Subject 2',
-                            },
-                            {
-                                value: 'Subject 3',
-                            },
-                        ]}
-                    />
-                </Form.Item>
-                <Form.Item label="Semester" name="semester">
-                    <Select allowClear>
-                        <Option value="semester1">semester1</Option>
-                        <Option value="semester2">semester2</Option>
-                        <Option value="semester3">semester3</Option>
+                <Form.Item label="Subject" name="subject" defaultValue="" rules={[
+                    { required: true, message: 'Please select a faculty' },
+                ]} >
+                    <Select mode="single" showSearch optionFilterProp="children" allowClear>
+                        {SubjectState.subjects?.map((subject) => (
+                            <Option key={subject?.id} value={JSON.stringify({ id: subject?.id, name: subject?.name })}>
+                                {subject?.id + " - " + subject?.name}
+                            </Option>
+                        ))}
                     </Select>
                 </Form.Item>
-                <Form.Item label="Lecturer" name="lecturer">
-                    <AutoComplete
-                        placeholder="Lecturer"
-                        options={[
-                            {
-                                value: 'Lecturer 1',
-                            },
-                            {
-                                value: 'Lecturer 2',
-                            },
-                            {
-                                value: 'Lecturer 3',
-                            },
-                        ]}
-                    />
+                <Form.Item label="Semester" name="semester" defaultValue="" rules={[
+                    { required: true, message: 'Please select a faculty' },
+                ]} >
+                    <Select mode="single" showSearch optionFilterProp="children" allowClear>
+                        {semesterState.semesters?.map((semester) => (
+                            <Option key={semester?.id} value={semester?.id}>
+                                {semester?.id + " - " + semester.startTime + " - " + semester.endTime}
+                            </Option>
+                        ))}
+                    </Select>
+                </Form.Item>
+                <Form.Item label="Lecturer" name="lecturer" defaultValue="" rules={[
+                    { required: true, message: 'Please select a lecturer' },
+                ]} >
+                    <Select mode="single" showSearch optionFilterProp="children" allowClear>
+                        {LecturerState.lecturers?.map((lecturer) => (
+                            <Option key={lecturer?.id} value={JSON.stringify({ id: lecturer?.id, name: lecturer.personalInfo?.name })}>
+                                {lecturer?.id + " - " + lecturer.personalInfo?.name}
+                            </Option>
+                        ))}
+                    </Select>
                 </Form.Item>
                 <Form.Item label="Schedule" name="schedule">
                     <Select allowClear>
-                        <Option value="schedule1">1</Option>
-                        <Option value="schedule2">2</Option>
-                        <Option value="schedule3">3</Option>
+                        {Array.from({ length: 7 }, (_, i) => (
+                            <Option key={i} value={i}>
+                                {DateOfWeek.GetDateOfWeek(i)}
+                            </Option>
+                        ))}
                     </Select>
                 </Form.Item>
 

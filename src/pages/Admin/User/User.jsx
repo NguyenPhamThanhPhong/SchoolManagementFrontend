@@ -1,15 +1,46 @@
-import React, { useState } from 'react';
-import { Table, Input, Select, Modal, Form, Card } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, Input, Select, Modal, Form, Card, message } from 'antd';
+import { useUserContext } from '../../../data-store';
+import { AdminApi } from '../../../data-api';
 
 const { Search } = Input;
 const { Option } = Select;
 
 const User = () => {
+    const [form] = Form.useForm();
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-    const showCreateModal = () => {
-        setIsCreateModalOpen(true);
-    };
+    const [userState, setUserState] = useUserContext();
+    const [users, setUsers] = useState([]);
+
+    const fetchUsers = async () => {
+        try {
+            const response = await AdminApi.getAll();
+            if (!response.isError) {
+                setUsers(response.data?.data);
+            }
+            else
+                message.error(`fetch users failed: ${response?.data}`)
+        }
+        catch (error) {
+            message.error(`fetch users failed: ${error}`)
+        }
+    }
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+    useEffect(() => {
+        if (userState?.user) {
+            form.setFieldsValue({
+                username: userState?.user?.username,
+                email: userState?.user?.email,
+                password: userState?.user?.password,
+            });
+        }
+    }, [userState?.user]);
+
 
     const handleCreateModalOk = () => {
         setIsCreateModalOpen(false);
@@ -19,15 +50,12 @@ const User = () => {
         setIsCreateModalOpen(false);
     };
 
-    const handleCreate = () => {
-        showCreateModal();
-    };
 
     return (
         <div style={{ display: 'flex', gap: '16px' }}>
             <Card title="Profile" style={{ flex: 1, width: '40%' }}>
-                <Form labelCol={{ span: 8 }} wrapperCol={{ span: 10 }}>
-                    <Form.Item label="UserName" name="username">
+                <Form form={form} labelCol={{ span: 8 }} wrapperCol={{ span: 10 }}>
+                    <Form.Item label="Username" name="username">
                         <Input />
                     </Form.Item>
 
@@ -35,7 +63,7 @@ const User = () => {
                         <Input />
                     </Form.Item>
 
-                    <Form.Item label="Mật khẩu" name="password">
+                    <Form.Item label="Password" name="password">
                         <Input.Password />
                     </Form.Item>
                 </Form>
@@ -46,12 +74,12 @@ const User = () => {
                     columns={[
                         {
                             title: <span className="custom-column-title">ID</span>,
-                            dataIndex: 'id',
-                            key: 'id',
+                            dataIndex: 'username',
+                            key: 'username',
                         },
                         {
                             title: <span className="custom-column-title">Username</span>,
-                            dataIndex: 'username',
+                            dataIndex: 'password',
                             key: 'username',
                         },
                         {
@@ -65,22 +93,7 @@ const User = () => {
                             key: 'password',
                         },
                     ]}
-                    dataSource={[
-                        {
-                            key: '1',
-                            id: '1',
-                            username: 'user1',
-                            password: '********',
-                            email: 'user1@example.com',
-                        },
-                        {
-                            key: '2',
-                            id: '2',
-                            username: 'user2',
-                            password: '*******',
-                            email: 'user2@example.com',
-                        },
-                    ]}
+                    dataSource={users}
                 />
             </Card>
 
