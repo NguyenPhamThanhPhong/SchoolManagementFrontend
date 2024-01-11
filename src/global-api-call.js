@@ -196,7 +196,7 @@ const DataOnlyComponent = () => {
                 navigate("/admin/login")
             else if (pathname.toLowerCase().startsWith("/user-home") || pathname === "/")
                 navigate("/student/login")
-
+            navigate("/lecturer/login")
         }
     }
     function handleLogout() {

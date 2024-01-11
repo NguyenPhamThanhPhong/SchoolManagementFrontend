@@ -31,7 +31,7 @@ const studentAutoLogin = async () => {
 
 const studentGetPassword = async (username) => {
     try {
-        const response = await axios.get(APIUtil.baseURL + `/student-get-password-in-mail/${username}`)
+        const response = await axios.get(APIUtil.baseURL + `/api/Student/student-get-password-in-mail/${username}`)
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };

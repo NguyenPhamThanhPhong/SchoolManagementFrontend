@@ -3,39 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import './SideBar.scss';
 import 'boxicons/css/boxicons.min.css';
 import { userPaths } from '../../../routes/AppRoutes';
-const sidebarNavItems = [
-    {
-        display: 'Home',
-        icon: <i className='bx bx-home'></i>,
-        to: userPaths.home,
-        section: 'user-home'
-    },
-    {
-        display: 'Schedule',
-        icon: <i className='bx bx-calendar'></i>,
-        to: userPaths.schedule,
-        section: 'schedule'
-    },
-    {
-        display: 'Classes',
-        icon: <i className='bx bx-book'></i>,
-        to: userPaths.classes,
-        section: 'classes'
-    },
-    {
-        display: 'User',
-        icon: <i className='bx bx-user'></i>,
-        to: userPaths.user_infor,
-        section: 'student-user-info'
-    },
-    {
-        display: 'Register',
-        icon: <i class='bx bx-log-in-circle'></i>,
-        to: '/student-register-subject',
-        section: 'student-register-subject'
-    },
+import { useUserContext } from '../../../data-store';
 
-]
 
 const Sidebar = () => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -43,6 +12,49 @@ const Sidebar = () => {
     const sidebarRef = useRef();
     const indicatorRef = useRef();
     const location = useLocation();
+
+    const [userState, userDispatch] = useUserContext();
+
+
+    const sidebarNavItems = [
+        {
+            display: 'Home',
+            icon: <i className='bx bx-home'></i>,
+            to: userPaths.home,
+            section: 'user-home'
+        },
+        {
+            display: 'Schedule',
+            icon: <i className='bx bx-calendar'></i>,
+            to: userPaths.schedule,
+            section: 'schedule'
+        },
+        {
+            display: 'Classes',
+            icon: <i className='bx bx-book'></i>,
+            to: userPaths.classes,
+            section: 'classes'
+        },
+        {
+            display: 'User',
+            icon: <i className='bx bx-user'></i>,
+            to: userPaths.user_infor,
+            section: 'student-user-info'
+        },
+        {
+            display: 'Register',
+            icon: <i class='bx bx-log-in-circle'></i>,
+            to: '/student-register-subject',
+            section: 'student-register-subject'
+        },
+        {
+            display: 'Logout',
+            icon: <i class='bx bx-log-in-circle'></i>,
+            to: userState?.role === 'student' ? "/student/login" : '/lecturer/login',
+            section: 'student-register-subject'
+        }
+
+    ]
 
     useEffect(() => {
         setTimeout(() => {

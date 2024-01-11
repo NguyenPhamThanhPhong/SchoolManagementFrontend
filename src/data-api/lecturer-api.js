@@ -23,7 +23,7 @@ const lecturerLogin = async (username, password) => {
 const getPassword = async (username) => {
     try {
         var userData = username
-        const response = await axios.get(APIUtil.baseURL + `/lecturer-get-password-in-mail/${username}`)
+        const response = await axios.get(APIUtil.baseURL + `/api/Lecturer/lecturer-get-password-in-mail/${username}`)
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };

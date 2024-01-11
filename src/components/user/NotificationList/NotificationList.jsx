@@ -5,7 +5,7 @@ import { userPaths } from '../../../routes/AppRoutes';
 function NotificationList(props) {
 
     const truncateString = (str, maxLength) => {
-        return str.length > maxLength ? str.slice(0, maxLength - 1) + '...' : str;
+        return str?.length > maxLength ? str?.slice(0, maxLength - 1) + '...' : str;
     };
 
     return (
@@ -16,7 +16,7 @@ function NotificationList(props) {
                     {props.NotificationItems.map((item =>
                     (<li className="list-group" key={item.id}>
                         <Link to={`/user-home/notification/${item.id}`} className="NotificationitemContainer" style={{ textDecoration: 'none' }}>
-                            <div className='firstLine'>{item.id}</div>
+                            <div className='firstLine'>{item?.name}</div>
                             <div className='secondLine'>{truncateString(item.content, 100)}</div>
                         </Link>
                     </li>)
