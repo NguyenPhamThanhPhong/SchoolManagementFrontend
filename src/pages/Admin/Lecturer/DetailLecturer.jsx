@@ -69,14 +69,8 @@ const columns = [
 ];
 
 function DetailLecturer() {
-    const [editing, setEditing] = useState(false);
-    const [editedDescriptions, setEditedDescriptions] = useState([...items]);
-
     const [selectedLecturer, setSelectedLecturer] = useState({});
     const [lecturerState, lecturerDispatch] = useLecturerContext();
-
-    const { id } = useParams();
-
     const items = [
         {
             key: '1',
@@ -124,6 +118,15 @@ function DetailLecturer() {
             children: '............................',
         },
     ];
+
+    const [editing, setEditing] = useState(false);
+    const [editedDescriptions, setEditedDescriptions] = useState([...items]);
+
+
+
+    const { id } = useParams();
+
+
 
     useEffect(() => {
         try {
