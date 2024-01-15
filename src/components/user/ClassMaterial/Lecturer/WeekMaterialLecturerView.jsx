@@ -33,6 +33,9 @@ function WeekMaterialLecturerView(props, { Sections }) {
     const onChange = (e) => {
         console.log('Change:', e.target.value);
     };
+    ///////
+
+
 
     return (
         <div className='WeekMaterialLecturerviewContain'>

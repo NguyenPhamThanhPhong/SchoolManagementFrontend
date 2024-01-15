@@ -10,18 +10,21 @@ const onChange = (key) => {
 const ScoreData = [
   {
     key: '0',
-    No_: 1,
     name: 'Tran Van A',
-    student_id: '32',
-    progress_score: 8,
-    midterm_score: 9,
-    practice_score: 9,
-    finalterm_score: 9,
+    id: '32',
+    progress: 8,
+    midterm: 9,
+    practice: 9,
+    final: 9,
   },
   {
     key: '1',
-    name: 'Ten gi do',
-    student_id: '21155',
+    name: 'Tran Van B',
+    id: '31',
+    progress: 8,
+    midterm: 9,
+    practice: 9,
+    final: 9,
   },
 ];
 //
@@ -54,7 +57,7 @@ const items = [
   {
     key: '2',
     label: 'Scores',
-    children: <InputScore ScoreData={ScoreData}></InputScore>,
+    children: <InputScore classListData={ScoreData} classs={1}></InputScore>,
   },
 ];
 function ClassMaterialPageLecturerView() {
