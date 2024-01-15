@@ -1,6 +1,15 @@
 import axios from 'axios';
 import APIUtil from "./api-utils.js"
 
+const classGetAll = async () => {
+    try {
+        const response = await axios.get(APIUtil.baseURL + '/class-get-all');
+        return { isError: false, data: response };
+    } catch (error) {
+        return { isError: true, data: error };
+    }
+}
+
 const classCreate = async (schoolClassCreateRequest) => {
     try {
         const response = await axios.post(APIUtil.baseURL + '/class-create', schoolClassCreateRequest, APIUtil.jsonHeader);
@@ -124,7 +133,8 @@ const schoolClassApi = {
     classUpdateSchedule,
     classAppendSection,
     classDelete,
-    classDeleteMany
+    classDeleteMany,
+    classGetAll
 }
 
 export { schoolClassApi }

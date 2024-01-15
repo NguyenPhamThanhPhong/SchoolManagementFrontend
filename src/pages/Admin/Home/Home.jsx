@@ -1,15 +1,82 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SolutionOutlined, TeamOutlined, UserOutlined, PartitionOutlined } from '@ant-design/icons';
 import { Card, Statistic, Row, Col } from 'antd';
 import Chart from 'chart.js/auto';
 import './Home.scss';
 
 import { useUserContext } from '../../../data-store';
+import { FacultyApi, StudentApi, lecturerApi, schoolClassApi } from '../../../data-api';
 
 function Home() {
     const barChartRef = useRef(null);
     const pieChartRef = useRef(null);
     const lineChartRef = useRef(null);
+    const [facultyData, setFacultyData] = useState([]);
+    const [totalStudent, setTotalStudent] = useState(0);
+    const [totalLecturer, setTotalLecturer] = useState(0);
+    const [totalClass, setTotalClass] = useState(0);
+
+
+    useEffect(() => {
+        const fetchFacultyData = async () => {
+            try {
+                const response = await FacultyApi.getAll();
+                if (!response.isError) {
+                    setFacultyData(response.data);
+                } else {
+                    console.error('Error fetching faculty data:', response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching faculty data:', error);
+            }
+        };
+
+        const fetchTotalStudent = async () => {
+            try {
+                const response = await StudentApi.studentGetAll();
+                if (!response.isError) {
+                    setTotalStudent(response.data);
+                } else {
+                    console.error('Error fetching total students:', response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching total students:', error);
+            }
+        };
+
+        const fetchTotalLecturer = async () => {
+            try {
+                const response = await lecturerApi.lecturerGetAll();
+                if (!response.isError) {
+                    setTotalLecturer(response.data);
+                } else {
+                    console.error('Error fetching total lecturer:', response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching total lecturer:', error);
+            }
+        };
+
+        const fetchTotalClass = async () => {
+            try {
+                const response = await schoolClassApi.classGetAll();
+                console.log(response)
+                if (!response.isError) {
+                    setTotalClass(response.data);
+                } else {
+                    console.error('Error fetching total class:', response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching total class:', error);
+            }
+        };
+
+        fetchFacultyData();
+        fetchTotalStudent();
+        fetchTotalLecturer();
+        fetchTotalClass();
+    }, []);
+
 
     useEffect(() => {
         // Biểu đồ barChart
@@ -87,10 +154,11 @@ function Home() {
         <div>
             <div>
                 <Row gutter={[16, 16]}>
-                    {renderDashboardCard('Total Student', 100000, <UserOutlined />, 'green')}
-                    {renderDashboardCard('Total Lecturer', 50000, <SolutionOutlined />, 'blue')}
-                    {renderDashboardCard('Total Faculty', 200, <TeamOutlined />, 'orange')}
-                    {renderDashboardCard('Total Class', 50, <PartitionOutlined />, 'purple')}
+                    {renderDashboardCard('Total Student', totalStudent?.data?.length, <UserOutlined />, 'green')}
+                    {renderDashboardCard('Total Lecturer', totalLecturer?.data?.length, <SolutionOutlined />, 'blue')}
+
+                    {renderDashboardCard('Total Faculty', facultyData?.data?.length || 0, <TeamOutlined />, 'orange')}
+                    {renderDashboardCard('Total Class', totalClass?.data?.length, <PartitionOutlined />, 'purple')}
                 </Row>
             </div>
             <div className="pt-3">

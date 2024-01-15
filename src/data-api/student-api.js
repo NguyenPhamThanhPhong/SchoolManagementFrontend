@@ -1,6 +1,15 @@
 import axios from 'axios';
 import APIUtil from './api-utils';
 
+const studentGetAll = async () => {
+    try {
+        const response = await axios.get(APIUtil.baseURL + '/student-get-all');
+        return { isError: false, data: response };
+    } catch (error) {
+        return { isError: true, data: error };
+    }
+}
+
 const studentCreate = async (schoolMemberCreateRequest) => {
     try {
         const response = await axios.post(APIUtil.baseURL + '/student-create', schoolMemberCreateRequest, APIUtil.jsonHeader);
@@ -115,7 +124,8 @@ const StudentApi = {
     studentGetManyRange,
     studentDelete,
     studentDeleteMany,
-    studentUpdateInstance
+    studentUpdateInstance,
+    studentGetAll
 }
 
 

@@ -1,6 +1,15 @@
 import axios from 'axios';
 import APIUtil from "./api-utils.js"
 
+const lecturerGetAll = async () => {
+    try {
+        const response = await axios.get(APIUtil.baseURL + '/lecturer-get-all');
+        return { isError: false, data: response };
+    } catch (error) {
+        return { isError: true, data: error };
+    }
+}
+
 const lecturerCreate = async (schoolMemberCreateRequest) => {
     try {
         const response = await axios.post(APIUtil.baseURL + '/lecturer-create', schoolMemberCreateRequest, APIUtil.jsonHeader);
@@ -91,6 +100,8 @@ const lecturerApi = {
     lecturerDelete,
     lecturerDeleteMany,
     lecturerUpdateInstance,
+    lecturerGetAll
+
 }
 
 export { lecturerApi };
