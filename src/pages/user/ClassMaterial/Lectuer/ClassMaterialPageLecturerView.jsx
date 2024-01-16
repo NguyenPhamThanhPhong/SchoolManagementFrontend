@@ -1,32 +1,15 @@
 import WeekMaterialLecturerView from '../../../../components/user/ClassMaterial/Lecturer/WeekMaterialLecturerView';
 import InputScore from '../../../../components/user/InputScore/InputScore';
+import { useParams } from 'react-router-dom';
 import './ClassMaterialPageLecturerView.scss'
 
-import { Tabs } from 'antd';
+import { Tabs, message } from 'antd';
+import { useEffect, useState } from 'react';
+import { useSchoolClassContext, setSchoolClasses } from '../../../../data-store';
 
 const onChange = (key) => {
   console.log(key);
 };
-const ScoreData = [
-  {
-    key: '0',
-    name: 'Tran Van A',
-    id: '32',
-    progress: 8,
-    midterm: 9,
-    practice: 9,
-    final: 9,
-  },
-  {
-    key: '1',
-    name: 'Tran Van B',
-    id: '31',
-    progress: 8,
-    midterm: 9,
-    practice: 9,
-    final: 9,
-  },
-];
 //
 const WFiles = ['Helloworld.pdf', 'Hi.pdf']
 const Sections =
@@ -48,20 +31,58 @@ const Sections =
     },
   ];
 //
-const items = [
-  {
-    key: '1',
-    label: 'Class material',
-    children: <WeekMaterialLecturerView Sections={Sections}></WeekMaterialLecturerView>,
-  },
-  {
-    key: '2',
-    label: 'Scores',
-    children: <InputScore classListData={ScoreData} classs={1}></InputScore>,
-  },
-];
+
 function ClassMaterialPageLecturerView() {
 
+  const { id: classId } = useParams();
+  const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
+  const [selectedClass, setSelectedClass] = useState(null);
+
+  const [sections, setSections] = useState([]);
+
+  useEffect(() => {
+    if (schoolClassState?.schoolClasses?.length > 0) {
+      const schoolClass = schoolClassState.schoolClasses.find((item) => item.id === classId);
+      if (schoolClass)
+        setSelectedClass(schoolClass);
+    }
+  }, [])
+
+  useEffect(() => {
+    if (selectedClass) {
+      setSections(selectedClass?.sections || []);
+    }
+  }, [selectedClass])
+
+  const updateGlobalSchoolClasses = (newSchoolClass) => {
+    if (schoolClassState?.schoolClasses) {
+      const newSchoolClassIndex = schoolClassState?.schoolClasses.findIndex((item) => item.id === newSchoolClass.id);
+      if (newSchoolClassIndex > 0) {
+        let myNewSchoolClasses = schoolClassState?.schoolClasses;
+        myNewSchoolClasses[newSchoolClassIndex] = newSchoolClass;
+        schoolClassDispatch(setSchoolClasses);
+      }
+    }
+  }
+
+
+
+  const items = [
+    {
+      key: '1',
+      label: 'Class material',
+      children: <WeekMaterialLecturerView
+        classId={selectedClass?.id}
+        Sections={sections || []}
+        updateGlobalSchoolClasses={updateGlobalSchoolClasses}
+        setSections={setSections || (() => { })} ></WeekMaterialLecturerView>,
+    },
+    {
+      key: '2',
+      label: 'Scores',
+      children: <InputScore classId={selectedClass?.id} classListData={selectedClass?.studentItems || []} ></InputScore>,
+    },
+  ];
   return (
     <>
       <div className="MainScreenClassMaterialLecuturerView">

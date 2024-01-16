@@ -8,11 +8,10 @@ import { useState } from 'react';
 function ClassList(props) {
 
     const linkTo = props.role === 'lecturer' ? userPaths.lecturerViewClass : userPaths.studentViewClass;
-    console.log(props.role)
-    console.log(linkTo)
+
+    console.log(props.ClassItems)
 
     let mySemester = "";
-    console.log(!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
     if (!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
         mySemester = props.Semester[0];
 

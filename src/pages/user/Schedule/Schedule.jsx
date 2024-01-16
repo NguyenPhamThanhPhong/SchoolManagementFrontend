@@ -1,7 +1,7 @@
 import ScheduleBoard from "../../../components/user/ScheduleBoard/ScheduleBoard";
 import ExamSchedule from "../../../components/user/ExamSchedule/ExamSchedule";
 
-import { Tabs } from 'antd';
+import { Tabs, message } from 'antd';
 import './Schedule.scss'
 import { useState, useEffect } from 'react';
 
@@ -22,56 +22,42 @@ function Schedule() {
   const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
   const [semesterState, semesterDispatch] = useSemesterContext();
 
+  let user = userState?.user || {};
+
 
   const [schoolClasses, setSchoolClasses] = useState(schoolClassState?.schoolClasses || []);
   const [schedule, setSchedule] = useState(schoolClassState?.schoolClasses || []);
   const [examSchedule, setExamSchedule] = useState([]);
 
-  const scheduleAggregation = {
-    "Semester 1 (2023-2024)":
-      [
-        {
-          id: 'SE001',
-          name: "OOP",
-          DateOfWeek: 3,
-          startTime: "8:00",
-          endTime: "10:00",
-          beginTime: "20/11/2023",
-          endTime: "20/12/2023",
-        },
-        {
-          id: "SE002",
-          name: "SE002",
-          DateOfWeek: 3,
-          startTime: "8:00",
-          endTime: "10:00",
-          beginTime: "20/11/2023",
-          endTime: "20/12/2023",
-        }
-      ]
-  }
 
   function getScheduleBySemester(semesterId) {
     let filtredSchoolClasses = schoolClasses.filter(item => item.semesterId === semesterId);
     let filteredSchedule = filtredSchoolClasses.map(
       (item) => {
-        console.log(JSON.stringify(item));
         let schedule = {
           id: item.id,
-          name: item.name,
+          title: `${item.name} (${item.id})`,
           daysOfWeek: item.schedule?.dateofweek + '',
           startTime: item.schedule?.startTime,
           endTime: item.schedule?.endTime,
-          extendsProps: {
-            classID: 'OOP1',
-            beginTime: item.schedule?.beginTime,
-            endTime: item?.schedule?.finalTime,
+          extendedProps: {
+            id: `${item.name} (${item.id})`,
+            beginTime: '20/11/2023',
+            finalTime: '20/12/2023'
           }
         }
         return schedule;
       }
     )
     setSchedule(filteredSchedule);
+  }
+  function selectSemesterInClassList(classList) {
+    if (user?.classes) {
+      let filteredClassList = classList.filter(item => user?.classes.includes(item.id));
+      let semesters = filteredClassList.map(item => item.semesterId);
+      let uniqueSemesters = [...new Set(semesters)];
+      return uniqueSemesters;
+    }
   }
 
   function getExamBySemester(semesterId) {
@@ -82,79 +68,76 @@ function Schedule() {
         for (const exam of schoolClass.exams) {
           if (exam) {
             examRows.push({
+              key: examRows.length + 1,
               index: examRows.length + 1,
-              subjectId: schoolClass?.subject?.id || '',
-              classId: schoolClass?.id || '',
-              room: exam?.room || '',
-              examDate: exam?.startTime || '',
-              duration: exam?.duration || '',
+              subjectId: `${schoolClass?.subject?.id} - ${schoolClass?.subject?.name} ` || '',
+              classId: `${schoolClass?.id} + ${schoolClass?.name}` || '',
               examName: exam?.name || '',
+              room: exam?.room || '',
+              examDate: `${exam?.startTime} + ${exam?.duration}` || '',
             })
           }
         }
       }
     }
+    setExamSchedule(examRows);
   }
 
 
-  const events = [
-    {
-      title: 'zxcvzxc',// để title như tên lớp
-      daysOfWeek: '4',
-      startTime: '8:00:00',
-      endTime: '10:00:00',
-      extendedProps: {
-        id: 'OOP1',
-        beginTime: '20/11/2023',
-        finalTime: '20/12/2023'
-      },
-    },
-    {
-      title: ' sdfasdf',// để title như tên lớp
-      daysOfWeek: ['5'],
-      startTime: '8:00:00',
-      endTime: '10:00:00',
-      extendedProps: {
-        id: 'OOP1',
-        beginTime: '20/11/2023',
-        finalTime: '20/12/2023'
-      },
-    }
-  ]
+  // const events = [
+  //   {
+  //     title: 'zxcvzxc',// để title như tên lớp
+  //     daysOfWeek: '4',
+  //     startTime: '8:00:00',
+  //     endTime: '10:00:00',
+  //     extendedProps: {
+  //       id: 'OOP1',
+  //       beginTime: '20/11/2023',
+  //       finalTime: '20/12/2023'
+  //     },
+  //   },
+  //   {
+  //     title: ' sdfasdf',// để title như tên lớp
+  //     daysOfWeek: ['5'],
+  //     startTime: '8:00:00',
+  //     endTime: '10:00:00',
+  //     extendedProps: {
+  //       id: 'OOP1',
+  //       beginTime: '20/11/2023',
+  //       finalTime: '20/12/2023'
+  //     },
+  //   }
+  // ]
 
   const items = [
     {
       key: '1',
       label: 'Schedule',
-      children: <ScheduleBoard semesters={semesterState?.semesters} ScheduleEvents={schedule}
+      children: <ScheduleBoard semesters={selectSemesterInClassList(schoolClassState?.schoolClasses)} ScheduleEvents={schedule}
         onSemesterChange={getScheduleBySemester}></ScheduleBoard>,
     },
     {
       key: '2',
       label: 'Exam schedule',
-      children: <ExamSchedule semesters={semesterState?.semesters || []} ExamData={examSchedule}></ExamSchedule>,
+      children: <ExamSchedule
+        semesters={selectSemesterInClassList(schoolClassState?.schoolClasses)}
+        onSemesterChange={getExamBySemester}
+        ExamData={examSchedule}></ExamSchedule>,
     },
   ];
 
 
   if (userState?.user?.role === 'lecturer') {
-    return (
-      <>
-        <div className="MainScreenSchedule">
-          <ScheduleBoard semesters={semesterState?.semesters || []} ScheduleEvents={events}></ScheduleBoard>
-        </div>
-      </>
-    );
+    items.splice(1, 1)
   }
-  else {
-    return (
-      <>
-        <div className="MainScreenSchedule">
-          <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
-        </div>
-      </>
-    );
-  }
+
+  return (
+    <>
+      <div className="MainScreenSchedule">
+        <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+      </div>
+    </>
+  );
 
 }
 
