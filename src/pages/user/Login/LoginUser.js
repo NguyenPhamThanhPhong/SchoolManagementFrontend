@@ -150,7 +150,7 @@ function LoginUser() {
                         <Button type='link' onClick={() => { setModalState(true) }}>Click here?</Button>
                     </div>
                     <button className='LoginButton' onClick={handleLogin}>Login</button>
-                    <Form style={{ width: '200px', float: 'right', marginTop: '80px' }}>
+                    <Form style={{ width: '200px', float: 'right', marginTop: '80px', marginRight: '5%' }}>
                         <Form.Item
                             label="Switch to"
                             name="userType"

@@ -206,9 +206,9 @@ function WeekMaterialLecturerView(props) {
                     }
                     return (
                         <div>
-                            <Button style={{ color: 'green', fontWeight: 'bold', background: 'pink' }} type="link"
+                            <Button style={{ color: 'green', fontWeight: 'bold', display: 'block', borderColor: 'green' }} type="link"
                                 onClick={() => { setIsModalOpenAdd(true); setAddSectionIndex(index) }}>
-                                +Add section
+                                +Add new section
                             </Button>
                             <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }} >
                                 {item.title}
@@ -223,33 +223,37 @@ function WeekMaterialLecturerView(props) {
                                         </div>)
                                 )
                             }
-                            <Button
-                                type="link" onClick={() => { showModalEdit(index) }}><i class='bx bx-edit-alt' style={{ color: '#2f88ff' }}  ></i>Edit section</Button>
+                            <Button style={{ color: 'red', fontWeight: 'bold', display: 'block', borderColor: 'red' }}
+                                type="link" onClick={() => { showModalEdit(index) }}><i class='bx bx-edit-alt' style={{ color: 'red' }}  ></i>Edit section</Button>
+                            <Divider />
                         </div>)
                 }
 
                 ))}
-                <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }} >
-                </Divider>
-                <Button type="link" style={{ color: 'green', fontWeight: 'bold', background: 'pink' }}
+                <Button type="link" style={{ color: 'green', fontWeight: 'bold', display: 'block', borderColor: 'green' }}
                     onClick={() => { setIsModalOpenAdd(true); setAddSectionIndex(props?.Sections?.length) }}>
-                    +Add section
+                    +Add new section
                 </Button>
             </div>
-            <Modal width={'50vw'} title="Add new section" open={isModalOpenAdd}
+            <Modal width={'520px'} title="Add new section" open={isModalOpenAdd}
                 onOk={() => { handleAddSection() }}
                 onCancel={() => { setIsModalOpenAdd(false); clearAddModal(); }}>
-                <div>Section title</div>
-                <TextArea onChange={(e) => { setAddSectionTitle(e.target.value) }} value={addSectionTitle} placeholder="Section title" />
+                <b>Section title</b>
+                <br></br>
+                <TextArea width={'520px'} onChange={(e) => { setAddSectionTitle(e.target.value) }} value={addSectionTitle} placeholder="Section title" /><br></br>
+                <b>Section content</b>
                 <AddSection onChange={setAddSectionText} ></AddSection>
+                <b>Section file(s)</b>
                 <AddMaterial onDone={setAddSectionFileList}></AddMaterial>
             </Modal>
-            <Modal title="Edit section" open={isModalOpenEdit} onOk={handleEditSection} onCancel={handleCancelEdit}>
-                <div>Section title</div>
-                <TextArea placeholder="Section title"
+            <Modal width={'520px'} title="Edit section" open={isModalOpenEdit} onOk={handleEditSection} onCancel={handleCancelEdit}>
+                <b>Section title</b>
+                <TextArea width={'520px'} placeholder="Section title"
                     onChange={(e) => { setEditSectionTitle(e.target.value) }}
                     value={editSectionTitle} />
+                <b>Section content</b>
                 <AddSection data={editSectionText} onChange={setEditSectionText} ></AddSection>
+                <b>Section file(s)</b>
                 <AddMaterial onDone={setEditSectionFileList} ></AddMaterial>
                 {
                     (editSelectedFileUrlsDisplay?.length > 0) &&
