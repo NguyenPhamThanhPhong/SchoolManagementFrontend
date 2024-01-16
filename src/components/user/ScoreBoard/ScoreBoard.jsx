@@ -4,46 +4,49 @@ function ScoreBoard(props) {
 
     const columns = [
         {
-            title: 'No.',
+            title: 'Semester',
+            dataIndex: 'semesterId',
+            width: '10%',
+        },
+        {
+            title: 'Class ID',
             dataIndex: 'id',
-            key: 'index',
+            width: '10%',
         },
         {
-            title: 'Subject Id',
-            dataIndex: 'subjectId',
-            key: 'index',
+            title: 'Class name',
+            dataIndex: 'name',
+            width: '25%',
         },
         {
-            title: 'Subject name',
-            dataIndex: 'subjectName',
-            key: 'index',
-        },
-        {
-            title: 'Progress score',
+            title: 'Progress',
             dataIndex: 'progress',
-            key: 'index',
+            width: '10%',
+            editable: true,
         },
         {
-            title: 'Midterm score',
+            title: 'Midterm',
             dataIndex: 'midterm',
-            key: 'index',
+            width: '10%',
+            editable: true,
         },
         {
-            title: 'Practice score',
+            title: 'Practice',
             dataIndex: 'practice',
-            key: 'index',
+            width: '10%',
+            editable: true,
         },
         {
-            title: 'Finalterm score',
+            title: 'Final',
             dataIndex: 'final',
-            key: 'index',
+            width: '10%',
+            editable: true,
         },
         {
-            title: 'average score',
-            dataIndex: 'average',
-            key: 'index',
-        },
-
+            title: 'GPA',
+            render: (text, record) => (record.progress * 0.1 + record.midterm * 0.2 + record.practice * 0.2 + record.final * 0.5).toFixed(2),
+            width: '10%',
+        }
     ];
     const data = props.StudentScoreData;
     return (

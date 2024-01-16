@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, InputNumber, Table, Modal, Button, Select, message } from 'antd';
 import './InputScore.scss'
 import { EditOutlined, CheckOutlined, UserDeleteOutlined, CloseOutlined } from '@ant-design/icons'
+import { schoolClassApi } from '../../../data-api';
 
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
@@ -34,15 +35,15 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
     );
 };
 
-const InputScore = ({ classListData, classs }) => {
+const InputScore = ({ classListData, classId }) => {
     const [form] = Form.useForm();
 
     const [data, setData] = useState(classListData);
     const [editingKey, setEditingKey] = useState('');
 
-    useEffect(() => {
-        setData(classListData);
-    }, [classListData]);
+    // useEffect(() => {
+    //     setData(classListData);
+    // }, [classListData]);
 
 
     const isEditing = (record) => record.id === editingKey;
@@ -85,6 +86,35 @@ const InputScore = ({ classListData, classs }) => {
             console.log('Validate Failed:', errInfo);
         }
     };
+
+    const handleSave = async () => {
+        try {
+            const res = await schoolClassApi.saveScores(classId, data)
+            if (!res.isError) {
+
+                message.success("Save successfully");
+            }
+            else
+                message.warning("Network error");
+        }
+        catch (err) {
+            message.warning("Save failed");
+        }
+    }
+    const handleSubmit = async () => {
+        try {
+            const res = await schoolClassApi.submitScores(classId, data)
+            if (!res.isError) {
+
+                message.success("Submit successfully");
+            }
+            else
+                message.warning("Network error");
+        }
+        catch (err) {
+            message.warning("Submit failed");
+        }
+    }
 
     const columns = [
         {
@@ -168,18 +198,12 @@ const InputScore = ({ classListData, classs }) => {
 
 
 
-
-
-
-
-
-
     // end
 
     return (
         <div className='InputScoreContain'>
-            <button>Save </button>
-            <button>Submit</button>
+            <button onClick={handleSave}>Save </button>
+            <button onClick={handleSubmit} >Submit</button>
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
                 <Form form={form} component={false}>
                     <Table

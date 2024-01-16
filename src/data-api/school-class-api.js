@@ -119,6 +119,70 @@ const classDeleteMany = async (ids = []) => {
     }
 }
 
+const saveScores = async (classId, studentItems) => {
+    try {
+        const response = await axios.post(APIUtil.baseURL + `/save-scores/${classId}`, studentItems, APIUtil.jsonHeader);
+        return { isError: false, data: response };
+    }
+    catch (error) {
+        return { isError: true, data: error };
+    }
+}
+const submitScores = async (classId, studentItems) => {
+    try {
+        const response = await axios.post(APIUtil.baseURL + `/submit-scores/${classId}`, studentItems, APIUtil.jsonHeader);
+        return { isError: false, data: response };
+    }
+    catch (error) {
+        return { isError: true, data: error };
+    }
+}
+
+const createExam = async (classId, exam) => {
+    try {
+        const response = await axios.post(APIUtil.baseURL + `/create-exam/${classId}`, exam, APIUtil.jsonHeader);
+        return { isError: false, data: response };
+    }
+    catch (error) {
+        return { isError: true, data: error };
+    }
+
+}
+
+const deleteExam = async (classId, examId) => {
+    try {
+        const response = await axios.delete(APIUtil.baseURL + `/delete-exam/${classId}/${examId}`);
+        return { isError: false, data: response };
+    }
+    catch (error) {
+        return { isError: true, data: error };
+    }
+}
+
+const updateExam = async (classId, exams) => {
+    try {
+        const response = await axios.put(APIUtil.baseURL + `/update-exam`, exams, APIUtil.jsonHeader);
+        return { isError: false, data: response };
+    }
+    catch (error) {
+        return { isError: true, data: error };
+    }
+}
+
+const classUpdateSection = async (id, index, updateSectionRequest) => {
+    try {
+        const response = await axios.post(APIUtil.baseURL + `/api/SchoolClass/class-update-sections/${id}/${index}`, updateSectionRequest, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        return { isError: false, data: response };
+    }
+    catch (error) {
+        return { isError: true, data: error };
+    }
+}
 
 const schoolClassApi = {
     classCreate,
@@ -132,7 +196,13 @@ const schoolClassApi = {
     classAppendSection,
     classDelete,
     classDeleteMany,
-    classGetAll
+    classGetAll,
+    saveScores,
+    submitScores,
+    createExam,
+    deleteExam,
+    updateExam,
+    classUpdateSection
 }
 
 export { schoolClassApi }

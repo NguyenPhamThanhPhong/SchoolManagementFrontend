@@ -10,23 +10,23 @@ function ExamSchedule(props) {
 
     const columns = [
         {
-            title: 'No.',
-            dataIndex: 'index',
-            key: 'index',
-        },
-        {
-            title: 'Subject Id',
+            title: 'Class id',
             dataIndex: 'subjectId',
             key: 'index',
         },
         {
-            title: 'Class id',
+            title: 'Class',
             dataIndex: 'classId',
             key: 'index',
         },
         {
-            title: 'Exam date',
+            title: 'Duration',
             dataIndex: 'examDate',
+            key: 'index',
+        },
+        {
+            title: 'Exam Name',
+            dataIndex: 'examName',
             key: 'index',
         },
         {
@@ -34,30 +34,21 @@ function ExamSchedule(props) {
             dataIndex: 'room',
             key: 'index',
         },
-        {
-            title: 'Exam form',
-            dataIndex: 'duration',
-            key: 'index',
-        },
-        {
-            title: 'Exam form',
-            dataIndex: 'examName',
-            key: 'index',
-        },
+
     ];
     let mySemester = "";
-    console.log(!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
-    if (!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
-        mySemester = props.Semester[0];
 
+
+    let items = props.semesters || []
 
     const handleSelect = (eventKey) => {
         setSelectedSemester(eventKey);
+        if (props?.onSemesterChange)
+            props?.onSemesterChange(eventKey)
     };
-    const data = props.ExamData;
-    const semesters = props.semesters?.map((item => item?.id));
+    const data = props.ExamData || [];
 
-    const [selectedSemester, setSelectedSemester] = useState(semesters[0] || '');
+    const [selectedSemester, setSelectedSemester] = useState(items?.length > 0 ? items[0] : "");
 
     return (
         <>
@@ -68,8 +59,10 @@ function ExamSchedule(props) {
                             {selectedSemester}
                         </Dropdown.Toggle>
                         <Dropdown.Menu >
-                            {props.Semester.map((item =>
-                                (<Dropdown.Item eventKey={item}>{item}</Dropdown.Item>)
+                            {items.map((item) => (
+                                <Dropdown.Item key={item} eventKey={item}>
+                                    {item || "place holder"}
+                                </Dropdown.Item>
                             ))}
                         </Dropdown.Menu>
                     </Dropdown>

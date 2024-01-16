@@ -4,96 +4,33 @@ import User from "../../Admin/User/User";
 
 import { useEffect, useState } from 'react';
 import { useUserContext } from "../../../data-store";
+import { message } from "antd";
 
 function UserInforPage() {
 
   const [userState, userDispatch] = useUserContext();
 
+  let creditLogs = userState?.user?.creditLogs;
 
-  let creditLogs = {
-    "semester II 2020-2021":
-      [
-        {
-          id: "SE001",
-          name: "Software Engineering",
-          scores: [9, 9, 9, 9, 9],
-          status: "passed",
+  function generateRows() {
+    if (creditLogs !== undefined && creditLogs !== null) {
+      let distinctSemester = [];
+      for (let i = 0; i < creditLogs.length; i++) {
+        let semester = creditLogs[i].semesterId;
+        if (!distinctSemester.includes(semester)) {
+          distinctSemester.push({ semesterId: semester, children: [] });
         }
-      ],
-    "semester III 2020-2021": [
-      {
-        id: "SE001",
-        name: "Software Engineering",
-        scores: [9, 9, 9, 9, 9],
-        status: "passed",
-      },
-      {
-        id: "SE001",
-        name: "Software Engineering",
-        scores: [9, 9, 9, 9, 9],
-        status: "passed",
-      },
-      {
-        id: "SE001",
-        name: "Software Engineering",
-        scores: [9, 9, 9, 9, 9],
-        status: "passed",
       }
-    ],
-    "semester IV 2020-2021": [
-      {
-        id: "SE001",
-        name: "Software Engineering",
-        scores: [9, 9, 9, 9, 9],
-        status: "passed",
+      for (let i = 0; i < creditLogs.length; i++) {
+        let semester = creditLogs[i].semesterId;
+        let index = distinctSemester.findIndex(item => item.semesterId === semester);
+        distinctSemester[index].children.push(creditLogs[i]);
       }
-    ]
+      return distinctSemester;
+    }
+    return [];
   }
 
-  function generateChildren(row) {
-    let scores = row?.scores;
-    let myScoreItem = {
-      index: row?.id,
-      subjectId: row?.id,
-      subjectName: row?.name,
-    }
-
-    for (var i = 0; i < scores.length; i++) {
-      switch (i) {
-        case 0:
-          myScoreItem.progress = scores[i];
-          break;
-        case 1:
-          myScoreItem.midterm = scores[i];
-          break;
-        case 2:
-          myScoreItem.practice = scores[i];
-          break;
-        case 3:
-          myScoreItem.final = scores[i];
-          break;
-        case 4:
-          myScoreItem.average = scores[i];
-          break;
-        default:
-          break;
-      }
-    }
-    return myScoreItem;
-  }
-
-  function generateData() {
-    let datas = []
-
-    for (let [semester, rows] of Object.entries(creditLogs)) {
-      let myRows = rows?.map(row => generateChildren(row))
-      datas.push({
-        id: semester,
-        children: myRows
-      });
-    }
-    return datas
-  }
 
   function mapProfile(userProfile) {
     if (userProfile !== undefined && userProfile !== null) {
@@ -136,7 +73,7 @@ function UserInforPage() {
           Phone_number={mapProfile(userState?.user)?.phone}
           Program={mapProfile(userState?.user)?.Program}
           Faculty={mapProfile(userState?.user)?.Faculty}
-          StudentScoreData={generateData()}
+          StudentScoreData={generateRows()}
         />
       </div>
     </>

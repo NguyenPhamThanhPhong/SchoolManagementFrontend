@@ -16,25 +16,10 @@ function ScheduleBoard(props) {
     const events = props.ScheduleEvents || [];
     const semesterList = props.semesters || [];
 
-    console.log(events)
 
-    let items = props.semesters || [
-        {
-            "id": "HK I 2023-2024",
-            "startTime": "01/01/0001",
-            "endTime": "01/01/0001",
-            "classIds": []
-        },
-        {
-            "id": "HK II 2021-2022",
-            "startTime": "01/01/0001",
-            "endTime": "01/01/0001",
-            "classIds": [
-                "SE.trời xanh mây trắng",
-                "SE.new new"
-            ]
-        },]
-    const [selectedSemester, setSelectedSemester] = useState(items[0]?.id);
+    let items = props.semesters || []
+
+    const [selectedSemester, setSelectedSemester] = useState(items?.length > 0 ? items[0] : "");
 
     const handleSelect = (eventKey) => {
         setSelectedSemester(eventKey);
@@ -65,8 +50,8 @@ function ScheduleBoard(props) {
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             {items.map((item) => (
-                                <Dropdown.Item key={item?.id} eventKey={item?.id}>
-                                    {item?.id || "place holder"}
+                                <Dropdown.Item key={item} eventKey={item}>
+                                    {item || "place holder"}
                                 </Dropdown.Item>
                             ))}
                         </Dropdown.Menu>
