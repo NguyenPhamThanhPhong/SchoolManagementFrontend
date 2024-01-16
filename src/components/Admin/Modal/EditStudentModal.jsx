@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, Select, AutoComplete, Table, DatePicker, Upload } from 'antd';
+import { Modal, Form, Input, Select, AutoComplete, Table, DatePicker, Upload, Button, message } from 'antd';
+import { useStudentContext, useFacultyContext, useSchoolClassContext, setStudents } from '../../../data-store';
+import { lecturerApi, StudentApi } from '../../../data-api';
+import { isValidDate, formatDate, PersonalInfo, SchoolMemberCreateRequest } from '../../../data-api';
+
 import { PlusOutlined } from '@ant-design/icons';
+import moment from 'moment';
+
 const { Option } = Select;
+const dateFormat = 'DD/MM/YYYY';
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -13,27 +20,36 @@ function EditStudentModal({ open, onOk, onCancel, studentData }) {
     const [tableData, setTableData] = useState([]);
 
     const [form] = Form.useForm();
+    const [facultyState, facultyDispatch] = useFacultyContext();
+    const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
+    const [unselectedClasses, setUnselectedClasses] = useState(schoolClassState?.schoolClasses);
+    const [studentState, studentDispatch] = useStudentContext();
+
 
     useEffect(() => {
         form.setFieldsValue({
             avatar: studentData.avatar,
             id: studentData.id,
-            name: studentData.name,
+            name: studentData?.personalInfo?.name,
             username: studentData.username,
             password: studentData.password,
             email: studentData.email,
-            dateofbirth: studentData.dateofbirth,
-            gender: studentData.gender,
-            phone: studentData.phone,
-            faculty: studentData.faculty,
-            program: studentData.program,
+            dateofbirth: moment(studentData?.personalInfo?.dateOfBirth, dateFormat),
+            gender: studentData?.personalInfo?.gender,
+            phone: studentData?.personalInfo?.phone,
+            faculty: studentData?.personalInfo?.facultyId,
+            program: studentData?.personalInfo?.program,
             classes: studentData.classes,
         });
+        setFileList([{ url: studentData?.personalInfo?.avatarUrl }]);
+        if (schoolClassState?.schoolClasses?.length > 0) {
+            setUnselectedClasses(schoolClassState?.schoolClasses?.filter((item) => !studentData?.classes?.some((classId) => classId === item?.id)));
+            setTableData(schoolClassState?.schoolClasses?.filter((item) => studentData?.classes?.some((classId) => classId === item?.id)));
+        }
     }, [studentData, form]);
 
     const handleSave = () => {
         const studentClass = form.getFieldsValue();
-        console.log(studentClass);
     };
 
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -74,21 +90,6 @@ function EditStudentModal({ open, onOk, onCancel, studentData }) {
         </button>
     );
 
-    const dataSource = [
-        {
-            key: '1',
-            id: '1',
-            class_name: 'Huong dt',
-            subject: 'Class 1',
-        },
-        {
-            key: '2',
-            id: '2',
-            class_name: 'lap trinh',
-            subject: 'Class 2',
-        },
-    ];
-
     const columns = [
         {
             title: 'ID',
@@ -97,24 +98,94 @@ function EditStudentModal({ open, onOk, onCancel, studentData }) {
         },
         {
             title: 'Class Name',
-            dataIndex: 'class_name',
-            key: 'class_name',
+            dataIndex: 'name',
+            key: 'name',
         },
         {
             title: 'Subject',
-            dataIndex: 'subject',
-            key: 'subject',
+            render: (text, record) => (
+                <p>
+                    {record.subject?.id + "-" + record.subject?.name}
+                </p>
+            ),
+            key: ['subject', 'id'],
         },
+        {
+            title: 'Action',
+            render: (text, record) => (
+                <Button onClick={() => { handleRemoveClass(record) }} danger >
+                    Remove
+                </Button>
+            ),
+            key: 'action',
+        }
     ];
 
     const handleClassChange = (value) => {
-        // Find the selected class in dataSource
-        const selectedClassData = dataSource.find((item) => item.subject === value);
+        const selectedClassData = unselectedClasses.find((item) => item?.id === value);
 
-        // Update the tableData with the selected class information without removing existing data
         if (selectedClassData) {
             setTableData((prevData) => [...prevData, selectedClassData]);
+            setUnselectedClasses((prevData) => prevData.filter((item) => item?.id !== value));
         }
+    };
+    const handleRemoveClass = (value) => {
+        const selectedClassData = tableData.find((item) => item?.id === value?.id);
+
+        if (selectedClassData !== undefined && selectedClassData !== null) {
+            if (!unselectedClasses.some((item) => item?.id === value?.id))
+                setUnselectedClasses((prevData) => [value, ...prevData]);
+            setTableData((prevData) => prevData.filter((item) => item?.id !== value.id));
+        }
+    }
+    const handleSubmit = async () => {
+        form.validateFields()
+            .then(async (values) => {
+                message.info("handling request");
+                const { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = form.getFieldsValue();
+                const classIds = tableData.map((item) => item.id);
+                const formattedDateOfBirth = formatDate(dateofbirth);
+                const personalInformation = new PersonalInfo(isValidDate(formattedDateOfBirth) ? formattedDateOfBirth : null, name, gender, phone, faculty, program);
+                let student = new SchoolMemberCreateRequest(id, username, password, email, "student", personalInformation, classIds);
+                const formData = new FormData();
+                const requestBody = JSON.stringify(student);
+
+                formData.append('RequestBody', requestBody);
+                if (fileList !== undefined && fileList !== null && fileList.length > 0) {
+                    let file = fileList[0];
+                    student.prevUrl = studentData?.personalInfo?.avatarUrl;
+                    if (file?.originFileObj)
+                        formData.append('File', file.originFileObj);
+                }
+                else
+                    student.prevUrl = null;
+                try {
+                    console.log(student)
+                    const response = await StudentApi.studentUpdateInstance(formData);
+                    if (!response.isError) {
+                        message.success(`Create student successfully! ${student.id}`);
+                        let studentIndex = studentState.students.findIndex((item) => item.id === student.id);
+                        if (studentIndex !== -1) {
+                            let newStudents = [...studentState.students];
+                            newStudents[studentIndex] = student;
+                            studentDispatch(setStudents(newStudents));
+                        }
+                        form.resetFields();
+                        onOk();
+                    } else {
+                        message.error(`Create student failed! ${response.data?.message}`);
+                    }
+                } catch (error) {
+                    message.error(`Create student failed! ${error}`);
+                }
+            })
+            .catch((error) => {
+                let messageError = "Create student failed!";
+                error.errorFields?.map((item) => {
+                    messageError += "\n" + item.errors;
+                });
+                message.error(messageError);
+            });
     };
 
     return (
@@ -122,7 +193,7 @@ function EditStudentModal({ open, onOk, onCancel, studentData }) {
             title="Edit Student"
             open={open}
             onOk={() => {
-                handleSave();
+                handleSubmit();
                 onOk();
             }}
             width={720}
@@ -149,16 +220,16 @@ function EditStudentModal({ open, onOk, onCancel, studentData }) {
                         onPreview={handlePreview}
                         onChange={handleChange}
                     >
-                        {fileList.length >= 2 ? null : uploadButton}
+                        {fileList.length >= 1 ? null : uploadButton}
                     </Upload>
                 </Form.Item>
                 <Form.Item label="ID" name="id" rules={[{ required: true }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item label="Name" name="name" rules={[{ required: true }]}>
+                <Form.Item label="Name" name="name" rules={[{ required: true, message: 'please enter your name' }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item label="Username" name="username">
+                <Form.Item label="Username" name="username" rules={[{ required: true }]}>
                     <Input />
                 </Form.Item>
                 <Form.Item label="Password" name="password">
@@ -174,7 +245,7 @@ function EditStudentModal({ open, onOk, onCancel, studentData }) {
                     <Select allowClear>
                         <Option value="nam">Nam</Option>
                         <Option value="nu">Nu</Option>
-                        <Option value="orther">Orther</Option>
+                        <Option value="orther">Other</Option>
                     </Select>
                 </Form.Item>
                 <Form.Item label="Phone" name="phone">
@@ -183,30 +254,29 @@ function EditStudentModal({ open, onOk, onCancel, studentData }) {
                 <Form.Item label="Faculty" name="faculty">
                     <AutoComplete
                         placeholder="Faculty"
-                        options={[
-                            {
-                                value: 'Faculty 1',
-                            },
-                            {
-                                value: 'Faculty 2',
-                            },
-                            {
-                                value: 'Faculty 3',
-                            },
-                        ]}
+                        options={
+                            facultyState?.faculties?.map((item) => {
+                                return {
+                                    value: item.id,
+                                    label: item.name,
+                                };
+                            })
+                        }
                     />
                 </Form.Item>
                 <Form.Item label="Program" name="program">
                     <Select allowClear>
-                        <Option value="clc">CLC</Option>
-                        <Option value="daitra">Đại trà</Option>
+                        <Option value="clc">Normal</Option>
+                        <Option value="daitra">High Quality Program</Option>
                     </Select>
                 </Form.Item>
                 <Form.Item label="Classes" name="classes">
                     <Select allowClear onChange={handleClassChange}>
-                        <Option value="Class 1">Class 1</Option>
-                        <Option value="Class 2">Class 2</Option>
-                        <Option value="Class 3">Class 3</Option>
+                        {
+                            unselectedClasses?.map((item) => {
+                                return <Option value={item.id}>{item.id + " - " + item.name}</Option>
+                            })
+                        }
                     </Select>
                 </Form.Item>
                 <Table dataSource={tableData} columns={columns} pagination={false} />

@@ -57,9 +57,6 @@ function Home() {
   return (
     <>
       <div className="homeMain">
-        <button onClick={() => { executeLogout([useState, userDispatch], 'admin', navigate) }} style={{ width: '100%', zIndex: '100' }}>
-          logout here
-        </button>
         <Tabs className='TabsPosition' defaultActiveKey="1" items={items} onChange={onChange} />
       </div>
     </>

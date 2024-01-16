@@ -82,7 +82,7 @@ const lecturerDeleteMany = async (ids, prevUrls = []) => {
 
 const lecturerUpdateInstance = async (lecturer) => {
     try {
-        const response = await axios.put(APIUtil.baseURL + `/lecturer-update-instance`, lecturer, APIUtil.jsonHeader);
+        const response = await axios.post(APIUtil.baseURL + `/lecturer-update-instance`, lecturer, APIUtil.jsonHeader);
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };

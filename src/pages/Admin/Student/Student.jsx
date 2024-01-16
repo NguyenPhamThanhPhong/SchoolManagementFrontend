@@ -37,9 +37,6 @@ const Student = () => {
             if (!response.isError) {
                 studentDispatch(setStudents(response.data.data));
             }
-            else {
-
-            }
         }
         catch (error) {
             console.log('Failed to fetch: ', error);
@@ -142,11 +139,6 @@ const Student = () => {
                     })
                 }
             </DeleteWarningModal>
-            <SendNotiStudentModal
-                open={isOpen}
-                onOk={() => { setIsOpen(false) }}
-                onCancel={() => { setIsOpen(false) }}
-            />
             <CreateStudentModal
                 open={isCreateModalOpen}
                 onOk={() => { setIsCreateModalOpen(false) }}
