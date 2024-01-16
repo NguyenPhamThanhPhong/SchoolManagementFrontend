@@ -16,7 +16,7 @@ function validateStartEnd(start, end) {
 }
 
 
-const baseURL = 'https://192.168.1.2:5051'
+const baseURL = 'https://localhost:5051'
 
 const jsonHeader = {
     Headers: {

@@ -10,11 +10,11 @@ import { FacultyApi, StudentApi, lecturerApi, schoolClassApi } from '../../../da
 function Home() {
     const barChartRef = useRef(null);
     const pieChartRef = useRef(null);
-    const lineChartRef = useRef(null);
     const [facultyData, setFacultyData] = useState([]);
-    const [totalStudent, setTotalStudent] = useState(0);
+    const [totalStudent, setTotalStudent] = useState([]);
     const [totalLecturer, setTotalLecturer] = useState(0);
     const [totalClass, setTotalClass] = useState(0);
+    const [studentCountByFaculty, setStudentCountByFaculty] = useState({});
 
 
     useEffect(() => {
@@ -34,8 +34,18 @@ function Home() {
         const fetchTotalStudent = async () => {
             try {
                 const response = await StudentApi.studentGetAll();
+                console.log(response.data.data);
                 if (!response.isError) {
                     setTotalStudent(response.data);
+
+                    const countByFaculty = {};
+                    response.data.data.forEach(student => {
+                        const facultyId = student.personalInfo.facultyId;
+                        if (facultyId) {
+                            countByFaculty[facultyId] = (countByFaculty[facultyId] || 0) + 1;
+                        }
+                    });
+                    setStudentCountByFaculty(countByFaculty);
                 } else {
                     console.error('Error fetching total students:', response.data);
                 }
@@ -60,7 +70,6 @@ function Home() {
         const fetchTotalClass = async () => {
             try {
                 const response = await schoolClassApi.classGetAll();
-                console.log(response)
                 if (!response.isError) {
                     setTotalClass(response.data);
                 } else {
@@ -78,19 +87,20 @@ function Home() {
     }, []);
 
 
+
     useEffect(() => {
         // Biểu đồ barChart
         const barCtx = barChartRef.current.getContext('2d');
         const barChart = new Chart(barCtx, {
             type: 'bar',
             data: {
-                labels: ['Faculty 1', 'Faculty 2', 'Faculty 3', 'Faculty 4', 'Faculty 5', 'Faculty 6'],
+                labels: facultyData?.data?.map(faculty => faculty.name),
                 datasets: [
                     {
-                        label: '# of Votes',
+                        label: 'Number of Students',
                         barPercentage: 0.7,
                         barThickness: 60,
-                        data: [10, 20, 30, 40, 50, 60],
+                        data: facultyData?.data?.map(faculty => studentCountByFaculty[faculty.id] || 0),
                         backgroundColor: 'blue',
                     },
                 ],
@@ -99,50 +109,62 @@ function Home() {
                 scales: {
                     y: {
                         beginAtZero: true,
+                        ticks: {
+                            precision: 0, // Đặt độ chính xác của số nguyên
+                            stepSize: 1,  // Bước giữa các giá trị trên trục y
+                        },
                     },
                 },
-            },
-        });
-
-        // Biểu đồ pie Chart
-        const pieCtx = pieChartRef.current.getContext('2d');
-        const pieChart = new Chart(pieCtx, {
-            type: 'pie',
-            data: {
-                labels: ['<5', '5-7', '7-8', '8-9', '>9'],
-                datasets: [
-                    {
-                        data: [12, 19, 3, 5, 2],
-                        backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple'],
-                    },
-                ],
-            },
-        });
-
-        // Biểu đồ line Chart
-        const lineCtx = lineChartRef.current.getContext('2d');
-        const lineChart = new Chart(lineCtx, {
-            type: 'line',
-            data: {
-                labels: ['2019', '2020', '2021', '2022', '2023'],
-                datasets: [
-                    {
-                        label: 'Data',
-                        data: [12, 19, 3, 5, 2],
-                        borderColor: 'green',
-                        backgroundColor: 'green',
-                    },
-                ],
             },
         });
 
         // Hủy biểu đồ khi component unmount
         return () => {
             barChart.destroy();
-            pieChart.destroy();
-            lineChart.destroy();
         };
-    }, []);
+    }, [facultyData, studentCountByFaculty]);
+
+    const processFinalScores = (data) => {
+        const scoreRanges = [0, 3, 5, 7, 8, 9, 10];
+        const scoreCount = [0, 0, 0, 0, 0, 0];
+
+        data?.forEach((student) => {
+            const finalScore = student.creditLogs.length > 0 ? student.creditLogs[0].final : null;
+
+            if (finalScore !== null) {
+                for (let i = 0; i < scoreRanges.length - 1; i++) {
+                    if (finalScore >= scoreRanges[i] && finalScore < scoreRanges[i + 1]) {
+                        scoreCount[i]++;
+                        break;
+                    }
+                }
+            }
+        });
+
+        return scoreCount;
+    };
+    useEffect(() => {
+
+        const processedScores = processFinalScores(totalStudent?.data);
+
+        // Biểu đồ pie Chart
+        const pieCtx = pieChartRef.current.getContext('2d');
+        const pieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['0-3', '3-5', '5-7', '7-8', '8-9', '9-10'],
+                datasets: [
+                    {
+                        data: processedScores,
+                        backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple', 'black'],
+                    },
+                ],
+            },
+        });
+        return () => {
+            pieChart.destroy();
+        };
+    }, [totalStudent]);
 
     const renderDashboardCard = (title, value, icon, iconColor) => (
         <Col xs={24} sm={12} md={6} lg={6}>
@@ -156,7 +178,6 @@ function Home() {
                 <Row gutter={[16, 16]}>
                     {renderDashboardCard('Total Student', totalStudent?.data?.length, <UserOutlined />, 'green')}
                     {renderDashboardCard('Total Lecturer', totalLecturer?.data?.length, <SolutionOutlined />, 'blue')}
-
                     {renderDashboardCard('Total Faculty', facultyData?.data?.length || 0, <TeamOutlined />, 'orange')}
                     {renderDashboardCard('Total Class', totalClass?.data?.length, <PartitionOutlined />, 'purple')}
                 </Row>
@@ -176,14 +197,6 @@ function Home() {
                         </Card>
                     </Col>
                 </Row>
-            </div>
-            <div>
-                <Card style={{ height: '100%', marginTop: '16px' }}>
-                    <h5 style={{ textAlign: 'center' }}>
-                        Biểu đồ line Chart đánh giá số lượng sinh viên thôi học qua các năm
-                    </h5>
-                    <canvas id="lineChart" ref={lineChartRef}></canvas>
-                </Card>
             </div>
         </div>
     );
