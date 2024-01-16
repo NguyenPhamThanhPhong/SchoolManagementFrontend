@@ -15,8 +15,8 @@ import {
 } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined, EditOutlined } from '@ant-design/icons';
 import LecturerExamListTable from '../../../components/Admin/Table/LecturerExamListTable';
-import { useLecturerContext } from '../../../data-store';
-import { useParams } from 'react-router-dom';
+import { useLecturerContext, useSchoolClassContext } from '../../../data-store';
+import { DateOfWeek } from '../../../data-api';
 
 const scoreListData = [
     {
@@ -38,135 +38,94 @@ const scoreListData = [
         GPA: '9',
     },
 ];
-const PasswordItem = () => {
-    const [showPassword, setShowPassword] = useState(false);
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
 
-    return (
-        <Space>
-            {showPassword ? (
-                <EyeInvisibleOutlined onClick={togglePasswordVisibility} />
-            ) : (
-                <EyeOutlined onClick={togglePasswordVisibility} />
-            )}
-            <span>{showPassword ? 'password' : '*********'}</span>
-        </Space>
-    );
-};
 
 
 const columns = [
-    { title: 'ID', dataIndex: 'ID', key: 'ID' },
-    { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Progress', dataIndex: 'progress', key: 'progress' },
-    { title: 'Midterm', dataIndex: 'midtearn', key: 'midtearn' },
-    { title: 'Practice', dataIndex: 'practice', key: 'practice' },
-    { title: 'Final', dataIndex: 'final', key: 'final' },
-    { title: 'GPA', dataIndex: 'GPA', key: 'GPA' },
+    { title: 'ID', dataIndex: 'id', key: 'id' },
+    { title: 'Name', dataIndex: 'name', key: 'id' },
+    { title: 'Schedule', dataIndex: 'schedule', key: 'id' },
 ];
 
 function DetailLecturer() {
-    const [selectedLecturer, setSelectedLecturer] = useState({});
     const [lecturerState, lecturerDispatch] = useLecturerContext();
+    const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
+
+    let currentLecturer = lecturerState?.currentLecturer;
+
+
+    function logicDisplayClasses() {
+        if (schoolClassState.schoolClasses.length > 0) {
+            let filteredClasses = schoolClassState.schoolClasses.filter((schoolClass) => currentLecturer?.classes?.includes(schoolClass.id));
+            let result = filteredClasses.map((schoolClass) => {
+                return {
+                    key: schoolClass.id,
+                    id: schoolClass.id,
+                    name: schoolClass.name,
+                    schedule:
+                        DateOfWeek.GetDateOfWeek(schoolClass?.schedule.dateofweek) + ' ' +
+                        (schoolClass?.schedule.startTime || '') + ' - ' + schoolClass?.schedule.endTime
+                }
+            });
+            return result;
+        }
+        return [];
+    }
+
     const items = [
         {
             key: '1',
-            label: 'Họ và tên',
-            children: selectedLecturer?.userInfo?.name,
+            label: 'Name',
+            children: currentLecturer?.personalInfo?.name,
         },
         {
             key: '2',
-            label: 'MSSV',
-            children: selectedLecturer?.id,
+            label: 'Id',
+            children: currentLecturer?.id,
         },
         {
             key: '3',
-            label: 'Password',
-            children: selectedLecturer?.password,
+            label: 'Gender',
+            children: currentLecturer?.personalInfo?.gender,
         },
         {
             key: '4',
-            label: 'Program',
-            children: selectedLecturer?.program,
+            label: 'Username',
+            children: currentLecturer?.username,
         },
         {
             key: '5',
-            label: 'Date of birth:',
-            children: '2019-04-24 18:00:00',
+            label: 'Password',
+            children: currentLecturer?.password,
         },
         {
             key: '6',
-            label: 'Lớp sinh hoạt',
-            children: <Badge status="processing" text="Running" />,
+            label: 'Email',
+            children: currentLecturer?.email,
         },
         {
             key: '7',
-            label: 'Program',
-            children: 'CLC',
+            label: 'Faculty',
+            children: currentLecturer?.personalInfo?.facultyId,
         },
         {
             key: '8',
-            label: 'Giới tính',
-            children: 'Nam',
+            label: 'Program',
+            children: currentLecturer?.personalInfo?.program,
         },
         {
             key: '9',
             label: 'Khoa',
-            children: '............................',
+            children: currentLecturer?.personalInfo?.dateOfBirth,
         },
     ];
 
-    const [editing, setEditing] = useState(false);
-    const [editedDescriptions, setEditedDescriptions] = useState([...items]);
-
-
-
-    const { id } = useParams();
-
-
-
-    useEffect(() => {
-        try {
-            const lecturer = lecturerState.lecturers.find((item) => item.id === id);
-            setSelectedLecturer(lecturer);
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }, [])
-
-    const handleEdit = () => {
-        setEditing(true);
-    };
-
-    const handleSave = () => {
-        setEditing(false);
-        console.log('Saved:', editedDescriptions);
-    };
-
-    const handleCancel = () => {
-        setEditing(false);
-        setEditedDescriptions([...items]);
-    };
-    const onPanelChange = (value, mode) => {
-        console.log(value.format('YYYY-MM-DD'), mode);
-    };
-    const onChange = (key) => {
-        console.log(key);
-    };
     const itemtab = [
         {
             key: '1',
             label: 'Danh sách lớp',
-            children: <Table dataSource={scoreListData} columns={columns} pagination={false} />,
-        },
-        {
-            key: '2',
-            label: 'Lịch dạy',
-            children: <Calendar title="Hello" onPanelChange={onPanelChange} />,
+            children: <Table dataSource={logicDisplayClasses()} columns={columns} pagination={false} />,
         },
         {
             key: '3',
@@ -174,32 +133,6 @@ function DetailLecturer() {
             children: <LecturerExamListTable />,
         },
     ];
-    const renderDescriptions = () => {
-        if (editing) {
-            return (
-                <Descriptions bordered>
-                    {editedDescriptions.map((item) => (
-                        <Descriptions.Item key={item.key} label={item.label}>
-                            <Input
-                                value={item.children}
-                                onChange={(e) => {
-                                    const updatedDescriptions = editedDescriptions.map((d) => {
-                                        if (d.key === item.key) {
-                                            return { ...d, children: e.target.value };
-                                        }
-                                        return d;
-                                    });
-                                    setEditedDescriptions(updatedDescriptions);
-                                }}
-                            />
-                        </Descriptions.Item>
-                    ))}
-                </Descriptions>
-            );
-        }
-
-        return <Descriptions bordered items={items} />;
-    };
     return (
         <div>
             <Card>
@@ -207,47 +140,29 @@ function DetailLecturer() {
                     items={[
                         {
                             title: (
-                                <a href="/student" className="breadcrumb-link">
-                                    Student
+                                <a href="/admin/lecturer" className="breadcrumb-link">
+                                    Back to Lecturer page
                                 </a>
                             ),
-                        },
-                        {
-                            title: <span className="breadcrumb-link">Detail Student</span>,
-                        },
+                        }
                     ]}
                 />
                 <Divider style={{ color: 'blue', fontSize: '16px' }}>Thông tin giảng viên</Divider>
                 <Space
-                    style={{ width: '100%', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}
-                >
+                    style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                     <Avatar
                         size={240}
                         bordered={true}
-                        src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                        src={currentLecturer?.personalInfo?.avatarUrl}
                     />
-                    <Space>
-                        {editing ? (
-                            <>
-                                <Button type="primary" onClick={handleSave}>
-                                    Save
-                                </Button>
-                                <Button onClick={handleCancel}>Cancel</Button>
-                            </>
-                        ) : (
-                            <Button icon={<EditOutlined />} onClick={handleEdit}>
-                                Edit
-                            </Button>
-                        )}
-                    </Space>
-                    {renderDescriptions()}
+
+                    <Descriptions bordered items={items} />
                 </Space>
                 <Tabs
                     defaultActiveKey="1"
                     tabBarStyle={{ margin: '0 auto' }}
                     items={itemtab}
                     size="large"
-                    onChange={onChange}
                 />
             </Card>
         </div>

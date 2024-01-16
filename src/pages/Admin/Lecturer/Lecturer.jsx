@@ -7,7 +7,7 @@ import ShowLecturerDrawer from '../../../components/Admin/Drawer/ShowLecturerDra
 import LecturerTable from '../../../components/Admin/Table/LecturerTable';
 
 
-import { useLecturerContext, setLecturers, useFacultyContext, setStudents, removeLecturer } from '../../../data-store';
+import { useLecturerContext, setLecturers, useFacultyContext, removeLecturer, setCurrentLecturer } from '../../../data-store';
 import { lecturerApi } from '../../../data-api/lecturer-api';
 
 
@@ -17,8 +17,6 @@ const { Option } = Select;
 const Lecturer = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
-    const [selectedStudent, setSelectedStudent] = useState(null);
 
     const [lecturerState, lecturerDispatch] = useLecturerContext();
     const [facultyState, facultyDispatch] = useFacultyContext();
@@ -74,7 +72,6 @@ const Lecturer = () => {
                 id = id.replace(/\s/g, '').replace(/[^\w\s]/g, '');
                 return lecturer.personalInfo?.facultyId?.includes(selectedFaculty || "") && (name.includes(search) || id.includes(search));
             })
-            // message.info(`Found ${result.length} results`)
             setFiltredLecturers(result);
         }
     }
@@ -93,8 +90,7 @@ const Lecturer = () => {
 
 
     const handleDetail = (record) => {
-        setSelectedStudent(record);
-        setIsDetailDrawerOpen(true);
+        lecturerDispatch(setCurrentLecturer(record));
     };
 
 
@@ -139,7 +135,6 @@ const Lecturer = () => {
                 onOk={() => { setIsCreateModalOpen(false) }}
                 onCancel={() => { setIsCreateModalOpen(false) }}
             />
-            <ShowLecturerDrawer onClose={() => { setIsDetailDrawerOpen(false) }} open={isDetailDrawerOpen} selectedStudent={selectedStudent} />
         </div>
     );
 };

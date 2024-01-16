@@ -75,50 +75,61 @@ function GenerateItems(id, username, password, email, personalInfo,) {
 
 
 function DetailStudent() {
-    const [initialItems, setInitialItems] = useState([]);
-    const [editedDescriptions, setEditedDescriptions] = useState([...initialItems]);
-    const [editing, setEditing] = useState(false);
 
     const [studentState, studentDispatch] = useStudentContext();
 
+    let currentStudent = studentState?.currentStudent;
 
-    useEffect(() => {
-        if (studentState?.currentStudent !== null && studentState?.currentStudent !== undefined) {
-            const { id, username, password, email, personalInfo, } = studentState?.currentStudent;
-            setInitialItems(GenerateItems(id, username, password, email, personalInfo));
-        }
-    }, [studentState?.currentStudent]);
-    useEffect(() => {
-        setEditedDescriptions([...initialItems]);
-    }, [initialItems])
+    const items = [
+        {
+            key: '1',
+            label: 'Name',
+            children: currentStudent?.personalInfo?.name,
+        },
+        {
+            key: '2',
+            label: 'Id',
+            children: currentStudent?.id,
+        },
+        {
+            key: '3',
+            label: 'Gender',
+            children: currentStudent?.personalInfo?.gender,
+        },
+        {
+            key: '4',
+            label: 'Username',
+            children: currentStudent?.username,
+        },
+        {
+            key: '5',
+            label: 'Password',
+            children: currentStudent?.password,
+        },
+        {
+            key: '6',
+            label: 'Email',
+            children: currentStudent?.email,
+        },
+        {
+            key: '7',
+            label: 'Faculty',
+            children: currentStudent?.personalInfo?.facultyId,
+        },
+        {
+            key: '8',
+            label: 'Program',
+            children: currentStudent?.personalInfo?.program,
+        },
+        {
+            key: '9',
+            label: 'Khoa',
+            children: currentStudent?.personalInfo?.dateOfBirth,
+        },
+    ];
 
 
-    const handleEdit = () => {
-        setEditing(true);
-    };
 
-    const handleSave = async () => {
-        setEditing(false);
-        try {
-
-            const response = await StudentApi.studentUpdateInstance()
-            if (!response.isError) {
-                studentDispatch(setCurrentStudent(response.data.data));
-                message.success("Cập nhật thông tin thành công");
-            }
-            else {
-                message.error("Cập nhật thông tin thất bại");
-            }
-        }
-        catch (error) {
-            console.log(error);
-        }
-    };
-
-    const handleCancel = () => {
-        setEditing(false);
-        setEditedDescriptions([...initialItems]);
-    };
     const onPanelChange = (value, mode) => {
         console.log(value.format('YYYY-MM-DD'), mode);
     };
@@ -144,30 +155,7 @@ function DetailStudent() {
         },
     ];
     const renderDescriptions = () => {
-        if (editing) {
-            return (
-                <Descriptions bordered>
-                    {editedDescriptions.map((item) => (
-                        <Descriptions.Item key={item.key} label={item.label}>
-                            <Input
-                                value={item.children}
-                                onChange={(e) => {
-                                    const updatedDescriptions = editedDescriptions.map((d) => {
-                                        if (d.key === item.key) {
-                                            return { ...d, children: e.target.value };
-                                        }
-                                        return d;
-                                    });
-                                    setEditedDescriptions(updatedDescriptions);
-                                }}
-                            />
-                        </Descriptions.Item>
-                    ))}
-                </Descriptions>
-            );
-        }
-
-        return <Descriptions bordered items={editedDescriptions} />;
+        return <Descriptions bordered items={items} />;
     };
     return (
         <div>
@@ -179,22 +167,8 @@ function DetailStudent() {
                     <Avatar
                         size={240}
                         bordered={true}
-                        src={studentState?.currentStudent?.personalInfo?.avatarUrl}
+                        src={currentStudent?.personalInfo?.avatarUrl}
                     />
-                    <Space>
-                        {editing ? (
-                            <>
-                                <Button type="primary" onClick={handleSave}>
-                                    Save
-                                </Button>
-                                <Button onClick={handleCancel}>Cancel</Button>
-                            </>
-                        ) : (
-                            <Button icon={<EditOutlined />} onClick={handleEdit}>
-                                Edit
-                            </Button>
-                        )}
-                    </Space>
                     {renderDescriptions()}
                 </Space>
                 <Tabs
@@ -210,25 +184,3 @@ function DetailStudent() {
 }
 
 export default DetailStudent;
-
-
-// const PasswordItem = () => {
-//     const [showPassword, setShowPassword] = useState(false);
-
-//     const [studentState, studentDispatch] = useStudentContext();
-
-//     const togglePasswordVisibility = () => {
-//         setShowPassword(!showPassword);
-//     };
-
-//     return (
-//         <Space>
-//             {showPassword ? (
-//                 <EyeInvisibleOutlined onClick={togglePasswordVisibility} />
-//             ) : (
-//                 <EyeOutlined onClick={togglePasswordVisibility} />
-//             )}
-//             <span>{showPassword ? 'password' : '*********'}</span>
-//         </Space>
-//     );
-// };

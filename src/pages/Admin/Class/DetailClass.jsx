@@ -26,9 +26,6 @@ const Title = Typography.Title;
 
 function DetailClass() {
 
-    const [examTableVisible, setExamTableVisible] = useState(false);
-    const [documentVisible, setDocumentVisible] = useState(false);
-
     const [selectedSchoolClass, setSelectedSchoolClass] = useState({});
 
     let subjectId = useParams().id;

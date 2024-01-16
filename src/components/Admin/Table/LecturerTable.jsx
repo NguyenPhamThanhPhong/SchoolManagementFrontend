@@ -119,7 +119,7 @@ function LecturerTable({ handleDetail, lecturers, handleDelete }) {
                         Delete
                     </Button>
                     <NavLink to={`/admin/lecturer/detail-lecturer/${record.mssv}`}>
-                        <Button variant="contained">Details</Button>
+                        <Button onClick={() => { handleDetail(record) }} variant="contained">Details</Button>
                     </NavLink>
                 </Space>
             ),
