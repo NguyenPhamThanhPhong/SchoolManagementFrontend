@@ -50,13 +50,14 @@ function Registration() {
     const handleOk = (myForm) => {
         myForm.validateFields().then((values) => {
             const { name, start, end, semester } = myForm.getFieldsValue();
+            let classIds = tableData ? tableData.map((item) => item.id) : [];
             const registration = {
                 name: name,
                 startTime: start.format(dateFormat),
                 endTime: end.format(dateFormat),
                 semesterId: semester,
+                classIds: classIds
             };
-            message.info(JSON.stringify(registration));
             try {
                 let response = registrationApi.create(registration)
                 if (!response.isError) {

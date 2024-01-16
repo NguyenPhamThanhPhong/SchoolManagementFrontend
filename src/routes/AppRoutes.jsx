@@ -72,7 +72,7 @@ const userPaths =
     classes: '/classes',
     lecturerViewClass: '/classes/lecturer',
     lecutrerAddFile: '/classes/lecturer/add',
-    studentViewClass: '/classes/student/:id',
+    studentViewClass: '/classes/student',
     studentRegister: '/student-register-subject'
 }
 
@@ -81,9 +81,9 @@ const userRoutes = [
     { path: userPaths.notification, component: NotificationContentPage },
 
     { path: userPaths.classes, component: Classes },
-    { path: userPaths.studentViewClass, component: ClassMaterialPage },
+    { path: userPaths.studentViewClass + '/:id', component: ClassMaterialPage },
     { path: userPaths.lecutrerAddFile, component: AddMaterialPage },
-    { path: userPaths.lecturerViewClass, component: ClassMaterialPageLecturerView },
+    { path: userPaths.lecturerViewClass + '/:id', component: ClassMaterialPageLecturerView },
 
     { path: userPaths.schedule, component: Schedule },
 

@@ -199,7 +199,7 @@ const DateOfWeek = {
             case 4: return "Thursday";
             case 5: return "Friday";
             case 6: return "Saturday";
-            default: return "Invalid Date";
+            default: return "";
         }
     }
 }

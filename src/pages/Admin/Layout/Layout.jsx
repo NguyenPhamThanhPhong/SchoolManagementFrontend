@@ -3,8 +3,10 @@ import { Layout, ConfigProvider, theme } from 'antd';
 import './Layout.scss';
 import Sidebar from '../../../components/Admin/Sidebar/Sidebar';
 import AppHeader from '../../../components/Admin/Header/Header';
+import { useNavigate } from 'react-router-dom';
 
 const { Content } = Layout;
+
 
 const App = ({ children }) => {
     const [collapsed, setCollapsed] = useState(false);
@@ -15,6 +17,7 @@ const App = ({ children }) => {
     const {
         token: { borderRadiusLG },
     } = theme.useToken();
+
 
     return (
         <Layout>

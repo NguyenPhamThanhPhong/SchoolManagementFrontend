@@ -13,11 +13,21 @@ import {
     AppstoreAddOutlined,
     LogoutOutlined,
 } from '@ant-design/icons';
+import { useUserContext, setLogout } from '../../../data-store';
 
 const { Sider } = Layout;
 
+
 const Sidebar = ({ collapsed, onCollapse }) => {
     const navigate = useNavigate();
+    const [userState, userDispatch] = useUserContext();
+
+    const handleLogout = () => {
+        userDispatch(setLogout());
+        document.cookie = `${'token'}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+
+        navigate('/student/login');
+    }
 
     const menuItems = [
         { key: '/admin/', icon: <HomeOutlined style={{ fontSize: '18px' }} />, label: 'Home' },
@@ -71,6 +81,9 @@ const Sidebar = ({ collapsed, onCollapse }) => {
                 // mode="inline"
                 defaultSelectedKeys={['1']}
                 onClick={(item) => {
+                    if (item.key === '/admin/login') {
+                        handleLogout();
+                    }
                     navigate(item.key);
                 }}
                 style={{ fontSize: '17px' }}

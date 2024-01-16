@@ -3,8 +3,11 @@ import React from 'react';
 import './ExamSchedule.scss'
 import { Button } from 'antd'
 import { useState } from 'react';
+
 import Dropdown from 'react-bootstrap/Dropdown';
 function ExamSchedule(props) {
+
+
     const columns = [
         {
             title: 'No.',
@@ -42,7 +45,15 @@ function ExamSchedule(props) {
             key: 'index',
         },
     ];
+    let mySemester = "";
+    console.log(!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
+    if (!(props.Semester === undefined || props.Semester === null || props.Semester?.length === 0))
+        mySemester = props.Semester[0];
 
+
+    const handleSelect = (eventKey) => {
+        setSelectedSemester(eventKey);
+    };
     const data = props.ExamData;
     const semesters = props.semesters?.map((item => item?.id));
 
@@ -52,19 +63,16 @@ function ExamSchedule(props) {
         <>
             <div className='MainContainErExamSchedule'>
                 <div className='dropSemester_1'>
-                    {
-                        semesters?.length > 0 && (
-                            <Dropdown id='dropSemester_1'>
-                                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                    {selectedSemester}
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu >
-                                    {semesters?.map((item =>
-                                        (<Dropdown.Item id="dropdown-basic-items">{item}</Dropdown.Item>)
-                                    ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        )}
+                    <Dropdown id='dropSemester_1' onSelect={handleSelect}>
+                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                            {selectedSemester}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu >
+                            {props.Semester.map((item =>
+                                (<Dropdown.Item eventKey={item}>{item}</Dropdown.Item>)
+                            ))}
+                        </Dropdown.Menu>
+                    </Dropdown>
 
                 </div>
                 <div className='ExamScheduleBoardM'>

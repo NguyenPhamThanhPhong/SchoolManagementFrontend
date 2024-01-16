@@ -3,10 +3,15 @@ import { Link, useLocation } from 'react-router-dom';
 import './SideBar.scss';
 import 'boxicons/css/boxicons.min.css';
 import { userPaths } from '../../../routes/AppRoutes';
-import { useUserContext } from '../../../data-store';
+import { useUserContext, setLogout } from '../../../data-store';
+import { useNavigate } from 'react-router-dom';
 
+function deleteCookie(name) {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+}
 
 const Sidebar = () => {
+    const navigate = useNavigate();
     const [activeIndex, setActiveIndex] = useState(0);
     const [stepHeight, setStepHeight] = useState(0);
     const sidebarRef = useRef();
@@ -14,6 +19,16 @@ const Sidebar = () => {
     const location = useLocation();
 
     const [userState, userDispatch] = useUserContext();
+
+    const handleLogout = () => {
+        userDispatch(setLogout());
+        deleteCookie('token');
+        navigate('/student/login');
+    }
+
+
+
+
 
 
     const sidebarNavItems = [
@@ -45,12 +60,6 @@ const Sidebar = () => {
             display: 'Register',
             icon: <i class='bx bx-log-in-circle'></i>,
             to: '/student-register-subject',
-            section: 'student-register-subject'
-        },
-        {
-            display: 'Logout',
-            icon: <i class='bx bx-log-in-circle'></i>,
-            to: userState?.role === 'student' ? "/student/login" : '/lecturer/login',
             section: 'student-register-subject'
         }
 
@@ -101,8 +110,17 @@ const Sidebar = () => {
                                 </div>
                             </div>
                         </Link>
+
                     ))
                 }
+                <div onClick={handleLogout} className={`sidebar__menu__item`}>
+                    <div className="sidebar__menu__item__icon">
+                        <i class='bx bx-log-in-circle'></i>
+                    </div>
+                    <div className="sidebar__menu__item__text">
+                        Logout
+                    </div>
+                </div>
             </div>
         </div>
     </nav>;

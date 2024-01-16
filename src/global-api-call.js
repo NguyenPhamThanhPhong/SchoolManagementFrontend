@@ -160,9 +160,8 @@ const DataOnlyComponent = () => {
         }
     }
 
-    async function fetchAdminDatas() {
-
-        await Promise.all([
+    function fetchAdminDatas() {
+        Promise.all([
             fetchFaculties(),
             fetchLecutrers(),
             fetchSchoolClasses(),
@@ -176,28 +175,30 @@ const DataOnlyComponent = () => {
     const navigate = useNavigate();
     const pathname = window.location.pathname;
 
-    async function handleFirstLoadLogic() {
-        let state = await fetchAutoLogin();
-        if (state?.isloggedIn) {
-            if (state?.role === "admin")
-                navigate("/admin")
-            else if (state?.role === "student" || state?.role === "lecturer") {
-                console.log('navigating home')
-                navigate("/user-home")
+    function handleFirstLoadLogic() {
+        fetchAutoLogin().then((state) => {
+            if (state?.isloggedIn) {
+                if (state?.role === "admin")
+                    navigate("/admin")
+                else if (state?.role === "student" || state?.role === "lecturer") {
+                    navigate("/user-home")
+                }
             }
-        }
-        else {
-            console.log('not logged in')
-            if (validLoginPath.includes(pathname)) {
-                handleLogout()
-                return;
+            else {
+                console.log('not logged in')
+                if (validLoginPath.includes(item => item.toLowerCase().startsWith(pathname.toLowerCase()))) {
+                    handleLogout()
+                    return;
+                }
+                if (pathname.toLowerCase().startsWith("/admin"))
+                    navigate("/admin/login")
+                else if (pathname.toLowerCase().startsWith("/user-home") || pathname === "/")
+                    navigate("/student/login")
+                // navigate("/lecturer/login")
             }
-            if (pathname.toLowerCase().startsWith("/admin"))
-                navigate("/admin/login")
-            else if (pathname.toLowerCase().startsWith("/user-home") || pathname === "/")
-                navigate("/student/login")
-            navigate("/lecturer/login")
-        }
+        }).catch((error) => {
+            console.log(error)
+        })
     }
     function handleLogout() {
         userDispatch(setLogout());

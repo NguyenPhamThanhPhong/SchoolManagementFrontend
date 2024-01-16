@@ -13,7 +13,7 @@ function Header() {
         </div>
         <div className='UserandNavigation'>
             <Link to={userPaths.user_infor} >
-                <i class='bx bxs-user-circle' style={{ color: '#2f88ff' }}  ></i>
+                <img style={{ width: '40px', height: '40px', marginTop: '15%' }} className='userPicture' src={"https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} />
             </Link>
 
         </div>

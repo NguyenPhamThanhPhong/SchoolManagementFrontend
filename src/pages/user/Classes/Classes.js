@@ -10,8 +10,6 @@ function Classes() {
 
   function getClasses() {
     if (userState !== undefined && userState?.user !== undefined && userState?.user?.classes !== undefined && schoolClassState?.schoolClasses !== undefined) {
-      console.log(userState?.user?.classes)
-      console.log(schoolClassState?.schoolClasses)
       let classes = schoolClassState?.schoolClasses.filter((schoolClass) => userState?.user?.classes.includes(schoolClass.id));
       let displayClasses = classes.map((schoolClass) => {
         return {
@@ -27,41 +25,7 @@ function Classes() {
   }
 
   let Semester = ["Semester 1 (2023-2024)", "Semester 2 (2023-2024)", "Semester summer (2023-2024)"]
-  let ClassItems = [
-    {
-      ClassId: "Class1",
-      SubjectName: "Subject1",
-      LecturerName: "Lecturer1"
-    },
-    {
-      ClassId: "Class2",
-      SubjectName: "Subject2",
-      LecturerName: "Lecturer2"
-    },
-    {
-      ClassId: "Class3",
-      SubjectName: "Subject3",
-      LecturerName: "Lecturer3"
-    },
-    {
-      ClassId: "Class4",
-      SubjectName: "Subject4",
-      LecturerName: "Lecturer4"
-    },
-    {
-      ClassId: "Class5",
-      SubjectName: "Subject5",
-      LecturerName: 'Lecturer5'
-    },
-    {
-      ClassId: "Class6",
-      SubjectName: "Subject6",
-      LecturerName: 'Lecturer6'
-    },
 
-
-
-  ]
   return (
     <>
       <div>

@@ -63,11 +63,9 @@ const classUpdateInstance = async (schoolClass) => {
     }
 }
 
-const classStudentRegistration = async (id, option, studentId) => {
+const classStudentRegistration = async (id, option, studentId, studentName) => {
     try {
-        console.log(id, option, studentId);
-        let schoolClassRegistrationRequest = { id: id, option: option, studentId: studentId };
-        console.log(JSON.stringify(schoolClassRegistrationRequest));
+        let schoolClassRegistrationRequest = { id: id, option: option, studentId: studentId, name: studentName };
         const response = await axios.post(
             APIUtil.baseURL + `/class-student-registration`,
             schoolClassRegistrationRequest, APIUtil.jsonHeader);

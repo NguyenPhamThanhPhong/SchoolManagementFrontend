@@ -38,9 +38,6 @@ const props = {
 const AddMaterial = () => {
     return (
         <>
-            <div className='BackButton'>
-
-            </div>
             <div className='AddMarterialCont'>
                 <Dragger {...props}>
                     <p className="ant-upload-drag-icon">
@@ -52,7 +49,6 @@ const AddMaterial = () => {
                     </p>
                 </Dragger>
             </div>
-            <Button className='AddMatButton'>OK</Button>
         </>
     )
 
