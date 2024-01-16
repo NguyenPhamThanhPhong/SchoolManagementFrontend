@@ -20,11 +20,10 @@ const convertToFormData = (schoolClassUpdateSectionsRequest) => {
     }
 
     // Append PrevUrls
-    console.log(schoolClassUpdateSectionsRequest?.PrevUrls);
     if (schoolClassUpdateSectionsRequest?.PrevUrls !== null && schoolClassUpdateSectionsRequest?.PrevUrls !== undefined) {
-        schoolClassUpdateSectionsRequest.PrevUrls.forEach((url, index) => {
-            formData.append(`PrevUrls`, url);
-        });
+        for (let item of schoolClassUpdateSectionsRequest?.PrevUrls) {
+            formData.append(`PrevUrls[${item.key}]`, item.value || '');
+        }
     }
 
     // Append Sections
@@ -45,20 +44,6 @@ const convertToFormData = (schoolClassUpdateSectionsRequest) => {
     return formData;
 };
 
-const displayDocumentUrl = (props) => {
-
-    let key = props.key;
-    let remove = props.remove;
-
-    return (
-        <div className="FileHodlerScss">
-            <button > Delete</button>
-            <a href={props?.value || '#'}>{props?.key}</a>
-        </div>
-    )
-}
-
-
 
 function WeekMaterialLecturerView(props) {
 
@@ -76,7 +61,6 @@ function WeekMaterialLecturerView(props) {
     const [editSectionTitle, setEditSectionTitle] = useState('');
     const [editSectionText, setEditSectionText] = useState('');
     const [editSectionFileList, setEditSectionFileList] = useState([]);
-    const [editSelectedFileUrls, setEditSelectedFileUrls] = useState([]);
     const [editSelectedFileUrlsDisplay, setEditSelectedFileUrlsDisplay] = useState([]);
 
     const clearAddModal = () => {
@@ -85,9 +69,13 @@ function WeekMaterialLecturerView(props) {
         setAddSectionText('');
         setAddSectionFileList([]);
     }
-
-
-
+    const clearEditModal = () => {
+        setEditSectionIndex(0);
+        setEditSectionTitle('');
+        setEditSectionText('');
+        setEditSectionFileList([]);
+        setEditSelectedFileUrlsDisplay([]);
+    }
 
     const handleAddSection = () => {
         let myFormFiles = [];
@@ -142,11 +130,34 @@ function WeekMaterialLecturerView(props) {
         const schoolClassUpdateSectionsRequest = {
             FormFiles: myFormFiles,
             Sections: mySections,
-            PrevUrls: editSelectedFileUrls
+            PrevUrls: editSelectedFileUrlsDisplay
         };
-        console.log(JSON.stringify(schoolClassUpdateSectionsRequest));
         const formData = convertToFormData(schoolClassUpdateSectionsRequest);
         schoolClassApi.classUpdateSection(props.classId, editSectionIndex, formData).then((res) => {
+            if (!res.isError) {
+                props.updateGlobalSchoolClasses(res.data.data);
+                clearEditModal();
+                setIsModalOpenEdit(false);
+            }
+            else {
+                message.error(res.data.message);
+            }
+        }).catch((err) => {
+            message.error(err.message);
+        });
+    }
+
+    const handleDeleteSection = (index) => {
+        let mySections = sections;
+        mySections.splice(editSectionIndex, 1);
+
+        const schoolClassUpdateSectionsRequest = {
+            FormFiles: null,
+            Sections: mySections,
+            PrevUrls: null
+        };
+        const formData = convertToFormData(schoolClassUpdateSectionsRequest);
+        schoolClassApi.classUpdateSection(props.classId, -1, formData).then((res) => {
             if (!res.isError) {
                 props.updateGlobalSchoolClasses(res.data.data);
                 setIsModalOpenEdit(false);
@@ -165,21 +176,11 @@ function WeekMaterialLecturerView(props) {
         setEditSectionTitle(sections[index].title);
         setEditSectionText(sections[index].content);
 
-        let selectedFileUrls = [];
-        if (sections[index].documentUrls) {
-            for (const [key, value] of Object.entries(sections[index].documentUrls)) {
-                selectedFileUrls.push(value);
-            }
+        let myDisplays = [];
+        for (const [key, value] of Object.entries(sections[index].documentUrls)) {
+            myDisplays.push({ key: key, value: value });
         }
-        setEditSelectedFileUrls(selectedFileUrls);
-
-        let displayFiles = [];
-        if (sections[index].documentUrls) {
-            for (const [key, value] of Object.entries(sections[index].documentUrls)) {
-                displayFiles.push({ key: key, value: value });
-            }
-        }
-        setEditSelectedFileUrlsDisplay(displayFiles);
+        setEditSelectedFileUrlsDisplay(myDisplays);
 
         setIsModalOpenEdit(true);
     };
@@ -212,6 +213,10 @@ function WeekMaterialLecturerView(props) {
                             </Button>
                             <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }} >
                                 {item.title}
+                                <Button style={{ color: 'white', fontWeight: 'bold', background: 'red' }} type="link"
+                                    onClick={() => { handleDeleteSection(index) }}>
+                                    Delete section
+                                </Button>
                             </Divider>
                             {parse(item?.content || "")}
                             {
@@ -251,21 +256,20 @@ function WeekMaterialLecturerView(props) {
                     value={editSectionTitle} />
                 <AddSection data={editSectionText} onChange={setEditSectionText} ></AddSection>
                 <AddMaterial onDone={setEditSectionFileList} ></AddMaterial>
+
                 {
-                    (editSelectedFileUrlsDisplay?.length > 0) &&
-                    (
-                        editSelectedFileUrlsDisplay.map((item, index) => {
-                            const onClick = () => {
-                                setEditSelectedFileUrlsDisplay(editSelectedFileUrlsDisplay.filter((item, i) => i !== index));
-                            }
-                            return (
-                                <div className="FileHodlerScss">
-                                    <button onClick={onClick} > Delete</button>
-                                    <a href={item?.key || '#'}>{item?.value}</a>
-                                </div>
-                            )
-                        })
-                    )
+                    editSelectedFileUrlsDisplay?.length > 0 && editSelectedFileUrlsDisplay.map((item, index) => {
+                        let onClick = () => {
+                            let myDisplays = editSelectedFileUrlsDisplay.filter((item, i) => i !== index);
+                            setEditSelectedFileUrlsDisplay(myDisplays || []);
+                        }
+                        return (
+                            <div className="FileHodlerScss">
+                                <button onClick={onClick} > Delete</button>
+                                <a href={item?.value || '#'}>{item.key}</a>
+                            </div>
+                        )
+                    })
                 }
             </Modal>
         </div>)

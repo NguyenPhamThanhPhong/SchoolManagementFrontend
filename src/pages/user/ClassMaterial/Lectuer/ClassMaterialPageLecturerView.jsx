@@ -61,6 +61,7 @@ function ClassMaterialPageLecturerView() {
         let myNewSchoolClasses = schoolClassState?.schoolClasses;
         myNewSchoolClasses[newSchoolClassIndex] = newSchoolClass;
         schoolClassDispatch(setSchoolClasses);
+        setSelectedClass(newSchoolClass);
       }
     }
   }
