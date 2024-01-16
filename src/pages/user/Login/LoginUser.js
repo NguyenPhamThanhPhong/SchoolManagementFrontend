@@ -36,7 +36,7 @@ function LoginUser() {
 
                     const expires = new Date();
                     expires.setTime(expires.getTime() + 2 * 24 * 60 * 60 * 1000);
-                    message.success(response.data.data?.accessToken)
+                    //message.success(response.data.data?.accessToken)
                     document.cookie = `token=${response.data.data?.accessToken};expires=${expires.toUTCString()};path=/`;
 
                     let loginData = {

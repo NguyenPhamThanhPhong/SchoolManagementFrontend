@@ -16,8 +16,7 @@ function NotificationList(props) {
                     {props.NotificationItems.map((item =>
                     (<li className="list-group" key={item.id}>
                         <Link to={`/user-home/notification/${item.id}`} className="NotificationitemContainer" style={{ textDecoration: 'none' }}>
-                            <div className='firstLine'>{item?.name}</div>
-                            <div className='secondLine'>{truncateString(item.content, 100)}</div>
+                            <div className='firstLine'>{item?.title}</div>
                         </Link>
                     </li>)
                     ))}

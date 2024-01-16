@@ -47,11 +47,6 @@ function Home() {
         <NotificationList NotiType={'Faculty notification'} NotificationItems={facultyPost}>
         </NotificationList>,
     },
-    {
-      key: '3',
-      label: 'Your notification',
-      children: <NotificationList NotiType={'Your notification'} NotificationItems={yourPost}></NotificationList>,
-    },
   ];
 
   return (

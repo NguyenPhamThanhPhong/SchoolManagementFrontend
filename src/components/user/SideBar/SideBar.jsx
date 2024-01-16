@@ -31,7 +31,7 @@ const Sidebar = () => {
 
 
 
-    const sidebarNavItems = [
+    let sidebarNavItems = [
         {
             display: 'Home',
             icon: <i className='bx bx-home'></i>,
@@ -64,7 +64,34 @@ const Sidebar = () => {
         }
 
     ]
-
+    if (userState?.user?.role === 'lecturer') {
+        sidebarNavItems = [
+            {
+                display: 'Home',
+                icon: <i className='bx bx-home'></i>,
+                to: userPaths.home,
+                section: 'user-home'
+            },
+            {
+                display: 'Schedule',
+                icon: <i className='bx bx-calendar'></i>,
+                to: userPaths.schedule,
+                section: 'schedule'
+            },
+            {
+                display: 'Classes',
+                icon: <i className='bx bx-book'></i>,
+                to: userPaths.classes,
+                section: 'classes'
+            },
+            {
+                display: 'User',
+                icon: <i className='bx bx-user'></i>,
+                to: userPaths.user_infor,
+                section: 'student-user-info'
+            },
+        ]
+    }
     useEffect(() => {
         setTimeout(() => {
             const sidebarElement = sidebarRef.current;
