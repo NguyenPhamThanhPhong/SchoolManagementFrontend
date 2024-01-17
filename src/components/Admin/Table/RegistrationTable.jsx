@@ -194,7 +194,7 @@ const RegistrationTable = ({ registrations, semesters, schoolClasses, allRegistr
             />
             <Drawer
                 title="Registration Detail"
-                width={480}
+                width={560}
                 onClose={onClose}
                 open={open}
                 styles={{

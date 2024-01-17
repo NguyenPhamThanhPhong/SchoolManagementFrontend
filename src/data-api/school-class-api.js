@@ -161,7 +161,7 @@ const deleteExam = async (classId, examId) => {
 
 const updateExam = async (classId, exams) => {
     try {
-        const response = await axios.put(APIUtil.baseURL + `/update-exam`, exams, APIUtil.jsonHeader);
+        const response = await axios.post(APIUtil.baseURL + `/update-exam/${classId}`, exams, APIUtil.jsonHeader);
         return { isError: false, data: response };
     }
     catch (error) {

@@ -15,6 +15,8 @@ import {
 } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined, EditOutlined } from '@ant-design/icons';
 import LecturerExamListTable from '../../../components/Admin/Table/LecturerExamListTable';
+import ScheduleBoard from '../../../components/user/ScheduleBoard/ScheduleBoard';
+
 import { useLecturerContext, useSchoolClassContext } from '../../../data-store';
 import { DateOfWeek } from '../../../data-api';
 
@@ -53,7 +55,41 @@ function DetailLecturer() {
     const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
 
     let currentLecturer = lecturerState?.currentLecturer;
+    let schoolClasses = schoolClassState?.schoolClasses || [];
 
+    const [schedule, setSchedule] = useState(schoolClassState?.schoolClasses || []);
+    const [examSchedule, setExamSchedule] = useState([]);
+
+    function getScheduleBySemester(semesterId) {
+
+        let filtredSchoolClasses = schoolClasses.filter(item => item.semesterId === semesterId);
+        let filteredSchedule = filtredSchoolClasses.map(
+            (item) => {
+                let schedule = {
+                    id: item.id,
+                    title: `${item.name} (${item.id})`,
+                    daysOfWeek: item.schedule?.dateofweek + '',
+                    startTime: item.schedule?.startTime,
+                    endTime: item.schedule?.endTime,
+                    extendedProps: {
+                        id: `${item.name} (${item.id})`,
+                        beginTime: '20/11/2023',
+                        finalTime: '20/12/2023'
+                    }
+                }
+                return schedule;
+            }
+        )
+        setSchedule(filteredSchedule);
+    }
+    function selectSemesterInClassList(classList) {
+        if (currentLecturer?.classes) {
+            let filteredClassList = classList.filter(item => currentLecturer?.classes.includes(item.id));
+            let semesters = filteredClassList.map(item => item.semesterId);
+            let uniqueSemesters = [...new Set(semesters)];
+            return uniqueSemesters;
+        }
+    }
 
     function logicDisplayClasses() {
         if (schoolClassState.schoolClasses.length > 0) {
@@ -124,13 +160,14 @@ function DetailLecturer() {
     const itemtab = [
         {
             key: '1',
-            label: 'Danh sách lớp',
+            label: 'Assigned classes',
             children: <Table dataSource={logicDisplayClasses()} columns={columns} pagination={false} />,
         },
         {
             key: '3',
-            label: 'Lịch coi thi',
-            children: <LecturerExamListTable />,
+            label: 'Schedule',
+            children: <ScheduleBoard semesters={selectSemesterInClassList(schoolClassState?.schoolClasses)} ScheduleEvents={schedule}
+                onSemesterChange={getScheduleBySemester}></ScheduleBoard>,
         },
     ];
     return (

@@ -1,25 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
     Card,
-    Table,
     Divider,
     Descriptions,
-    Badge,
-    Breadcrumb,
-    Button,
     Space,
-    Calendar,
     Tabs,
     Avatar,
-    Input,
     message
 } from 'antd';
-import { EyeOutlined, EyeInvisibleOutlined, EditOutlined } from '@ant-design/icons';
 import StudentScoreListTable from '../../../components/Admin/Table/StudentScoreListTable';
-import StudentExamListTable from '../../../components/Admin/Table/StudentExamListTable';
 import { useStudentContext, setCurrentStudent } from '../../../data-store';
-import { StudentApi } from '../../../data-api';
-
+import { useSchoolClassContext } from '../../../data-store';
+import ScheduleBoard from '../../../components/user/ScheduleBoard/ScheduleBoard';
+import ExamSchedule from '../../../components/user/ExamSchedule/ExamSchedule';
 
 
 
@@ -77,8 +70,13 @@ function GenerateItems(id, username, password, email, personalInfo,) {
 function DetailStudent() {
 
     const [studentState, studentDispatch] = useStudentContext();
+    const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
 
     let currentStudent = studentState?.currentStudent;
+    let schoolClasses = schoolClassState?.schoolClasses || [];
+
+    const [schedule, setSchedule] = useState(schoolClassState?.schoolClasses || []);
+    const [examSchedule, setExamSchedule] = useState([]);
 
     const items = [
         {
@@ -128,30 +126,81 @@ function DetailStudent() {
         },
     ];
 
+    function getScheduleBySemester(semesterId) {
+
+        let filtredSchoolClasses = schoolClasses.filter(item => item.semesterId === semesterId);
+        let filteredSchedule = filtredSchoolClasses.map(
+            (item) => {
+                let schedule = {
+                    id: item.id,
+                    title: `${item.name} (${item.id})`,
+                    daysOfWeek: item.schedule?.dateofweek + '',
+                    startTime: item.schedule?.startTime,
+                    endTime: item.schedule?.endTime,
+                    extendedProps: {
+                        id: `${item.name} (${item.id})`,
+                        beginTime: '20/11/2023',
+                        finalTime: '20/12/2023'
+                    }
+                }
+                return schedule;
+            }
+        )
+        setSchedule(filteredSchedule);
+    }
+    function selectSemesterInClassList(classList) {
+        if (currentStudent?.classes) {
+            let filteredClassList = classList.filter(item => currentStudent?.classes.includes(item.id));
+            let semesters = filteredClassList.map(item => item.semesterId);
+            let uniqueSemesters = [...new Set(semesters)];
+            return uniqueSemesters;
+        }
+    }
+
+    function getExamBySemester(semesterId) {
+        let filtredSchoolClasses = schoolClasses.filter(item => item.semesterId === semesterId);
+        let examRows = [];
+        for (const schoolClass of filtredSchoolClasses) {
+            if (schoolClass) {
+                for (const exam of schoolClass.exams) {
+                    if (exam) {
+                        examRows.push({
+                            key: examRows.length + 1,
+                            index: examRows.length + 1,
+                            subjectId: `${schoolClass?.subject?.id} - ${schoolClass?.subject?.name} ` || '',
+                            classId: `${schoolClass?.id} + ${schoolClass?.name}` || '',
+                            examName: exam?.name || '',
+                            room: exam?.room || '',
+                            examDate: `${exam?.startTime} + ${exam?.duration}` || '',
+                        })
+                    }
+                }
+            }
+        }
+        setExamSchedule(examRows);
+    }
 
 
-    const onPanelChange = (value, mode) => {
-        console.log(value.format('YYYY-MM-DD'), mode);
-    };
-    const onChange = (key) => {
-        console.log(key);
-    };
 
     const itemtab = [
         {
             key: '1',
-            label: 'Bảng điểm',
+            label: 'Score',
             children: <StudentScoreListTable creditLogs={studentState?.currentStudent?.creditLogs} />,
         },
         {
             key: '2',
-            label: 'Lịch học',
-            children: <Calendar title="Hello" onPanelChange={onPanelChange} />,
+            label: 'Schedule',
+            children: <ScheduleBoard semesters={selectSemesterInClassList(schoolClassState?.schoolClasses)} ScheduleEvents={schedule}
+                onSemesterChange={getScheduleBySemester}></ScheduleBoard>,
         },
         {
             key: '3',
             label: 'Lịch thi',
-            children: <StudentExamListTable />,
+            children: <ExamSchedule
+                semesters={selectSemesterInClassList(schoolClassState?.schoolClasses)}
+                onSemesterChange={getExamBySemester}
+                ExamData={examSchedule}></ExamSchedule>,
         },
     ];
     const renderDescriptions = () => {
@@ -176,7 +225,6 @@ function DetailStudent() {
                     tabBarStyle={{ margin: '0 auto' }}
                     items={itemtab}
                     size="large"
-                    onChange={onChange}
                 />
             </Card>
         </div>

@@ -20,6 +20,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { DateOfWeek } from '../../../data-api/index';
 import { schoolClassApi } from '../../../data-api/index';
+import WeekMaterialLecturerView from '../../../components/user/ClassMaterial/Lecturer/WeekMaterialLecturerView';
+import StudentExamListTable from '../../../components/Admin/Table/ExamListTable';
+
 
 const Column = Table.Column;
 const Title = Typography.Title;
@@ -29,6 +32,7 @@ function DetailClass() {
     const [selectedSchoolClass, setSelectedSchoolClass] = useState({});
 
     let subjectId = useParams().id;
+    let sections = selectedSchoolClass?.sections;
 
     const fetchSchoolClass = async (id) => {
         try {
@@ -48,6 +52,7 @@ function DetailClass() {
         fetchSchoolClass(subjectId);
     }, []);
 
+    console.log(selectedSchoolClass.id);
 
     const items = [
         {
@@ -103,24 +108,18 @@ function DetailClass() {
         {
             key: '2',
             label: 'Exam Table',
-            children: <ExamListTable />,
+            children: <StudentExamListTable
+                classId={selectedSchoolClass?.id}
+                exams={selectedSchoolClass?.exams || []}
+                setSelectedSchoolClass={setSelectedSchoolClass} />,
         },
         {
             key: '3',
             label: 'Document',
             children: (
-                <Card style={{ flex: 2 }}>
-                    <List>
-                        <List.Item>
-                            <Space direction="vertical">
-                                <Title level={4}>Tuần 1-2</Title>
-                                <Title level={5}>Ghi chú: ........</Title>
-                                <Title level={5}>Tài liệu: TaiLieu.txt</Title>
-                                <Divider />
-                            </Space>
-                        </List.Item>
-                    </List>
-                </Card>
+                <WeekMaterialLecturerView Sections={sections || []} >
+
+                </WeekMaterialLecturerView>
             ),
         },
     ];

@@ -10,9 +10,7 @@ const ShowSubjectDrawer = ({ open, onClose, selectedSubject }) => {
         let classesData = [];
         if (schoolClassState?.schoolClasses?.length > 0) {
             schoolClassState.schoolClasses.forEach((schoolClass) => {
-                console.log(schoolClass);
-                console.log(selectedSubject.id);
-                if (schoolClass?.subject?.id === selectedSubject.id) {
+                if (schoolClass?.subject?.id === selectedSubject?.id) {
                     classesData.push(schoolClass);
                 }
             });

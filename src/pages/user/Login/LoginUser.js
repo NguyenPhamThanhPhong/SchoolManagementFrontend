@@ -169,10 +169,10 @@ function LoginUser() {
                     onOk={forgotPassword}
                     onCancel={() => setModalState(false)}
                     footer={[
-                        <Button key="ok" type="primary" danger onClick={forgotPassword}>
+                        <Button key="ok" type="primary" style={{ background: 'green' }} onClick={forgotPassword}>
                             Recover
                         </Button>,
-                        <Button key="cancel" type="primary" onClick={() => { setModalState(false) }}>
+                        <Button key="cancel" type="primary" danger onClick={() => { setModalState(false) }}>
                             Cancel
                         </Button>,
                     ]}

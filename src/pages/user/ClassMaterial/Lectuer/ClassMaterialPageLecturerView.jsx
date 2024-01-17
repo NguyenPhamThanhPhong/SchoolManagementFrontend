@@ -1,4 +1,3 @@
-import WeekMaterialLecturerView from '../../../../components/user/ClassMaterial/Lecturer/WeekMaterialLecturerView';
 import InputScore from '../../../../components/user/InputScore/InputScore';
 import { useParams } from 'react-router-dom';
 import './ClassMaterialPageLecturerView.scss'
@@ -6,6 +5,7 @@ import './ClassMaterialPageLecturerView.scss'
 import { Tabs, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSchoolClassContext, setSchoolClasses } from '../../../../data-store';
+import WeekMaterialLecturerView from '../../../../components/user/ClassMaterial/Lecturer/WeekMaterialLecturerView'
 
 const onChange = (key) => {
   console.log(key);

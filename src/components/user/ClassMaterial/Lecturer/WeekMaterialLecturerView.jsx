@@ -210,7 +210,7 @@ function WeekMaterialLecturerView(props) {
                     return (
                         <div>
                             {
-                                userState?.user?.role === 'student' ?
+                                userState?.user?.role !== 'lecturer' ?
                                     <></> :
                                     <Button style={{ color: 'green', fontWeight: 'bold', display: 'block', borderColor: 'green' }} s type="link"
                                         onClick={() => { setIsModalOpenAdd(true); setAddSectionIndex(index) }}>
@@ -221,7 +221,7 @@ function WeekMaterialLecturerView(props) {
                                 {item.title}
 
                                 {
-                                    userState?.user?.role === 'student' ?
+                                    userState?.user?.role !== 'lecturer' ?
                                         <></> :
                                         <Button style={{ color: 'red', fontWeight: 'bold', background: 'transparent' }} type="link"
                                             onClick={() => { handleDeleteSection(index) }}>
@@ -240,7 +240,7 @@ function WeekMaterialLecturerView(props) {
                                 )
                             }
                             {
-                                userState?.user?.role === 'student' ?
+                                userState?.user?.role !== 'lecturer' ?
                                     <></> :
                                     <Button style={{ color: '#2f88ff', fontWeight: 'bold', display: 'block', borderColor: '#2f88ff' }}
                                         type="link" onClick={() => { showModalEdit(index) }}><i class='bx bx-edit-alt' style={{ color: '#2f88ff' }}  ></i>Edit section</Button>
@@ -251,7 +251,7 @@ function WeekMaterialLecturerView(props) {
 
                 ))}
                 {
-                    userState?.user?.role === 'student' ?
+                    userState?.user?.role !== 'lecturer' ?
                         <></> :
                         <Button type="link" style={{ color: 'green', fontWeight: 'bold', display: 'block', borderColor: 'green' }}
                             onClick={() => { setIsModalOpenAdd(true); setAddSectionIndex(props?.Sections?.length) }}>

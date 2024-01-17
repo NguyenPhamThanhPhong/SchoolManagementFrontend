@@ -125,7 +125,7 @@ function Home() {
     }, [facultyData, studentCountByFaculty]);
 
     const processFinalScores = (data) => {
-        const scoreRanges = [0, 3, 5, 7, 8, 9, 10];
+        const scoreRanges = [0, 3, 5, 7, 8, 9, 11];
         const scoreCount = [0, 0, 0, 0, 0, 0];
 
         data?.forEach((student) => {
