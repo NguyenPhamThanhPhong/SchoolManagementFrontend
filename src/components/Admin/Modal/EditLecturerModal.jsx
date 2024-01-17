@@ -178,9 +178,9 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
             })
             .catch((error) => {
                 let messageError = "Create student failed!";
-                error.errorFields?.map((item) => {
-                    messageError += "\n" + item.errors;
-                });
+                // error.errorFields?.map((item) => {
+                //     messageError += "\n" + item.errors;
+                // });
                 message.error(messageError);
             });
     };
