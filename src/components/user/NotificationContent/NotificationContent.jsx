@@ -13,13 +13,13 @@ function NotificationContent(props) {
     // }, [id])
 
     // message.info(`You clicked on item ${id}`);
-    const Time = "11:25am";
+    //const Time = "11:25am";
     const ContentHtml = props.content || "";
     let fileUrls = props.fileUrls || {};
     return (
         <>
             <div>
-                {Time}
+                {/* {Time} */}
             </div>
             <div>
                 {parse(ContentHtml)}

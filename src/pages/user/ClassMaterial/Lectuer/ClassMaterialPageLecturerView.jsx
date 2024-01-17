@@ -2,7 +2,7 @@ import WeekMaterialLecturerView from '../../../../components/user/ClassMaterial/
 import InputScore from '../../../../components/user/InputScore/InputScore';
 import { useParams } from 'react-router-dom';
 import './ClassMaterialPageLecturerView.scss'
-
+import { useUserContext } from '../../../../data-store';
 import { Tabs, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useSchoolClassContext, setSchoolClasses } from '../../../../data-store';
@@ -33,6 +33,7 @@ const Sections =
 //
 
 function ClassMaterialPageLecturerView() {
+  const [userState, userDispatch] = useUserContext();
 
   const { id: classId } = useParams();
   const [schoolClassState, schoolClassDispatch] = useSchoolClassContext();
@@ -84,6 +85,10 @@ function ClassMaterialPageLecturerView() {
       children: <InputScore classId={selectedClass?.id} classListData={selectedClass?.studentItems || []} ></InputScore>,
     },
   ];
+
+  if (userState?.user?.role !== 'lecturer') {
+    items.splice(1, 1)
+  }
   return (
     <>
       <div className="MainScreenClassMaterialLecuturerView">

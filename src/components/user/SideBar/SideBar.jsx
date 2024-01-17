@@ -58,7 +58,7 @@ const Sidebar = () => {
         },
         {
             display: 'Register',
-            icon: <i class='bx bx-log-in-circle'></i>,
+            icon: <i class='bx bx-edit-alt'></i>,
             to: '/student-register-subject',
             section: 'student-register-subject'
         }
