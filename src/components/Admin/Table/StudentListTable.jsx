@@ -56,16 +56,15 @@ const StudentListTable = () => {
         if (id !== null && id !== undefined && schoolClassState?.schoolClasses !== undefined && schoolClassState?.schoolClasses !== null) {
             const schoolClass = schoolClassState?.schoolClasses?.find((schoolClass) => schoolClass.id === id);
             if (schoolClass) {
-                const studentList = schoolClass?.studentLogs?.map((student) => {
-                    let scores = student?.scores;
+                const studentList = schoolClass?.studentItems?.map((student) => {
                     return {
                         id: student?.id,
                         name: student?.id,
-                        progress: scores[0] || -1,
-                        midterm: scores[1] || -1,
-                        practice: scores[2] || -1,
-                        final: scores[3] || -1,
-                        GPA: scores[4] || -1,
+                        progress: student?.progress || -1,
+                        midterm: student?.midterm || -1,
+                        practice: student?.practice || -1,
+                        final: student?.final || -1,
+                        GPA: student?.id || -1,
                     }
                 })
                 setData(studentList);
@@ -78,8 +77,8 @@ const StudentListTable = () => {
             async (values) => {
                 try {
                     const { student } = formSearch.getFieldsValue();
-                    console.log(student)
-                    let response = await schoolClassApi.classStudentRegistration(id, option, student);
+                    let myStudent = JSON.parse(student);
+                    let response = await schoolClassApi.classStudentRegistration(id, option, myStudent.id, myStudent?.personalInfo?.name);
                     if (!response.isError) {
                         message.success(`Add student successfully! ${values.student}`);
                         formSearch.resetFields();
@@ -108,9 +107,9 @@ const StudentListTable = () => {
         );
     }
 
-    const handleDeleteStudent = async (studentId) => {
+    const handleDeleteStudent = async (studentId, studentName) => {
         try {
-            let response = await schoolClassApi.classStudentRegistration(id, 2, studentId);
+            let response = await schoolClassApi.classStudentRegistration(id, 2, studentId, studentName);
             if (!response.isError) {
                 message.success(`Delete student successfully! ${studentId}`);
                 setData(data.filter((student) => student.id !== studentId));
@@ -230,7 +229,7 @@ const StudentListTable = () => {
                         <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                             <Button type="primary">Edit</Button>
                         </Typography.Link>
-                        <Typography.Link disabled={editingKey !== ''} onClick={async () => { await handleDeleteStudent(record?.id) }}>
+                        <Typography.Link disabled={editingKey !== ''} onClick={async () => { await handleDeleteStudent(record?.id, record?.personalInfo?.name) }}>
                             <Button type="primary" danger>Delete</Button>
                         </Typography.Link>
                     </span>
@@ -266,7 +265,7 @@ const StudentListTable = () => {
                                     const isStudentSelected = data.some(item => item.id === student.id);
                                     if (!isStudentSelected) {
                                         return (
-                                            <Option key={student.id} value={student.id}>
+                                            <Option key={JSON.stringify({ id: student?.id, studentName: student?.personalInfo?.name })} value={JSON.stringify({ id: student?.id, name: student?.personalInfo?.name })}>
                                                 {student.id + " - " + student?.personalInfo?.name}
                                             </Option>
                                         );

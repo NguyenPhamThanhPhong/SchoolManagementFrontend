@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Select, AutoComplete, Button, Table, DatePicker, message, Upload } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { useLecturerContext, useFacultyContext, useSchoolClassContext, appendLecturer } from '../../../data-store';
+import { useLecturerContext, useFacultyContext, useSchoolClassContext, appendLecturer, setLecturers } from '../../../data-store';
 import { lecturerApi } from '../../../data-api';
 import { SchoolMemberCreateRequest, PersonalInfo, formatDate, isValidDate } from '../../../data-api';
 import moment from 'moment';
@@ -91,23 +91,14 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
             faculty: lecturerData?.personalInfo?.facultyId,
             program: lecturerData?.personalInfo?.program,
         });
-        setPreviewImage(lecturerData?.personalInfo?.avatarUrl);
+        setFileList([{ url: lecturerData?.personalInfo?.avatarUrl }]);
+        if (schoolClassState?.schoolClasses?.length > 0) {
+            setUnselectedClasses(schoolClassState?.schoolClasses?.filter((item) => !lecturerData?.classes?.some((classId) => classId === item?.id)));
+            setTableData(schoolClassState?.schoolClasses?.filter((item) => lecturerData?.classes?.some((classId) => classId === item?.id)));
+        }
+
     }, [lecturerData, form]);
 
-    const validateId = (rule, value, callback) => {
-        if (lecturers.some((lecturer) => lecturer.id === value)) {
-            callback(`lecturer "${value}" already exist`);
-        } else {
-            callback();
-        }
-    };
-    const validateUsername = (rule, value, callback) => {
-        if (lecturerState.lecturers.some((lecturer) => lecturer.username === value)) {
-            callback(`Username: ${value} already exist`);
-        } else {
-            callback();
-        }
-    }
 
     useEffect(() => {
         setTableData([]);
@@ -141,49 +132,59 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
             setTableData((prevData) => prevData.filter((item) => item?.id !== value.id));
         }
     }
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         form.validateFields()
             .then(async (values) => {
-
+                message.info("handling request");
                 const { id, name, username, password, email, dateofbirth, gender, phone, faculty, program } = form.getFieldsValue();
                 const classIds = tableData.map((item) => item.id);
                 const formattedDateOfBirth = formatDate(dateofbirth);
                 const personalInformation = new PersonalInfo(isValidDate(formattedDateOfBirth) ? formattedDateOfBirth : null, name, gender, phone, faculty, program);
-                const lecturer = new SchoolMemberCreateRequest(id, username, password, email, "lecturer", personalInformation, classIds);
-
+                let lecturer = new SchoolMemberCreateRequest(id, username, password, email, "lecturer", personalInformation, classIds);
                 const formData = new FormData();
                 const requestBody = JSON.stringify(lecturer);
                 formData.append('RequestBody', requestBody);
-                message.info("handling request");
+
                 if (fileList !== undefined && fileList !== null && fileList.length > 0) {
                     let file = fileList[0];
-                    console.log(JSON.stringify(file.originFileObj));
-                    formData.append('File', file.originFileObj);
+                    lecturer.prevUrl = lecturerData?.personalInfo?.avatarUrl;
+                    if (file?.originFileObj)
+                        formData.append('File', file.originFileObj);
                 }
-                try {
-                    const response = await lecturerApi.lecturerCreate(formData);
+                else
+                    lecturer.prevUrl = null;
 
+
+                console.log(requestBody)
+                try {
+                    console.log(lecturer)
+                    const response = await lecturerApi.lecturerUpdateInstance(formData);
                     if (!response.isError) {
-                        lecturerDispatch(appendLecturer(response.data.data));
                         message.success(`Create lecturer successfully! ${lecturer.id}`);
+                        let lecturerIndex = lecturerState.lecturers.findIndex((item) => item.id === lecturer.id);
+                        if (lecturerIndex !== -1) {
+                            let newLecturers = [...lecturerState.students];
+                            newLecturers[lecturerIndex] = lecturer;
+                            lecturerDispatch(setLecturers(newLecturers));
+                        }
                         form.resetFields();
                         onOk();
                     } else {
-                        message.error(`Create lecturer failed! ${response.data}`);
-                        message.error(`${JSON.stringify(lecturer)}`);
+                        message.error(`Create student failed! ${response.data?.message}`);
                     }
                 } catch (error) {
-                    message.error(`Create lecturer failed! ${error}`);
+                    message.error(`Create student failed! ${error}`);
                 }
             })
             .catch((error) => {
-                let messageError = "Create lecturer failed!";
+                let messageError = "Create student failed!";
                 error.errorFields?.map((item) => {
                     messageError += "\n" + item.errors;
                 });
                 message.error(messageError);
             });
     };
+
     const handleExitForm = () => {
         form.resetFields();
         onCancel();
@@ -243,21 +244,20 @@ function EditLecturerModal({ open, onOk, onCancel, lecturerData }) {
                         listType="picture-circle"
                         fileList={fileList}
                         onPreview={handlePreview}
-                        onChange={handleChange}
-                    >
+                        onChange={handleChange}>
                         {fileList.length >= 1 ? null : uploadButton}
 
                     </Upload>
                 </Form.Item>
 
-                <Form.Item label="ID" name="id" rules={[{ required: true, message: "please enter id" }, { validator: validateId }]}>
-                    <Input onChange={handleIdChange} />
+                <Form.Item label="ID" name="id" rules={[{ required: true, message: "please enter id" }]}>
+                    <Input disabled={true} onChange={handleIdChange} />
                 </Form.Item>
                 <Form.Item label="Name" name="name" rules={[{ required: true, message: "please enter name" }]}>
                     <Input onChange={handleIdChange} />
                 </Form.Item>
-                <Form.Item label="Username" name="username" rules={[{ required: true, message: "please enter name" }, { validator: validateUsername }]}>
-                    <Input />
+                <Form.Item label="Username" name="username" rules={[{ required: true, message: "please enter name" }]}>
+                    <Input disabled={true} />
                 </Form.Item>
                 <Form.Item label="Password" name="password">
                     <Input />

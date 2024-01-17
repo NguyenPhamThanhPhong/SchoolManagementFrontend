@@ -105,7 +105,7 @@ const studentDeleteMany = async (ids, prevUrls = []) => {
 
 const studentUpdateInstance = async (student) => {
     try {
-        const response = await axios.put(APIUtil.baseURL + `/student-update-instance`, student, APIUtil.jsonHeader);
+        const response = await axios.post(APIUtil.baseURL + `/student-update-instance`, student, APIUtil.jsonHeader);
         return { isError: false, data: response };
     } catch (error) {
         return { isError: true, data: error };
