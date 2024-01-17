@@ -81,7 +81,7 @@ const userRoutes = [
     { path: userPaths.notification, component: NotificationContentPage },
 
     { path: userPaths.classes, component: Classes },
-    { path: userPaths.studentViewClass + '/:id', component: ClassMaterialPage },
+    { path: userPaths.studentViewClass + '/:id', component: ClassMaterialPageLecturerView },
     { path: userPaths.lecutrerAddFile, component: AddMaterialPage },
     { path: userPaths.lecturerViewClass + '/:id', component: ClassMaterialPageLecturerView },
 

@@ -29,7 +29,7 @@ function Classes() {
   return (
     <>
       <div>
-        <ClassList role={userState?.role} Semester={Semester} ClassItems={getClasses()}></ClassList>
+        <ClassList role={userState?.user?.role} Semester={Semester} ClassItems={getClasses()}></ClassList>
       </div>
     </>
   );

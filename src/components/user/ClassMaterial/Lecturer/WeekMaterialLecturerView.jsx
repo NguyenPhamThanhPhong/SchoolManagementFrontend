@@ -8,6 +8,7 @@ import AddSection from './AddSection';
 import AddMaterial from './AddMaterial';
 import TextArea from "antd/es/input/TextArea";
 import { schoolClassApi } from '../../../../data-api';
+import { useUserContext } from '../../../../data-store';
 
 const convertToFormData = (schoolClassUpdateSectionsRequest) => {
     const formData = new FormData();
@@ -46,6 +47,7 @@ const convertToFormData = (schoolClassUpdateSectionsRequest) => {
 
 
 function WeekMaterialLecturerView(props) {
+    const [userState, userDispatch] = useUserContext();
 
     const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
     const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
@@ -207,16 +209,25 @@ function WeekMaterialLecturerView(props) {
                     }
                     return (
                         <div>
-                            <Button style={{ color: 'green', fontWeight: 'bold', display: 'block', borderColor: 'green' }} s type="link"
-                                onClick={() => { setIsModalOpenAdd(true); setAddSectionIndex(index) }}>
-                                +Add new section
-                            </Button>
+                            {
+                                userState?.user?.role === 'student' ?
+                                    <></> :
+                                    <Button style={{ color: 'green', fontWeight: 'bold', display: 'block', borderColor: 'green' }} s type="link"
+                                        onClick={() => { setIsModalOpenAdd(true); setAddSectionIndex(index) }}>
+                                        +Add new section
+                                    </Button>
+                            }
                             <Divider orientation="left" orientationMargin="2" style={{ color: "#2f88ff" }}  >
                                 {item.title}
-                                <Button style={{ color: 'red', fontWeight: 'bold', background: 'transparent' }} type="link"
-                                    onClick={() => { handleDeleteSection(index) }}>
-                                    <i class='bx bx-trash'></i>
-                                </Button>
+
+                                {
+                                    userState?.user?.role === 'student' ?
+                                        <></> :
+                                        <Button style={{ color: 'red', fontWeight: 'bold', background: 'transparent' }} type="link"
+                                            onClick={() => { handleDeleteSection(index) }}>
+                                            <i class='bx bx-trash'></i>
+                                        </Button>
+                                }
                             </Divider>
                             {parse(item?.content || "")}
                             {
@@ -228,17 +239,25 @@ function WeekMaterialLecturerView(props) {
                                         </div>)
                                 )
                             }
-                            <Button style={{ color: '#2f88ff', fontWeight: 'bold', display: 'block', borderColor: '#2f88ff' }}
-                                type="link" onClick={() => { showModalEdit(index) }}><i class='bx bx-edit-alt' style={{ color: '#2f88ff' }}  ></i>Edit section</Button>
+                            {
+                                userState?.user?.role === 'student' ?
+                                    <></> :
+                                    <Button style={{ color: '#2f88ff', fontWeight: 'bold', display: 'block', borderColor: '#2f88ff' }}
+                                        type="link" onClick={() => { showModalEdit(index) }}><i class='bx bx-edit-alt' style={{ color: '#2f88ff' }}  ></i>Edit section</Button>
+                            }
                             <Divider />
                         </div>)
                 }
 
                 ))}
-                <Button type="link" style={{ color: 'green', fontWeight: 'bold', display: 'block', borderColor: 'green' }}
-                    onClick={() => { setIsModalOpenAdd(true); setAddSectionIndex(props?.Sections?.length) }}>
-                    +Add new section
-                </Button>
+                {
+                    userState?.user?.role === 'student' ?
+                        <></> :
+                        <Button type="link" style={{ color: 'green', fontWeight: 'bold', display: 'block', borderColor: 'green' }}
+                            onClick={() => { setIsModalOpenAdd(true); setAddSectionIndex(props?.Sections?.length) }}>
+                            +Add new section
+                        </Button>
+                }
             </div>
             <Modal width={'520px'} title="Add new section" open={isModalOpenAdd}
                 onOk={() => { handleAddSection() }}
