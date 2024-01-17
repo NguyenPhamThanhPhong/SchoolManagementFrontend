@@ -139,14 +139,10 @@ function Registration() {
         <div style={{ display: 'flex', gap: '16px' }}>
             <Card title="Registration" style={{ flex: 1, width: '50%' }}>
                 <Space>
-                    <Select style={{ width: 150 }} placeholder="Select Registration">
-                        <Option value="K42">K42</Option>
-                        <Option value="K43">K43</Option>
-                    </Select>
                     <Search
                         placeholder="Search..."
                         onSearch={(value) => console.log(value)}
-                        style={{ width: 200 }}
+                        style={{ width: '30vw' }}
                         prefix={<SearchOutlined />}
                     />
                     <Button type="primary" onClick={() => { setIsModalOpen(true); }}>

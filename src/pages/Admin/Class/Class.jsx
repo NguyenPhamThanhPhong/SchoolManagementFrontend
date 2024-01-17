@@ -102,15 +102,11 @@ const Class = () => {
                     <h5>Quản lý lớp học</h5>
                 </div>
                 <Space style={{ marginBottom: 16 }}>
-                    <Select style={{ width: 150 }} placeholder="Select Name">
-                        <Option value="it001">IT001</Option>
-                        <Option value="it002">IT002</Option>
-                    </Select>
                     <Search
                         placeholder="Search..."
                         onSearch={(value) => { onSearch(value) }}
                         onChange={(e) => { onSearch(e.target.value) }}
-                        style={{ width: 200 }}
+                        style={{ width: '30vw' }}
                         prefix={<SearchOutlined />}
                     />
 

@@ -15,7 +15,6 @@ const { Search } = Input;
 const { Option } = Select;
 
 const Lecturer = () => {
-    const [isOpen, setIsOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     const [lecturerState, lecturerDispatch] = useLecturerContext();
@@ -113,23 +112,15 @@ const Lecturer = () => {
                     <Search
                         placeholder="Search..."
                         onChange={(e) => { setSearchText(e.target.value) }}
-                        style={{ width: 200 }}
+                        style={{ width: '30vw' }}
                         prefix={<SearchOutlined />}
                     />
-                    <Button type="primary" onClick={() => { setIsOpen(true) }}>
-                        Gửi thông báo
-                    </Button>
                     <Button type="primary" onClick={() => { setIsCreateModalOpen(true) }}>
                         Thêm mới
                     </Button>
                 </Space>
                 <LecturerTable lecturers={filtredLecturers} handleDetail={handleDetail} handleDelete={handleDelete} />
             </Card>
-            <SendNotiLecturerModal
-                open={isOpen}
-                onOk={() => { setIsOpen(false) }}
-                onCancel={() => { setIsOpen(false) }}
-            />
             <CreateLecturerModal
                 open={isCreateModalOpen}
                 onOk={() => { setIsCreateModalOpen(false) }}

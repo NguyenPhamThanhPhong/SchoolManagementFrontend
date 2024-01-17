@@ -15,7 +15,7 @@ const Post = () => {
 
     const [postState, setPostState] = usePostContext();
 
-    const [filtredPosts, setFiltredPosts] = useState([]);
+    const [filteredPosts, setFilteredPosts] = useState([]);
     const [selectedPost, setSelectedPost] = useState(null);
 
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -23,17 +23,13 @@ const Post = () => {
 
 
     useEffect(() => {
-        setFiltredPosts(postState?.posts);
+        setFilteredPosts(postState?.posts);
     }, [postState?.posts]);
 
 
 
 
-    const dataSource = filtredPosts || [];
 
-    const pageSize = 5;
-
-    const currentData = dataSource.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -63,6 +59,23 @@ const Post = () => {
         setSelectedPost(record);
         setIsCreateModalOpen(true)
     }
+
+    const handleSearch = (searchString) => {
+        if (postState?.posts) {
+            const cleanSearchString = searchString.replace(/[^\w\s]/g, '').replace(/\s/g, '');
+
+            let result = postState?.posts.filter((post) => {
+                const cleanPostTitle = post?.title.replace(/[^\w\s]/g, '').replace(/\s/g, '');
+                return cleanPostTitle.includes(cleanSearchString);
+            });
+            setFilteredPosts(result);
+        }
+    }
+    const dataSource = filteredPosts || [];
+
+    const pageSize = 5;
+
+    const currentData = dataSource.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     const columns = [
         {
@@ -115,7 +128,7 @@ const Post = () => {
                 <Space style={{ marginBottom: 16 }}>
                     <Search
                         placeholder="Search..."
-                        onSearch={(value) => console.log(value)}
+                        onChange={(e) => handleSearch(e.target.value)}
                         style={{ width: 200 }}
                         prefix={<SearchOutlined />}
                     />

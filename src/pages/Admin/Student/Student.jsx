@@ -14,7 +14,6 @@ const { Search } = Input;
 const { Option } = Select;
 
 const Student = () => {
-    const [isOpen, setIsOpen] = useState(false);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -116,12 +115,9 @@ const Student = () => {
                         placeholder="Search..."
                         onChange={(e) => { setSearchText(e.target.value) }}
                         value={searchText}
-                        style={{ width: 200 }}
+                        style={{ width: '30vw' }}
                         prefix={<SearchOutlined />}
                     />
-                    <Button type="primary" onClick={() => { setIsOpen(true) }}>
-                        Gửi thông báo
-                    </Button>
                     <Button type="primary" onClick={() => { setIsCreateModalOpen(true) }}>
                         Thêm mới
                     </Button>

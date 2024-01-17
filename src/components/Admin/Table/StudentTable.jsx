@@ -119,9 +119,6 @@ function StudentTable({ students, selectedRowKeys, setSelectedRowKeys, setSelect
                                 <NavLink to={`/admin/student/detail-student/${record.id}`}>
                                     <Button onClick={() => { handleStudentDetail(record) }} variant="contained">Details</Button>
                                 </NavLink>
-                                <Button variant="contained" type="link">
-                                    Reset
-                                </Button>
                             </Space>
                         ),
                     },
