@@ -235,7 +235,7 @@ function WeekMaterialLecturerView(props) {
                                 (
                                     myUrls.map((item, index) =>
                                         <div className="FileHodlerScss">
-                                            <a href={item?.value || '#'}>{item.key}</a>
+                                            <i class='bx bx-file' style={{ color: '#2f88ff' }}></i><a href={item?.value || '#'}>{item.key}</a>
                                         </div>)
                                 )
                             }
