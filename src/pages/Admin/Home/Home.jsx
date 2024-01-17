@@ -34,7 +34,6 @@ function Home() {
         const fetchTotalStudent = async () => {
             try {
                 const response = await StudentApi.studentGetAll();
-                console.log(response.data.data);
                 if (!response.isError) {
                     setTotalStudent(response.data);
 
@@ -129,13 +128,27 @@ function Home() {
         const scoreCount = [0, 0, 0, 0, 0, 0];
 
         data?.forEach((student) => {
-            const finalScore = student.creditLogs.length > 0 ? student.creditLogs[0].final : null;
 
-            if (finalScore !== null) {
-                for (let i = 0; i < scoreRanges.length - 1; i++) {
-                    if (finalScore >= scoreRanges[i] && finalScore < scoreRanges[i + 1]) {
-                        scoreCount[i]++;
-                        break;
+            if (student.creditLogs.length > 0) {
+                let totalFinalScore = 0;
+                let validScoresCount = 0;
+
+                student.creditLogs.forEach((log) => {
+                    if (log.final !== null) {
+                        totalFinalScore += log.final;
+                        validScoresCount++;
+                    }
+                });
+
+                if (validScoresCount > 0) {
+                    const finalScoreAverage = totalFinalScore / validScoresCount;
+                    console.log(finalScoreAverage)
+
+                    for (let i = 0; i < scoreRanges.length - 1; i++) {
+                        if (finalScoreAverage >= scoreRanges[i] && finalScoreAverage < scoreRanges[i + 1]) {
+                            scoreCount[i]++;
+                            break;
+                        }
                     }
                 }
             }
@@ -143,6 +156,7 @@ function Home() {
 
         return scoreCount;
     };
+
     useEffect(() => {
 
         const processedScores = processFinalScores(totalStudent?.data);
