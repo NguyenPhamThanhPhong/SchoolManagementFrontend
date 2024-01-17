@@ -157,7 +157,7 @@ const InputScore = ({ classListData, classId }) => {
             width: '10%',
         },
         {
-            title: 'Thao tác',
+            title: 'Action',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
@@ -202,8 +202,8 @@ const InputScore = ({ classListData, classId }) => {
 
     return (
         <div className='InputScoreContain'>
-            <button onClick={handleSave}>Save </button>
-            <button onClick={handleSubmit} >Submit</button>
+            {/* <button onClick={handleSave}>Save </button>
+            <button onClick={handleSubmit} >Submit</button> */}
             <div style={{ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
                 <Form form={form} component={false}>
                     <Table
@@ -219,6 +219,10 @@ const InputScore = ({ classListData, classId }) => {
                         pagination={false}
                     />
                 </Form>
+            </div>
+            <div style={{ float: 'right', marginTop: '1%', width: '211px' }}>
+                <Button onClick={handleSave} style={{ width: '100px', backgroundColor: '#2f88ff', color: 'white' }}>Save</Button>
+                <Button onClick={handleSubmit} style={{ width: '100px', backgroundColor: 'green', color: 'white', marginLeft: '5%' }}>Submit</Button>
             </div>
         </div>
     );

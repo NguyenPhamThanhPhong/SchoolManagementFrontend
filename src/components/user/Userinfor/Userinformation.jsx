@@ -1,8 +1,9 @@
 import './Userinformation.scss'
 import ScoreBoard from '../ScoreBoard/ScoreBoard';
-
-
+import { useUserContext, setLogout } from '../../../data-store';
+import { useEffect, useRef, useState } from 'react';
 function UserInformation(props) {
+    const [userState, userDispatch] = useUserContext();
     return (
         <div className='MainContainEr'>
             <div className="UserPic">
@@ -20,11 +21,15 @@ function UserInformation(props) {
                 </ul>
 
             </div>
+            {
+                userState?.user?.role === 'lecturer' ?
+                    <></> :
+                    <div className='Score'>
+                        <span>Student's score</span>
+                        <ScoreBoard StudentScoreData={props.StudentScoreData}></ScoreBoard>
+                    </div>
+            }
 
-            <div className='Score'>
-                <span>Student's score</span>
-                <ScoreBoard StudentScoreData={props.StudentScoreData}></ScoreBoard>
-            </div>
         </div>
     )
 }

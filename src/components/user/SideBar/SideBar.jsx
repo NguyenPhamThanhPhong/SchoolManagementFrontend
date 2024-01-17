@@ -142,9 +142,9 @@ const Sidebar = () => {
                 }
                 <div onClick={handleLogout} className={`sidebar__menu__item`}>
                     <div className="sidebar__menu__item__icon">
-                        <i class='bx bx-log-in-circle'></i>
+                        <i class='bx bx-log-in-circle' style={{ color: 'red' }}></i>
                     </div>
-                    <div className="sidebar__menu__item__text">
+                    <div className="sidebar__menu__item__text" style={{ color: 'red' }}>
                         Logout
                     </div>
                 </div>
