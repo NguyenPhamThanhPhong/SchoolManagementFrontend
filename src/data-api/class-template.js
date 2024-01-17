@@ -117,12 +117,12 @@ class PostCreateRequest {
     }
 }
 class PostUpdateRequest {
-    constructor(id, title, content, facultyTags, prevUrls, Files) {
+    constructor(id, title, content, facultyTags, keepUrls, Files) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.facultyTags = facultyTags;
-        this.prevUrls = prevUrls;
+        this.keepUrls = keepUrls;
         this.Files = Files;
     }
 }

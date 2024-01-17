@@ -42,8 +42,7 @@ const postUpdateInstance = async (postUpdateRequest) => {
 
 const postDelete = async (id, urls = null) => {
     try {
-        console.log(JSON.stringify(urls))
-        const response = await axios.delete(APIUtil.baseURL + `/post-delete/${id}`, { data: urls, headers: APIUtil.jsonHeader })
+        const response = await axios.delete(APIUtil.baseURL + `/post-delete/${id}`)
         return { isError: false, data: response };
     }
     catch (error) {

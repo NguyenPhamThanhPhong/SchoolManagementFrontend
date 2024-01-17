@@ -44,14 +44,9 @@ const Post = () => {
         setSelectedPost(null)
     }
 
-    const handleDelete = async (id, title, urls) => {
+    const handleDelete = async (id, title) => {
         try {
-            let fileUrls = [];
-            for (let [key, value] of Object.entries(urls)) {
-                fileUrls.push(value);
-            }
-
-            const response = await PostApi.postDelete(id, fileUrls,);
+            const response = await PostApi.postDelete(id);
             if (!response.isError) {
                 setPostState(removePost(id));
                 message.success(`delete post successfully:${title}`)
@@ -75,11 +70,11 @@ const Post = () => {
             dataIndex: 'title',
             key: 'title',
         },
-        {
-            title: 'Content',
-            dataIndex: 'content',
-            key: 'content',
-        },
+        // {
+        //     title: 'Content',
+        //     dataIndex: 'content',
+        //     key: 'content',
+        // },
         {
             title: 'File đính kèm',
             render: (_, record) => {
@@ -105,7 +100,7 @@ const Post = () => {
             render: (_, record) => (
                 <Space size="middle">
                     <Button onClick={() => { handleEdit(record) }} icon={<EditOutlined />} />
-                    <Button onClick={() => { handleDelete(record?.id, record?.title, record?.fileUrls) }} icon={<DeleteOutlined />} />
+                    <Button onClick={() => { handleDelete(record?.id, record?.title) }} icon={<DeleteOutlined />} />
                 </Space>
             ),
         },
