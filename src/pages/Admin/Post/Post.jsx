@@ -76,7 +76,7 @@ const Post = () => {
             key: 'title',
         },
         {
-            title: 'Nội dung',
+            title: 'Content',
             dataIndex: 'content',
             key: 'content',
         },
